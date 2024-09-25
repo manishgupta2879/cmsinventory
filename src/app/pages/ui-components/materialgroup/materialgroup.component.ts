@@ -14,6 +14,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 export class MaterialgroupComponent implements OnInit {
   materialGroup!: FormGroup;
   materialGroups: any[] = [];
+  isUpdating: boolean = false;
 
   constructor(
     private cookieService: CookieService,
@@ -55,6 +56,7 @@ export class MaterialgroupComponent implements OnInit {
           const message = response.data?.msg || 'Material Group Created';
           this.toastr.success(message);
           this.resetForm();
+          this.showMaterial();
           const key = response.data?.key;
           console.log('Key:', key);
         } else {
@@ -68,10 +70,58 @@ export class MaterialgroupComponent implements OnInit {
     );
   }
 
+
+  updateMaterial(item: any) {
+    // Patch the form fields with the values from the selected row
+    this.materialGroup.patchValue({
+      group_name: item.group_name, // Patch group_name from the item
+      group_id: item.id, // Use item.id for group_id
+      type: 'update' // Set type as 'update'
+    });
+
+    // Set isUpdating to true to hide the submit button
+    this.isUpdating = true;
+  }
+
+  onUpdate() {
+    // Ensure form is valid before submitting
+    if (this.materialGroup.valid) {
+      // Create HttpParams for URL-encoded format
+      let params = new HttpParams()
+        .set('key', this.materialGroup.get('key')?.value)
+        .set('type', this.materialGroup.get('type')?.value)
+        .set('group_name', this.materialGroup.get('group_name')?.value)
+        .set('group_id', this.materialGroup.get('group_id')?.value);
+
+      // Make HTTP call and rely on the service to handle headers
+      this.materialgroup.userLogin(params.toString()).subscribe(
+        (response: any) => {
+          if (response.status === 'success') {
+            const message = response.data?.msg || 'Material Group Updated';
+            this.toastr.success(message);
+            this.resetForm(); // Reset form after successful update
+            const key = response.data?.key;
+            this.showMaterial();
+            console.log('Key:', key);
+          } else {
+            this.toastr.error('Failed to Update');
+          }
+        },
+        (error: any) => {
+          console.log('Error:', error);
+          this.toastr.error(error.statusText);
+        }
+      );
+    } else {
+      this.toastr.error('Please fill out the form correctly');
+    }
+  }
+
   showMaterial() {
     // Set the type value as 'select' before submitting the form
     this.materialGroup.patchValue({
-      type: 'select'
+      type: 'select',
+      key: this.cookieService.get('token'),
     });
 
     // Create HttpParams for URL-encoded format
@@ -127,11 +177,12 @@ export class MaterialgroupComponent implements OnInit {
         this.toastr.error(error.statusText);
       }
     );
-}
+  }
 
 
 
   resetForm() {
+    this.isUpdating = false;
     this.materialGroup.reset({
       key: '',
       type: '',

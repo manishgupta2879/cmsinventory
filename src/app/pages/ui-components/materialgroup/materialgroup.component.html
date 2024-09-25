@@ -10,8 +10,18 @@
                     </div>
                 </div>
 
-                <div class="submit-btn pt-4">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="d-flex">
+                    <div class="submit-btn pt-4" *ngIf="!isUpdating">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+
+                    <div class="submit-btn pt-4" *ngIf="isUpdating">
+                        <button type="button" class="btn btn-primary" (click)="onUpdate()">Update</button>
+                    </div>
+
+                    <div class="submit-btn pt-4 ms-2">
+                        <button type="button" class="btn btn-primary" (click)="resetForm()">Reset</button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -29,10 +39,12 @@
                 </thead>
                 <tbody *ngFor="let item of materialGroups">
                     <tr>
-                        <td>{{item.id}}</td>
+                        <td (click)="updateMaterial(item)"
+                            style="color: blue; font-weight: 600; cursor: pointer;">{{item.id}}</td>
                         <td>{{item.group_name}}</td>
                         <td>{{item.created_at}}</td>
-                        <td style="cursor: pointer; color: red; font-weight: 600;" (click)="deleteMaterial(item.id)">Delete</td>
+                        <td style="cursor: pointer; color: red; font-weight: 600;" (click)="deleteMaterial(item.id)">
+                            Delete</td>
                     </tr>
                 </tbody>
             </table>
