@@ -1,0 +1,42 @@
+<div class="d-flex flex-column flex-md-row container-fluid">
+    <div class="col-md-5 col-xl-4 col-sm-12 col-12 pe-md-4 shadow-sm p-3 mb-5 bg-body rounded">
+        <form [formGroup]="materialGroup" (ngSubmit)="materialSave()">
+            <div class="align-items-center">
+                <div class="col-xl-6 col-md-6 col-sm-12 col-12 px-0">
+                    <div class="form-box">
+                        <label class="form-check-label mb-2">Material Group</label>
+                        <input type="text" id="group_name" name="group_name" class="form-control px-0"
+                            formControlName="group_name" placeholder=" Enter Material Group">
+                    </div>
+                </div>
+
+                <div class="submit-btn pt-4">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-7 col-xl-8 col-sm-12 col-12 shadow-sm p-3 mb-5 bg-body rounded">
+        <div class="tablewrapper">
+            <table class="table  table-responsive">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Material Group</th>
+                        <th>Created At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let item of materialGroups">
+                    <tr>
+                        <td>{{item.id}}</td>
+                        <td>{{item.group_name}}</td>
+                        <td>{{item.created_at}}</td>
+                        <td style="cursor: pointer; color: red; font-weight: 600;" (click)="deleteMaterial(item.id)">Delete</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- <div class="text-center py-2"> No Items Found </div> -->
+        </div>
+    </div>
+</div>

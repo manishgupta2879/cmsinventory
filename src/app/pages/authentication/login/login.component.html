@@ -1,0 +1,31 @@
+<div class="blank-layout-container justify-content-center align-items-center bg-light-primary">
+  <div class="position-relative row w-100 h-100 bg-gredient justify-content-center">
+    <div class="col-lg-4 d-flex align-items-center">
+      <mat-card class="cardWithShadow boxed-auth">
+        <mat-card-content class="p-32">
+          <div class="text-center">
+            <h2>Khana Wana</h2>
+          </div>
+          <form [formGroup]="loginForm" (ngSubmit)="loginUser()" class="m-t-30">
+            <!-- Username -->
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Username</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput formControlName="email" name="email" required placeholder="Enter Username" />
+            </mat-form-field>
+
+            <!-- Password -->
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Password</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput formControlName="pwd" name="pwd" type="password" placeholder="Enter Password" required />
+            </mat-form-field>
+
+            <!-- Sign In button -->
+            <button mat-flat-button color="primary" class="w-100" type="submit">
+              Sign In
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="container-fluid">
+    <div class="d-flex flex-column flex-md-row ">
+        <div class="col-md-5 col-xl-4 col-sm-12 col-12 pe-md-4 shadow-sm p-3 mb-5 bg-body rounded">
+            <div class="align-items-center">
+                <div class="row">
+                    <div class="col-xl-6 col-md-6 col-sm-12 col-12">
+                        <div class="form-box">
+                            <input class="form-check-input me-2" type="radio" name="inventory" id="inward"
+                                [value]="'inward'" [(ngModel)]="selectedOption" (change)="onSelectionChange('inward')">
+                            <label class="form-check-label" for="inward">
+                                Inward
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-md-6 col-sm-12 col-12 px-0">
+                        <div class="form-box">
+                            <input class="form-check-input me-2" type="radio" name="inventory" id="outward"
+                                [value]="'outward'" [(ngModel)]="selectedOption"
+                                (change)="onSelectionChange('outward')">
+                            <label class="form-check-label" for="outward">
+                                Outward
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Conditional rendering based on the selectedOption value -->
+    <app-inwardstock *ngIf="selectedOption === 'inward'"></app-inwardstock>
+    <app-outwardstock *ngIf="selectedOption === 'outward'"></app-outwardstock>
+
+</div>
