@@ -1,4 +1,6 @@
-import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
+import { Component, ViewEncapsulation, ViewChild, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import {
   ApexChart,
   ChartComponent,
@@ -15,6 +17,9 @@ import {
   ApexMarkers,
   ApexResponsive,
 } from 'ng-apexcharts';
+import { CookieService } from 'ngx-cookie-service';
+import { ToastrService } from 'ngx-toastr';
+import { DashboardService } from 'src/app/services/Dashboard/dashboard.service';
 
 interface month {
   value: string;
@@ -121,12 +126,18 @@ const ELEMENT_DATA: productsData[] = [
   templateUrl: './dashboard.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export class AppDashboardComponent {
+export class AppDashboardComponent implements OnInit {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);
+  currentStockForm!: FormGroup;
 
+  currentStock: any[] = [];
   public salesOverviewChart!: Partial<salesOverviewChart> | any;
   public yearlyChart!: Partial<yearlyChart> | any;
   public monthlyChart!: Partial<monthlyChart> | any;
+
+
+
+
 
   displayedColumns: string[] = ['materialgroup', 'materialname', 'quantity'];
   dataSource = ELEMENT_DATA;
@@ -212,7 +223,14 @@ export class AppDashboardComponent {
     },
   ];
 
-  constructor() {
+  constructor(
+    private CurrentStockData: DashboardService,
+    private toastr: ToastrService,
+    private cookieService: CookieService,
+
+
+  ) {
+
     // sales overview chart
     this.salesOverviewChart = {
       series: [
@@ -392,4 +410,54 @@ export class AppDashboardComponent {
       },
     };
   }
+
+
+
+  ngOnInit(): void {
+    const token = this.cookieService.get('token');
+
+    this.currentStockForm = new FormGroup({
+      key: new FormControl(token),
+      type:new FormControl('select'),
+
+    })
+
+    this.getCurrentStock()
+
+  }
+
+
+
+
+ getCurrentStock() {
+  // Set the type value as 'select' before submitting the form
+  this.currentStockForm.patchValue({
+    type: 'select',
+    key: this.cookieService.get('token'),
+  });
+
+  // Create HttpParams for URL-encoded format
+  let params = new HttpParams()
+    .set('key', this.currentStockForm.get('key')?.value)
+    .set('type', this.currentStockForm.get('type')?.value)
+
+  // Make HTTP call and rely on the service to handle
+  this.CurrentStockData.getCurrentStock(params.toString()).subscribe(
+    (response: any) => {
+      if (response.status === 'success') {
+        // this.toastr.success(response.data?.msg || 'Material Group Created');
+        this.currentStock = response.data?.data1 || []; // Assign the material groups to the local array
+        console.log("currentStock data is ", this.currentStock)
+      } else {
+        this.toastr.error('Failed to retrieve data');
+      }
+    },
+    (error: any) => {
+      console.log('Error:', error);
+      this.toastr.error(error.statusText);
+    }
+  );
+}
+
+
 }

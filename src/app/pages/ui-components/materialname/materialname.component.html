@@ -1,6 +1,6 @@
 <div class="d-flex flex-column flex-md-row container-fluid">
     <div class="col-md-6 col-xl-6 col-sm-12 col-12 pe-md-4 shadow-sm p-3 mb-5 bg-body rounded">
-        <form [formGroup]="materialName" >
+        <form [formGroup]="materialName" (ngSubmit)="createMaterialName()" >
             <div class="align-items-center">
                 <div class="row">
                     <div class="col-xl-6 col-md-6 col-sm-12 col-12 ">
@@ -8,9 +8,11 @@
                             <label class="form-check-label mb-2">Material Group</label>
                             <select id="materialgroup" name="materialgroup" class="form-select" formControlName="materialgroup">
                                 <option value="">Select Material Group</option>
-                                <option [value]="">Iron</option>
+                                <!-- <option [value]="">Iron</option>
                                 <option [value]="">Gold</option>
-                                <option [value]="">Silver</option>
+                                <option [value]="">Silver</option> -->
+                                <option *ngFor="let group of materialGroups" [value]="group.id">{{ group.group_name }}</option>
+
                             </select>
                         </div>
                     </div>
@@ -24,10 +26,25 @@
                     <div class="col-xl-6 col-md-6 col-sm-12 col-12 mt-1">
                         <div class="form-box">
                             <label class="form-check-label mb-2">UOM</label>
-                            <input type="text" id="uom" name="uom" class="form-control px-0"
-                                formControlName="uom" placeholder=" Enter UOM">
+                            <!-- <input type="text" id="uom" name="uom" class="form-control px-0"
+                                formControlName="uom" placeholder=" Enter UOM"> -->
+                                <select id="uom" name="uom" class="form-select" formControlName="uom">
+                                  <option value="">Select UOM</option>
+                                  <!-- <option [value]="">Iron</option>
+                                  <option [value]="">Gold</option>
+                                  <option [value]="">Silver</option> -->
+                                  <option *ngFor="let item of uomList" [value]="item.id">{{item.material_unit }}</option>
+
+                              </select>
                         </div>
                     </div>
+                    <div class="col-xl-6 col-md-6 col-sm-12 col-12 mt-1">
+                      <div class="form-box">
+                          <label class="form-check-label mb-2">Description</label>
+                          <input type="text" id="des" name="des" class="form-control px-0"
+                              formControlName="des" placeholder=" Enter Description">
+                      </div>
+                  </div>
                 </div>
 
                 <div class="submit-btn pt-3">
@@ -36,7 +53,8 @@
             </div>
         </form>
     </div>
-    <div class="col-md-6 col-xl-6 col-sm-12 col-12 shadow-sm p-3 mb-5 bg-body rounded">
+
+    <!-- <div class="col-md-6 col-xl-6 col-sm-12 col-12 shadow-sm p-3 mb-5 bg-body rounded">
         <div class="tablewrapper">
             <table class="table table-striped table-responsive">
                 <thead>
@@ -74,7 +92,35 @@
                     </tr>
                 </tbody>
             </table>
-            <!-- <div class="text-center py-2"> No Items Found </div> -->
         </div>
-    </div>
+    </div> -->
+
+
+    <div class="col-md-7 col-xl-8 col-sm-12 col-12 shadow-sm p-3 mb-5 bg-body rounded">
+      <div class="tablewrapper">
+          <table class="table  table-responsive">
+              <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Material Group</th>
+                    <th>Material Name</th>
+                    <th>UOM</th>
+                    <th>Delete</th>
+                  </tr>
+              </thead>
+              <tbody *ngFor="let item of materialTableData">
+                  <tr>
+                      <td  (click)="updateMaterialName(item)"
+                          style="color: blue; font-weight: 600; cursor: pointer;">{{item.id}}</td>
+                          <td>{{item.group_name}}</td>
+                      <td>{{item.material_name}}</td>
+                      <td>{{item.material_unit}}</td>
+                      <td style="cursor: pointer; color: red; font-weight: 600;" >
+                        Delete</td>
+                  </tr>
+              </tbody>
+          </table>
+          <!-- <div class="text-center py-2"> No Items Found </div> -->
+      </div>
+  </div>
 </div>
