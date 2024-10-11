@@ -1,1 +1,60 @@
-<p>stocks works!</p>
+<div class="stocks-container">
+  <form [formGroup]="StockForm" (ngSubmit)="submit()" class="d-flex gap-3">
+    <div class="form-group">
+      <label for="date">Select Date:</label>
+      <input type="date" id="date" class="form-control w-auto" formControlName="_date" />
+    </div>
+    <div class="form-group d-flex align-items-end">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+
+  <div *ngIf="stock.length> 0; else noDataMessage" class="stock-list mt-5">
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Group Name</th>
+            <th>Material Name</th>
+            <th>Material Unit</th>
+            <th>Material Description</th>
+            <th>Transaction Date</th>
+            <th>Opening Qty</th>
+            <th>Purchase Qty</th>
+            <th>Sale Qty</th>
+            <th>Closing Qty</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of stock">
+            <td>{{ item.id }}</td>
+            <td>{{ item.group_name }}</td>
+            <td>{{ item.material_name }}</td>
+            <td>{{ item.material_unit }}</td>
+            <td>{{ item.material_description }}</td>
+            <td>{{ item.transaction_date }}</td>
+            <td>{{ item.opening_qty }}</td>
+            <td>{{ item.purchase_qty ? item.purchase_qty : '-' }}</td>
+            <td>{{ item.sale_qty ? item.sale_qty : '-' }}</td>
+            <td>{{ item.closing_qty }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <ng-template #noDataMessage >
+    <div class="alert alert-warning mt-3" role="alert">
+      No data found for the selected date.
+    </div>
+  </ng-template>
+
+  <div *ngIf="!StockForm.get('_date')?.value && stock.length === 0" class="alert alert-info mt-3" role="alert">
+    Please select a date to show data.
+  </div>
+
+
+</div>
+

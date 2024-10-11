@@ -40,6 +40,7 @@ uomList:any[]=[];
       uom: new FormControl(''),
       des:new FormControl(''),
       type:new FormControl('select'),
+      id:new FormControl('')
 
     })
 
@@ -61,7 +62,7 @@ uomList:any[]=[];
       .set('key', this.materialName.get('key')?.value)
       .set('type', this.materialName.get('type')?.value)
       .set('group_name', this.materialName.get('group_name')?.value)
-      .set('group_id', this.materialName.get('group_id')?.value);
+      .set('group_id', this.materialName.get('group_id')?.value)
 
     // Make HTTP call and rely on the service to handle headers
     this.materialgroup.userLogin(params.toString()).subscribe(
@@ -166,7 +167,8 @@ uomList:any[]=[];
           const message = response.data?.msg || 'Material Group Created';
           this.toastr.success(message);
           this.resetForm();
-          // this.showMaterial();
+
+          this.showMaterialName();
           const data = response.data;
           console.log('Key:', data);
         } else {
@@ -180,6 +182,47 @@ uomList:any[]=[];
     );
   }
 
+  onUpdate() {
+    // Ensure form is valid before submitting
+    if (this.materialName.valid) {
+      // Create HttpParams for URL-encoded format
+      let params = new HttpParams()
+
+
+        .set('key', this.materialName.get('key')?.value)
+      .set('type', this.materialName.get('type')?.value)
+      // .set('material_unit', this.materialName.get('material_unit')?.value)
+      .set('group_id', this.materialName.get('materialgroup')?.value)
+      .set('material_name', this.materialName.get('materialname')?.value)
+      .set('munitid',this.materialName.get('uom')?.value)
+      .set('material_description', this.materialName.get('des')?.value)
+      .set('id', this.materialName.get('id')?.value)
+
+
+      // Make HTTP call and rely on the service to handle headers
+      this.materialnameService.updateMaterialName(params.toString()).subscribe(
+        (response: any) => {
+          if (response.status === 'success') {
+            const message = response.data?.msg || 'Material Group Updated';
+            this.toastr.success(message);
+            this.resetForm(); // Reset form after successful update
+            const key = response.data?.key;
+            this.showMaterialName();
+            console.log('Key:', key);
+          } else {
+            this.toastr.error('Failed to Update');
+          }
+        },
+        (error: any) => {
+          console.log('Error:', error);
+          this.toastr.error(error.statusText);
+        }
+      );
+    } else {
+      this.toastr.error('Please fill out the form correctly');
+    }
+  }
+
 
   updateMaterialName(item: any) {
     console.log("item is ",item)
@@ -187,16 +230,19 @@ uomList:any[]=[];
     this.materialName.patchValue({
       materialgroup: item.group_id, // Patch group_name from the item
       materialname: item.material_name, // Use item.id for group_id
-      uom:item.material_unit,
+      uom:item.munitid,
       des:item.material_description,
-      type: 'update' // Set type as 'update'
+      type: 'update' ,// Set type as 'update'
+      id:item.id
     });
+    console.log("updated materialNamae",this.materialName)
 
     // Set isUpdating to true to hide the submit button
     this.isUpdating = true;
   }
 
   resetForm() {
+    this.isUpdating = false;
     this.materialName.reset({
       key: '',
       type: '',

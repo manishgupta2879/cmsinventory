@@ -139,7 +139,7 @@ export class AppDashboardComponent implements OnInit {
 
 
 
-  displayedColumns: string[] = ['materialgroup', 'materialname', 'quantity'];
+  displayedColumns: string[] = ['materialgroup','material_unit', 'materialname', 'quantity'];
   dataSource = ELEMENT_DATA;
 
   months: month[] = [

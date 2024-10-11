@@ -27,6 +27,12 @@ export class MaterialnameService {
     return this.http.post(`${apiUrl}/API/mitem.php`,data,httpOptions);
   }
 
+  updateMaterialName(data: any) {
+    const httpOptions = getHttpOptions(this.cookieService);
+
+    return this.http.post(`${apiUrl}/API/mitem.php`,data,httpOptions);
+  }
+
 
 
 }
