@@ -33,6 +33,25 @@ export class MaterialnameService {
     return this.http.post(`${apiUrl}/API/mitem.php`,data,httpOptions);
   }
 
+  DetleteMaterialName(data: any) {
+    const httpOptions = getHttpOptions(this.cookieService);
+
+    return this.http.post(`${apiUrl}/API/mitem.php`,data,httpOptions);
+  }
+
+
+  getMaterialNameByGroup(data: any) {
+    const httpOptions = getHttpOptions(this.cookieService);
+
+    return this.http.post(`${apiUrl}/API/mgroup-item.php`,data,httpOptions);
+  }
+
+  createInward(data:any){
+    const httpOptions = getHttpOptions(this.cookieService);
+
+    return this.http.post(`${apiUrl}/API/inwardoutward.php`,data,httpOptions);
+  }
+
 
 
 }

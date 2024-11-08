@@ -9,7 +9,7 @@
     </div>
   </form>
 
-  <div *ngIf="stock.length> 0; else noDataMessage" class="stock-list mt-5">
+  <div *ngIf="stock.length> 0" class="stock-list mt-5">
 
     <div class="table-responsive">
       <table class="table table-bordered table-striped">
@@ -45,7 +45,7 @@
     </div>
   </div>
 
-  <ng-template #noDataMessage >
+  <!-- <ng-template #noDataMessage >
     <div class="alert alert-warning mt-3" role="alert">
       No data found for the selected date.
     </div>
@@ -53,7 +53,7 @@
 
   <div *ngIf="!StockForm.get('_date')?.value && stock.length === 0" class="alert alert-info mt-3" role="alert">
     Please select a date to show data.
-  </div>
+  </div> -->
 
 
 </div>

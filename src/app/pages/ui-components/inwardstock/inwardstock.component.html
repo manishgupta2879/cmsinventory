@@ -3,30 +3,49 @@
         <form [formGroup]="inwardForm">
             <div class="align-items-center">
                 <div class="row">
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                        <div class="form-box">
-                            <label class="form-check-label mb-2">Material Group</label>
-                            <select id="materialgroup" name="materialgroup" class="form-select"
-                                formControlName="materialgroup">
-                                <option value="">Select Material Group</option>
-                                <option [value]="">Iron</option>
-                                <option [value]="">Gold</option>
-                                <option [value]="">Silver</option>
-                            </select>
-                        </div>
+
+
+                    <div class="col-xl-6 col-md-6 col-sm-12 col-12">
+                      <div class="form-box">
+                        <label class="form-check-label mb-2">Material Group</label>
+                        <select
+                          id="materialgroup"
+                          name="materialgroup"
+                          class="form-select"
+                          formControlName="materialgroup"
+                          (change)="getMaterial($event)"
+                          >
+                          <option value="">Select Material Group</option>
+
+                          <option *ngFor="let group of materialGroups" [value]="group.id">
+                            {{ group.group_name }}
+                          </option>
+                        </select>
+                      </div>
                     </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                        <div class="form-box">
-                            <label class="form-check-label mb-2">Material Name</label>
-                            <select id="materialname" name="materialname" class="form-select"
-                                formControlName="materialname">
-                                <option value="">Select Material Name</option>
-                                <option [value]="">Iron</option>
-                                <option [value]="">Gold</option>
-                                <option [value]="">Silver</option>
-                            </select>
-                        </div>
+
+
+
+                    <div class="col-xl-6 col-md-6 col-sm-12 col-12">
+                      <div class="form-box">
+                        <label class="form-check-label mb-2">Material Name</label>
+                        <select
+                          id="materialname"
+                          name="materialname"
+                          class="form-select"
+                          formControlName="materialname"
+                          (change)="getMaterialName($event)"
+
+                        >
+                          <option value="">Select Material</option>
+
+                          <option *ngFor="let group of material" [value]="group.id">
+                            {{ group.material_name }}
+                          </option>
+                        </select>
+                      </div>
                     </div>
+
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mt-1">
                         <div class="form-box">
                             <label class="form-check-label mb-2">Invoice</label>
@@ -41,17 +60,27 @@
                                 formControlName="quantity" placeholder=" Enter Quantity">
                         </div>
                     </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mt-1"></div>
+
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mt-1">
+                      <div class="form-box">
+                          <label class="form-check-label mb-2">Transaction Date</label>
+                          <input type="date" id="transdate" name="transdate" class="form-control px-0"
+                              formControlName="transdate">
+                      </div>
+                  </div>
+
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mt-1">
                     <div class="form-box">
                         <label class="form-check-label mb-2">Invoice Date</label>
                         <input type="date" id="invoicedate" name="invoicedate" class="form-control px-0"
                             formControlName="invoicedate">
                     </div>
+                  </div>
                 </div>
             </div>
 
             <div class="submit-btn pt-3">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" (click)="inwardSubmit()">Submit</button>
             </div>
 
         </form>

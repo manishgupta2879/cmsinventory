@@ -196,7 +196,7 @@ uomList:any[]=[];
       .set('material_name', this.materialName.get('materialname')?.value)
       .set('munitid',this.materialName.get('uom')?.value)
       .set('material_description', this.materialName.get('des')?.value)
-      .set('id', this.materialName.get('id')?.value)
+      .set('material_id', this.materialName.get('id')?.value)
 
 
       // Make HTTP call and rely on the service to handle headers
@@ -222,6 +222,42 @@ uomList:any[]=[];
       this.toastr.error('Please fill out the form correctly');
     }
   }
+
+
+    deleteMaterialName(item: any) {
+    this.materialName.patchValue({
+      type: 'delete'
+    });
+
+
+      let params = new HttpParams()
+      .set('key', this.materialName.get('key')?.value)
+      .set('type', this.materialName.get('type')?.value)
+      .set('group_id', '')
+      .set('munitid', '')
+      .set('material_name', item.material_name)
+      .set('material_description','')
+      .set('material_id', item.id)
+
+
+
+    this.materialnameService.DetleteMaterialName(params.toString()).subscribe(
+      (response: any) => {
+        if (response.status === 'success') {
+          this.toastr.success(response.data?.msg || 'Material Deleted');
+          this.showMaterialName();
+        } else {
+          this.toastr.error('Failed to delete material');
+        }
+      },
+      (error: any) => {
+        console.log('Error:', error);
+        this.toastr.error(error.statusText);
+      }
+    );
+  }
+
+
 
 
   updateMaterialName(item: any) {

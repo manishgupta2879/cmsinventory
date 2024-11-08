@@ -13,3 +13,22 @@ export function getHttpOptions(cookieService: CookieService) {
         })
     };
 }
+
+
+
+// export function getHttpOptions(cookieService: CookieService) {
+//     // Get the PHPSESSID from the cookies
+//     const phpsessid = cookieService.get('PHPSESSID');
+
+//     // Set the headers
+//     const headers = new HttpHeaders({
+//         'Content-Type': 'application/json',  // Use 'application/json' for JSON payload
+//     });
+
+//     // If PHPSESSID is required, you can include it in the headers or cookies
+//     if (phpsessid) {
+//         headers.append('Cookie', `PHPSESSID=${phpsessid}`);
+//     }
+
+//     return { headers };
+// }
