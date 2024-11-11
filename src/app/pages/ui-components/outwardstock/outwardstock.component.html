@@ -65,9 +65,13 @@
                 </div>
             </div>
 
-            <div class="submit-btn pt-3">
+            <div class="submit-btn pt-3" *ngIf="!isUpdating">
                 <button type="submit" class="btn btn-primary" (click)="outwardSubmit()">Submit</button>
             </div>
+
+            <div class="submit-btn pt-4" *ngIf="isUpdating">
+              <button type="button" class="btn btn-primary" (click)="onUpdate()">Update</button>
+          </div>
 
         </form>
     </div>
@@ -75,48 +79,34 @@
         <div class="tablewrapper">
             <table class="table table-striped table-responsive">
                 <thead>
-                    <tr>
+
+                      <tr>
+                        <th>ID</th>
                         <th>Material Group</th>
                         <th>Material Name</th>
-                        <th>Transaction Date</th>
                         <th>Quantity</th>
-                        <th>Order Processed</th>
+                        <th>Transaction Date</th>
+                        <th>No. of order processed</th>
                         <th>Action</th>
                     </tr>
+
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Iron</td>
-                        <td>Iron</td>
-                        <td>Iron</td>
-                        <td>Iron</td>
-                        <td>Iron</td>
-                        <td style="cursor: pointer;"><i class="fa-solid fa-trash"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Gold</td>
-                        <td>Gold</td>
-                        <td>Gold</td>
-                        <td>Gold</td>
-                        <td>Gold</td>
-                        <td style="cursor: pointer;"><i class="fa-solid fa-trash"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Silver</td>
-                        <td>Silver</td>
-                        <td>Silver</td>
-                        <td>Silver</td>
-                        <td>Silver</td>
-                        <td style="cursor: pointer;"><i class="fa-solid fa-trash"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Alluminium</td>
-                        <td>Alluminium</td>
-                        <td>Alluminium</td>
-                        <td>Alluminium</td>
-                        <td>Alluminium</td>
-                        <td style="cursor: pointer;"><i class="fa-solid fa-trash"></i></td>
-                    </tr>
+                  <tr *ngFor="let item of outwardListData">
+                    <td
+                    (click)="updateOutward(item)"
+                    style="color: blue; font-weight: 600; cursor: pointer"
+                  >{{ item.id }}</td>
+                    <td>{{ item.group_name }}</td>
+                    <td>{{ item.material_name }}</td>
+                    <td>{{ item.qty }}</td>
+                    <td>{{ item.transition_date }}</td>
+                    <td>{{ item.outward_orders }}</td>
+
+                    <td style="cursor: pointer;"><i class="fa-solid fa-trash"></i></td>
+                </tr>
+
+
                 </tbody>
             </table>
             <!-- <div class="text-center py-2"> No Items Found </div> -->

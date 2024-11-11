@@ -19,6 +19,8 @@ export class InwardstockComponent implements OnInit {
   material:any[]=[];
   selectedMaterialGroupId:any='';
   selectedMaterialNameId:any='';
+  inwardListData:any[]=[];
+  isUpdating:boolean=false;
 
 
   constructor(
@@ -103,23 +105,115 @@ this.selectedMaterialGroupId = selectedGroupId;
   this.selectedMaterialNameId = selectedMaterialId;
   }
 
+
+  updateInward(item: any) {
+    console.log("item is ",item)
+    // Patch the form fields with the values from the selected row
+    this.inwardForm.patchValue({
+      materialgroup: item.group_id,
+      invoice: item.invoice_no,
+      quantity: item.qty,
+      invoicedate: item.invoice_date,
+      transdate: item.transition_date,
+      materialname: item.item_id,
+      nooforders:item.outward_orders
+
+    });
+    console.log("updated materialNamae",this.inwardForm)
+
+    // Set isUpdating to true to hide the submit button
+    this.isUpdating = true;
+  }
+
+  onUpdate() {
+
+    const reorderedPayload = {
+
+      type:"inwardupdate",
+      stockid:'23',
+      key: this.cookieService.get('token'),
+
+
+    };
+
+    const httpParams = new HttpParams({ fromObject: reorderedPayload });
+
+
+    this.materialnameService.createInward(httpParams.toString()).subscribe(
+      (response: any) => {
+        if (response.status === 'success') {
+          console.log(response)
+
+          this.toastr.success('Invard updated successfully');
+
+        } else {
+          this.toastr.error('Failed to retrieve data');
+        }
+      },
+      (error: any) => {
+        console.log('Error:', error);
+        this.toastr.error(error.statusText);
+      }
+    );
+  }
+
+
   inwardSubmit() {
     console.log("Inward Form Values:", this.inwardForm.value);
 
     const reorderedPayload = {
-      invoice: this.inwardForm.value.invoice,
-      invoicedate: this.inwardForm.value.invoicedate,
-      materialgroup: this.inwardForm.value.materialgroup,
-      materialname: this.inwardForm.value.materialname,
-      quantity: this.inwardForm.value.quantity,
-      transdate: this.inwardForm.value.transdate,
-      type:"inward"
-    };
+      invoice_no: this.inwardForm.value.invoice,
+      invoice_date: this.inwardForm.value.invoicedate,
+      group_id: this.inwardForm.value.materialgroup,
+      item_id: this.inwardForm.value.materialname,
+      qty: this.inwardForm.value.quantity,
+      trans_date: this.inwardForm.value.transdate,
+      type:"inward",
+      key: this.cookieService.get('token'),
+      nooforders:''
 
-    this.materialnameService.createInward(reorderedPayload).subscribe(
+    };
+    const httpParams = new HttpParams({ fromObject: reorderedPayload });
+
+
+    this.materialnameService.createInward(httpParams.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
           this.toastr.success('Invard added successfully');
+          this.resetForm();
+          this.inwardList();
+
+        } else {
+          this.toastr.error('Failed to retrieve data');
+        }
+      },
+      (error: any) => {
+        console.log('Error:', error);
+        this.toastr.error(error.statusText);
+      }
+    );
+  }
+
+
+  inwardList() {
+
+    const reorderedPayload = {
+
+      type:"selectinward",
+      key: this.cookieService.get('token'),
+
+
+    };
+    const httpParams = new HttpParams({ fromObject: reorderedPayload });
+
+
+    this.materialnameService.createInward(httpParams.toString()).subscribe(
+      (response: any) => {
+        if (response.status === 'success') {
+          console.log(response)
+
+  this.inwardListData=response.data.data1
+
         } else {
           this.toastr.error('Failed to retrieve data');
         }
@@ -134,6 +228,7 @@ this.selectedMaterialGroupId = selectedGroupId;
 
 
   ngOnInit(): void {
+    this.inwardList()
     const token = this.cookieService.get('token');
     this.inwardForm = new FormGroup({
       materialgroup: new FormControl(''),
@@ -157,6 +252,18 @@ this.selectedMaterialGroupId = selectedGroupId;
     })
 
     this.showMaterial();
+  }
+
+
+  resetForm() {
+    this.inwardForm.reset({
+      materialgroup: '',
+      materialname:'',
+      invoice: '',
+      quantity: '',
+      invoicedate: '',
+      transdate: '',
+    })
   }
 
 }

@@ -17,6 +17,8 @@ export class OutwardstockComponent implements OnInit {
   material:any[]=[];
   materialName!: FormGroup;
   outwardForm!: FormGroup;
+  outwardListData:any[]=[];
+  isUpdating:boolean=false;
 
   constructor(
     private materialgroup: MaterialgroupService,
@@ -31,7 +33,7 @@ export class OutwardstockComponent implements OnInit {
   getMaterial(event: Event) {
 
     const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
-  const selectedGroupId = selectElement.value; // Get the selected value
+  const selectedGroupId = selectElement.value;
   console.log("Selected Group ID:", selectedGroupId);
 
 
@@ -69,19 +71,27 @@ export class OutwardstockComponent implements OnInit {
     console.log("Inward Form Values:", this.outwardForm.value);
 
     const reorderedPayload = {
-      invoice: this.outwardForm.value.invoice,
+      invoice_no: this.outwardForm.value.invoice,
+      invoice_date: '',
       nooforders: this.outwardForm.value.nooforders,
-      materialgroup: this.outwardForm.value.materialgroup,
-      materialname: this.outwardForm.value.materialname,
-      quantity: this.outwardForm.value.quantity,
-      transdate: this.outwardForm.value.transdate,
-      type:"outward"
-    };
+      group_id: this.outwardForm.value.materialgroup,
+      item_id: this.outwardForm.value.materialname,
+      qty: this.outwardForm.value.quantity,
+      // trans_date: this.outwardForm.value.transdate,
+      trans_date: '2024-11-28',
+      type:"outward",
+      key: this.cookieService.get('token'),
 
-    this.materialnameService.createInward(reorderedPayload).subscribe(
+    };
+    const httpParams = new HttpParams({ fromObject: reorderedPayload });
+
+
+    this.materialnameService.createInward(httpParams.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
           this.toastr.success('Invard added successfully');
+          this.resetForm();
+          this.outwardList();
         } else {
           this.toastr.error('Failed to retrieve data');
         }
@@ -93,7 +103,61 @@ export class OutwardstockComponent implements OnInit {
     );
   }
 
+
+  outwardList() {
+
+    const reorderedPayload = {
+
+      type:"selectoutward",
+      key: this.cookieService.get('token'),
+
+
+    };
+    const httpParams = new HttpParams({ fromObject: reorderedPayload });
+
+
+    this.materialnameService.createInward(httpParams.toString()).subscribe(
+      (response: any) => {
+        if (response.status === 'success') {
+          console.log(response)
+this.outwardListData= response.data.data1
+        } else {
+          this.toastr.error('Failed to retrieve data');
+        }
+      },
+      (error: any) => {
+        console.log('Error:', error);
+        this.toastr.error(error.statusText);
+      }
+    );
+  }
+
+  onUpdate(){
+
+  }
+
+  updateOutward(item: any) {
+    console.log("item is ",item)
+    this.getMaterial(item.group_id)
+    this.outwardForm.patchValue({
+      materialgroup: item.group_id,
+      invoice: item.invoice_no,
+      quantity: item.qty,
+      invoicedate: item.invoice_date,
+      transdate: item.transition_date,
+      materialname: item.item_id,
+      nooforders:item.outward_orders
+
+    });
+    console.log("updated materialNamae",this.outwardForm)
+
+    // Set isUpdating to true to hide the submit button
+    this.isUpdating = true;
+  }
+
+
   ngOnInit(): void {
+    this.outwardList();
     const token = this.cookieService.get('token');
 
     this.outwardForm = new FormGroup({
@@ -146,6 +210,17 @@ export class OutwardstockComponent implements OnInit {
         this.toastr.error(error.statusText);
       }
     );
+  }
+
+  resetForm() {
+    this.outwardForm.reset({
+      materialgroup: '',
+      materialname:'',
+      invoice: '',
+      quantity: '',
+      invoicedate: '',
+      transdate: '',
+    })
   }
 
 
