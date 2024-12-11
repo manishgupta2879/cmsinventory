@@ -17,8 +17,10 @@ export class OutwardstockComponent implements OnInit {
   material:any[]=[];
   materialName!: FormGroup;
   outwardForm!: FormGroup;
+  filterForm!: FormGroup;
   outwardListData:any[]=[];
   isUpdating:boolean=false;
+  stockId:any=''
 
   constructor(
     private materialgroup: MaterialgroupService,
@@ -132,29 +134,179 @@ this.outwardListData= response.data.data1
     );
   }
 
-  onUpdate(){
+  onUpdate() {
 
+    // const reorderedPayload = {
+
+    //   type:"inwardupdate",
+    //   stockid:'23',
+    //   key: this.cookieService.get('token'),
+
+
+    // };
+
+    const reorderedPayload = {
+      invoice_no:'',
+      invoice_date:'',
+      group_id: this.outwardForm.value.materialgroup,
+      item_id: this.outwardForm.value.materialname,
+      qty: this.outwardForm.value.quantity,
+      trans_date: this.outwardForm.value.transdate,
+      type:"outwardupdate",
+      key: this.cookieService.get('token'),
+      stockid:this.stockId,
+      nooforders:this.outwardForm.value.nooforders
+
+
+    };
+    console.log("full value is ",this.outwardForm.value)
+
+    const httpParams = new HttpParams({ fromObject: reorderedPayload });
+
+
+    this.materialnameService.createInward(httpParams.toString()).subscribe(
+      (response: any) => {
+        if (response.status === 'success') {
+          console.log(response)
+
+          this.toastr.success('outward updated successfully');
+          this.outwardList();
+          this.resetForm();
+
+
+        } else {
+          this.toastr.error('Failed to retrieve data');
+        }
+      },
+      (error: any) => {
+        console.log('Error:', error);
+        this.toastr.error(error.statusText);
+      }
+    );
   }
+
+  // updateOutward(item: any) {
+  //   console.log("item is ",item)
+  //   this.getMaterial(item.group_id)
+  //   this.outwardForm.patchValue({
+  //     materialgroup: item.group_id,
+  //     invoice: item.invoice_no,
+  //     quantity: item.qty,
+  //     invoicedate: item.invoice_date,
+  //     transdate: item.transition_date,
+  //     materialname: item.item_id,
+  //     nooforders:item.outward_orders
+
+  //   });
+  //   console.log("updated materialNamae",this.outwardForm)
+
+  //   // Set isUpdating to true to hide the submit button
+  //   this.isUpdating = true;
+  // }
+
+
+  deleteOutward(item:any){
+
+    const reorderedPayload = {
+
+      type:"delete",
+      stockid:item.id,
+      key: this.cookieService.get('token'),
+
+
+    };
+
+    const httpParams = new HttpParams({ fromObject: reorderedPayload });
+
+
+    this.materialnameService.createInward(httpParams.toString()).subscribe(
+      (response: any) => {
+        if (response.status === 'success') {
+          console.log(response)
+
+          this.toastr.success('Outward deleted successfully');
+          this.outwardList();
+
+        } else {
+          this.toastr.error('Failed to retrieve data');
+        }
+      },
+      (error: any) => {
+        console.log('Error:', error);
+        this.toastr.error(error.statusText);
+      }
+    );
+
+
+
+}
+
 
   updateOutward(item: any) {
+    this.getMaterialNameBasedOnGroup(item.group_id,item);
     console.log("item is ",item)
-    this.getMaterial(item.group_id)
-    this.outwardForm.patchValue({
-      materialgroup: item.group_id,
-      invoice: item.invoice_no,
-      quantity: item.qty,
-      invoicedate: item.invoice_date,
-      transdate: item.transition_date,
-      materialname: item.item_id,
-      nooforders:item.outward_orders
+    this.stockId = item.id;
 
-    });
-    console.log("updated materialNamae",this.outwardForm)
 
-    // Set isUpdating to true to hide the submit button
-    this.isUpdating = true;
   }
 
+  getMaterialNameBasedOnGroup(groupId: string,item:any) {
+
+    // Trigger the material fetch based on the group ID
+    this.materialName.patchValue({
+      type: 'select',
+      key: this.cookieService.get('token'),
+    });
+
+    let params = new HttpParams()
+      .set('key', this.materialName.get('key')?.value)
+      .set('type', this.materialName.get('type')?.value)
+      .set('group_id', groupId); // Pass the group ID to get materials of that group
+
+    this.materialnameService.getMaterialNameByGroup(params.toString()).subscribe(
+      (response: any) => {
+        if (response.status === 'success') {
+          this.material = response.data?.data1 || [];
+          console.log("Materials for selected group:", this.material);
+
+          //this.inwardForm.patchValue({
+            //materialname: "3",
+            // materialgroup: item.group_id,
+            // invoice: item.invoice_no,
+            // quantity: item.qty,
+            // invoicedate: item.invoice_date,
+            // transdate: item.transition_date,
+            // nooforders:item.outward_orders
+          //});
+
+
+          setTimeout(() => {
+            this.outwardForm.patchValue({
+                materialgroup: item.group_id,
+                invoice: item.invoice_no,
+                quantity: item.qty,
+                invoicedate: item.invoice_date,
+                transdate: item.transition_date,
+                materialname: item.item_id,
+                nooforders: item.outward_orders
+            });
+            console.log("updated materialName", this.outwardForm);
+        }, 0);
+
+          console.log("updated materialNamae",this.outwardForm)
+
+          this.isUpdating = true;
+
+        } else {
+          this.toastr.error('Failed to retrieve materials');
+        }
+      },
+      (error: any) => {
+        console.log('Error:', error);
+        this.toastr.error(error.statusText);
+      }
+    );
+  }
 
   ngOnInit(): void {
     this.outwardList();
@@ -180,9 +332,21 @@ this.outwardListData= response.data.data1
       id:new FormControl('')
 
     })
+    this.filterForm = new FormGroup({
+      materialGroup:  new FormControl(''),
+      materialName:  new FormControl(''),
+      transactionDate:  new FormControl('')
+    });
+
 
     this.showMaterial();
   }
+
+  applyFilter(){
+
+  }
+
+
 
 
   showMaterial() {

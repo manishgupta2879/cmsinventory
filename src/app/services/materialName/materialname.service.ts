@@ -49,7 +49,7 @@ export class MaterialnameService {
   createInward(data:any){
     const httpOptions = getHttpOptions(this.cookieService);
 
-    return this.http.post(`${apiUrl}/API/inwardoutward.php`,data,httpOptions);
+    return this.http.post(`${apiUrl}API/inwardoutward.php`,data,httpOptions);
   }
 
 
