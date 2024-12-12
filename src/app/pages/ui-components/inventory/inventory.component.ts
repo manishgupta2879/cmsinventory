@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './inventory.component.scss'
 })
 export class InventoryComponent implements OnInit {
-  selectedOption: string | null = null; 
+  selectedOption: string | null = 'inward';
 
   constructor() { }
 
