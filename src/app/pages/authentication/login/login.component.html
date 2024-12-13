@@ -55,11 +55,17 @@
                         </div>
 
 
+                      <div class="d-flex gap-2">
                         <button  color="primary" class="btn btn-primary w-100 shadow-sm p-2 mt-2" type="submit">
                           Sign In
                         </button>
+                        <button  color="primary" class="btn btn-primary w-100 shadow-sm p-2 mt-2" (click)="navigate()">
+                          Register
+                        </button>
+                      </div>
                         <div class="f_link text-center">
-                          <a href="#" class="resetTag">Forgot your password?</a>
+                          <a href="/authentication/forgotPassword" class="resetTag">Forgot your password?</a>
+
                       </div>
                       </form>
                   </div>

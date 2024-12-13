@@ -28,6 +28,10 @@ export class AppSideLoginComponent implements OnInit {
     })
   }
 
+  navigate(){
+    this.router.navigate(['/authentication/register']);
+  }
+
   loginUser() {
     const data = this.loginForm.value;
 

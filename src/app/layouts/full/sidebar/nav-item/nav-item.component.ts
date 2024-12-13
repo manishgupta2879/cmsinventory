@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnInit } from '@angular/core';
 import { NavItem } from './nav-item';
 import { Router } from '@angular/router';
 import { NavService } from '../../../../services/nav.service';
@@ -8,17 +8,30 @@ import { NavService } from '../../../../services/nav.service';
   templateUrl: './nav-item.component.html',
   styleUrls: [],
 })
-export class AppNavItemComponent implements OnChanges {
+export class AppNavItemComponent implements OnChanges,OnInit {
   @Input() item: NavItem | any;
   @Input() depth: any;
+  isExpanded: boolean = false;
 
-  constructor(public navService: NavService, public router: Router) {
+
+  ngOnInit(): void {
+
+    console.log("itemis ",this.item)
+
+  }
+
+  constructor(public navService: NavService, public router: Router,
+    private cdr: ChangeDetectorRef
+
+  ) {
     if (this.depth === undefined) {
       this.depth = 0;
     }
   }
 
   ngOnChanges() {
+
+    console.log("NavItem is ",this.item)
     this.navService.currentUrl.subscribe((url: string) => {
       if (this.item.route && url) {
       }
@@ -26,6 +39,7 @@ export class AppNavItemComponent implements OnChanges {
   }
 
   onItemSelected(item: NavItem) {
+    console.log("inenr item is ",item)
     if (!item.children || !item.children.length) {
       this.router.navigate([item.route]);
     }
@@ -35,5 +49,11 @@ export class AppNavItemComponent implements OnChanges {
       top: 0,
       left: 0,
     });
+  }
+
+  toggleExpand(item:any) {
+    this.isExpanded = !this.isExpanded;
+    this.cdr.detectChanges();
+    console.log("Toggling expand is ", this.isExpanded,"and itemis  ",item,item.navCap,"sispad",item.displayName)
   }
 }

@@ -1,21 +1,25 @@
-<div mat-subheader *ngIf="item.navCap" class="nav-caption">
+<div mat-subheader *ngIf="item.navCap" class="nav-caption" (click)="toggleExpand(item)">
   {{ item.navCap }}
 </div>
-<a
+<div *ngIf="isExpanded"
+>
+  <a *ngFor="let itemnew of item.new"
   mat-list-item
-  (click)="onItemSelected(item)"
+  (click)="onItemSelected(itemnew)"
   [ngClass]="{
-    'mat-toolbar mat-primary activeMenu': item.route
-      ? router.isActive(item.route, true)
+    'mat-toolbar mat-primary activeMenu': itemnew.route
+      ? router.isActive(itemnew.route, true)
       : false,
   }"
   class="menu-list-item"
-  *ngIf="!item.navCap"
 >
+
   <i-tabler
-    class="routeIcon"
-    name="{{ item.iconName }}"
+    class="routeIcon text-white"
+    name="{{ itemnew.iconName }}"
     matListItemIcon
   ></i-tabler>
-  <span class="hide-menu">{{ item.displayName }}</span>
+  <span class="hide-menu" class="text-white">{{ itemnew.displayName }} </span>
+
 </a>
+</div>
