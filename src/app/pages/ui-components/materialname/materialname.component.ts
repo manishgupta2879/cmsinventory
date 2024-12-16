@@ -18,7 +18,12 @@ export class MaterialnameComponent implements OnInit {
   materialName!: FormGroup;
   materialGroups: any[] = [];
   materialTableData : any[]=[];
+  totalPages:number=0;
   isUpdating :boolean = false;
+  totalItems:number=0;
+  currentPage:number=1;
+  pageSize:number=10;
+  paginatedData: any[] = [];
 uomList:any[]=[];
   constructor(
     private materialgroup: MaterialgroupService,
@@ -132,6 +137,9 @@ uomList:any[]=[];
         if (response.status === 'success') {
           // this.toastr.success(response.data?.msg || 'Material Group Created');
           this.materialTableData = response.data?.data1 || []; // Assign the material groups to the local array
+          this.totalItems= response.data?.data1.length;
+          this.totalPages=Math.ceil(this.totalItems / this.pageSize)
+          this.paginateData()
           console.log("material data is ", this.materialTableData)
         } else {
           this.toastr.error('Failed to retrieve data');
@@ -143,6 +151,36 @@ uomList:any[]=[];
       }
     );
   }
+
+
+  paginateData() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedData = this.materialTableData.slice(startIndex, endIndex);
+  }
+
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.paginateData();
+    }
+  }
+
+  nextPage() {
+    const totalPages = Math.ceil(this.totalItems / this.pageSize);
+    if (this.currentPage < totalPages) {
+      this.currentPage++;
+      this.paginateData();
+    }
+  }
+
+  // setPageSize(size: number) {
+  //   this.pageSize = size;
+  //   this.currentPage = 1;
+  //   this.paginateData();
+  // }
+
 
   createMaterialName() {
     // Set the type value as 'insert' before submitting the form

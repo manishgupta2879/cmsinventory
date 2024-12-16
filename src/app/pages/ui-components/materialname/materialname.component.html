@@ -15,7 +15,7 @@
                 formControlName="materialgroup"
               >
                 <option value="">Select Material Group</option>
-             
+
                 <option *ngFor="let group of materialGroups" [value]="group.id">
                   {{ group.group_name }}
                 </option>
@@ -109,7 +109,7 @@
             <th>Delete</th>
           </tr>
         </thead>
-        <tbody *ngFor="let item of materialTableData">
+        <tbody *ngFor="let item of paginatedData">
           <tr>
             <td
               (click)="updateMaterialName(item)"
@@ -119,13 +119,27 @@
             </td>
             <td>{{ item.group_name }}</td>
             <td>{{ item.material_name }}</td>
-            <td>{{ item.material_unit }}</td>
+            <td>{{ item.material_unit}}</td>
             <td style="cursor: pointer; color: red; font-weight: 600" (click)="deleteMaterialName(item)">
               Delete
             </td>
           </tr>
         </tbody>
       </table>
+
+
+
+
+
+      <div class="pagination-controls">
+        <button class="btn btn-secondary" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+        <span class="mx-3">Page {{ currentPage }} of {{ totalPages }}</span>
+        <button class="btn btn-secondary" (click)="nextPage()" [disabled]="currentPage >= totalPages">Next</button>
+      </div>
+
+
+
+
       <!-- <div class="text-center py-2"> No Items Found </div> -->
     </div>
   </div>
