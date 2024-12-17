@@ -16,7 +16,9 @@ import { UomService } from 'src/app/services/uom/uom.service';
 })
 export class MaterialnameComponent implements OnInit {
   materialName!: FormGroup;
+  filterForm!: FormGroup;
   materialGroups: any[] = [];
+  filterMaterialGroups:any[]=[]
   materialTableData : any[]=[];
   totalPages:number=0;
   isUpdating :boolean = false;
@@ -47,7 +49,14 @@ uomList:any[]=[];
       type:new FormControl('select'),
       id:new FormControl('')
 
-    })
+    });
+
+
+    this.filterForm = new FormGroup({
+      materialGroup:  new FormControl(''),
+      materialName:  new FormControl(''),
+      transactionDate:  new FormControl('')
+    });
 
     this.showMaterial();
     this.showMaterialName();
@@ -75,6 +84,8 @@ uomList:any[]=[];
         if (response.status === 'success') {
           // this.toastr.success(response.data?.msg || 'Material Group Created');
           this.materialGroups = response.data?.data1 || []; // Assign the material groups to the local array
+          this.filterMaterialGroups = response.data?.data1 || [];
+
           console.log("material groups is ", this.materialGroups)
         } else {
           this.toastr.error('Failed to retrieve data');

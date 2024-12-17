@@ -90,6 +90,96 @@
         </form>
     </div>
     <div class="col-md-6 col-xl-6 col-sm-12 col-12 shadow-sm p-3 mb-5 bg-body rounded">
+
+
+
+      <form [formGroup]="filterForm" >
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-box">
+              <label class="form-check-label mb-2">Material Group</label>
+              <select formControlName="filtermaterialGroup" class="form-select"
+              id="filtermaterialgroup"
+              name="filtermaterialgroup"
+              class="form-select"
+              (change)="getMaterial($event)"
+
+
+
+              >
+                <option value="">Select Material Group</option>
+                <option *ngFor="let group of filterMaterialGroups" [value]="group.id">
+                  {{ group.group_name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+
+
+
+
+          <div class="col-md-3">
+            <div class="form-box">
+              <label class="form-check-label mb-2">Material Name</label>
+              <select formControlName="item_id" class="form-select"
+              id="materialname"
+                name="materialname"
+
+              >
+                <option value="">Select Material</option>
+                <option *ngFor="let material of material" [value]="material.id">
+                  {{ material.material_name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+
+
+
+
+          <!-- <div class="col-xl-6 col-md-6 col-sm-12 col-12">
+            <div class="form-box">
+              <label class="form-check-label mb-2">Material Name</label>
+              <select
+                id="materialname"
+                name="materialname"
+                class="form-select"
+                formControlName="materialname"
+                (change)="getMaterialName($event)"
+
+              >
+                <option value="">Select Material</option>
+
+                <option *ngFor="let group of material" [value]="group.id">
+                  {{ group.material_name+group.id }}
+                </option>
+              </select>
+            </div>
+          </div> -->
+
+          <div class="col-md-3">
+            <div class="form-box">
+              <label class="form-check-label mb-2">Inward Date</label>
+              <input
+                type="date"
+                formControlName="trans_date"
+                class="form-control px-0"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-3 d-flex align-items-center">
+            <button type="submit" class="btn btn-primary" (click)="applyfilter('filterinward')">Apply</button>
+          </div>
+
+        </div>
+
+
+      </form>
+
+
         <div class="tablewrapper">
             <table class="table table-striped table-responsive">
                 <thead>
@@ -105,7 +195,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let item of inwardListData">
+                    <tr *ngFor="let item of paginatedData">
                       <td
                       (click)="updateInward(item)"
                       style="color: blue; font-weight: 600; cursor: pointer"
@@ -121,5 +211,12 @@
 
                 </tbody>
             </table>
+
+            <div class="pagination-controls">
+              <button class="btn btn-secondary" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+              <span class="mx-3">Page {{ currentPage }} of {{ totalPages }}</span>
+              <button class="btn btn-secondary" (click)="nextPage()" [disabled]="currentPage >= totalPages">Next</button>
+            </div>
+
         </div>
     </div>

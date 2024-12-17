@@ -13,7 +13,15 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 })
 export class MaterialgroupComponent implements OnInit {
   materialGroup!: FormGroup;
+  filterForm!: FormGroup;
   materialGroups: any[] = [];
+  totalItems:number=0;
+  pageSize:number=10;
+  totalPage:number=0
+  paginatedData:any[]=[];
+  currentPage=1;
+
+
   isUpdating: boolean = false;
 
   constructor(
@@ -30,7 +38,13 @@ export class MaterialgroupComponent implements OnInit {
       type: new FormControl(''),
       group_name: new FormControl(''),
       group_id: new FormControl(''),
-    })
+    });
+
+    this.filterForm = new FormGroup({
+      materialGroup:  new FormControl(''),
+      materialName:  new FormControl(''),
+      transactionDate:  new FormControl('')
+    });
 
     this.showMaterial();
   }
@@ -137,6 +151,11 @@ export class MaterialgroupComponent implements OnInit {
         if (response.status === 'success') {
           // this.toastr.success(response.data?.msg || 'Material Group Created');
           this.materialGroups = response.data?.data1 || []; // Assign the material groups to the local array
+         this.totalItems= response.data?.data1.length;
+         this.totalPage = Math.ceil(this.totalItems/this.pageSize);
+         this.pagination();
+
+
         } else {
           this.toastr.error('Failed to retrieve data');
         }
@@ -148,6 +167,26 @@ export class MaterialgroupComponent implements OnInit {
     );
   }
 
+  pagination(){
+    const startIndex = (this.currentPage -1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedData= this.materialGroups.slice(startIndex,endIndex);
+  }
+
+
+  previousPage(){
+    if(this.currentPage >1){
+      this.currentPage--;
+      this.pagination()
+    }
+  }
+
+  nextPage(){
+    if(this.currentPage <this.totalPage){
+      this.currentPage++;
+      this.pagination()
+    }
+  }
   deleteMaterial(groupId: string) {
     // Set the type value as 'delete' before submitting the form
     this.materialGroup.patchValue({

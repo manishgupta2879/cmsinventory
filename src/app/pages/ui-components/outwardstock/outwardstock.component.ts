@@ -15,12 +15,21 @@ import { MaterialnameService } from 'src/app/services/materialName/materialname.
 export class OutwardstockComponent implements OnInit {
   materialGroups: any[] = [];
   material:any[]=[];
+  filterMaterialGroups:any[]=[];
   materialName!: FormGroup;
   outwardForm!: FormGroup;
   filterForm!: FormGroup;
   outwardListData:any[]=[];
   isUpdating:boolean=false;
-  stockId:any=''
+  stockId:any='';
+  totalPages:number=0;
+  filterType:any='';
+  itemId:any='';
+  transDate:any=''
+  currentPage:number=1;
+  totalItems:number=0;
+  pageSize:number=10;
+  paginatedData:any[]=[];
 
   constructor(
     private materialgroup: MaterialgroupService,
@@ -109,12 +118,15 @@ export class OutwardstockComponent implements OnInit {
   outwardList() {
 
     const reorderedPayload = {
+      type:this.filterType? this.filterType :"selectoutward",
 
-      type:"selectoutward",
       key: this.cookieService.get('token'),
+        item_id:this.itemId ? this.itemId :'',
+      trans_date:this.transDate ? this.transDate :''
 
 
     };
+
     const httpParams = new HttpParams({ fromObject: reorderedPayload });
 
 
@@ -122,7 +134,10 @@ export class OutwardstockComponent implements OnInit {
       (response: any) => {
         if (response.status === 'success') {
           console.log(response)
-this.outwardListData= response.data.data1
+this.outwardListData= response.data.data1;
+this.totalItems = response.data.data1.length;
+this.totalPages = Math.ceil(this.totalItems/this.pageSize);
+this.pagination()
         } else {
           this.toastr.error('Failed to retrieve data');
         }
@@ -333,19 +348,18 @@ this.outwardListData= response.data.data1
       id:new FormControl('')
 
     })
+
     this.filterForm = new FormGroup({
-      materialGroup:  new FormControl(''),
-      materialName:  new FormControl(''),
-      transactionDate:  new FormControl('')
+      filtermaterialGroup:  new FormControl(''),
+      item_id:  new FormControl(''),
+      trans_date:  new FormControl('')
     });
+
 
 
     this.showMaterial();
   }
 
-  applyFilter(){
-
-  }
 
 
 
@@ -365,6 +379,9 @@ this.outwardListData= response.data.data1
       (response: any) => {
         if (response.status === 'success') {
           this.materialGroups = response.data?.data1 || [];
+          this.filterMaterialGroups = response.data?.data1 || [];
+
+
           console.log("material groups is ", this.materialGroups)
         } else {
           this.toastr.error('Failed to retrieve data');
@@ -375,6 +392,37 @@ this.outwardListData= response.data.data1
         this.toastr.error(error.statusText);
       }
     );
+  }
+
+
+  applyfilter(type:any){
+    this.filterType=type
+  const abc=  this.filterForm.value
+  this.itemId = this.filterForm.get('item_id')?.value;
+  this.transDate = this.filterForm.get('trans_date')?.value;
+  console.log("filter is ", abc)
+  this.outwardList();
+  }
+
+  pagination(){
+    const startIndex = (this.currentPage -1)* this.pageSize;
+    const endIndex = startIndex+this.pageSize;
+    this.paginatedData = this.materialGroups.slice(startIndex,endIndex)
+  }
+
+
+  previousPage(){
+    if(this.currentPage >1){
+       this.currentPage--;
+       this.pagination();
+    }
+  }
+
+  nextPage(){
+    if(this.currentPage < this.totalPages){
+      this.currentPage++;
+      this.pagination();
+    }
   }
 
   resetForm() {

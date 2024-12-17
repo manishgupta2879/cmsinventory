@@ -45,15 +45,15 @@
     </div>
   </div>
 
-  <!-- <ng-template #noDataMessage >
-    <div class="alert alert-warning mt-3" role="alert">
+
+    <div *ngIf="StockForm.get('_date')?.value && stock.length === 0" class="alert alert-warning mt-3" role="alert">
       No data found for the selected date.
     </div>
-  </ng-template>
+
 
   <div *ngIf="!StockForm.get('_date')?.value && stock.length === 0" class="alert alert-info mt-3" role="alert">
     Please select a date to show data.
-  </div> -->
+  </div>
 
 
 </div>

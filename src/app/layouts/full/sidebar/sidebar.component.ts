@@ -1,15 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import { navItems } from './sidebar-data';
-import { NavService } from '../../../services/nav.service';
+// import { Component, OnInit } from '@angular/core';
+// import { navItems } from './sidebar-data';
+// import { NavService } from '../../../services/nav.service';
+
+// @Component({
+//   selector: 'app-sidebar',
+//   templateUrl: './sidebar.component.html',
+// })
+// export class SidebarComponent implements OnInit {
+//   navItems = navItems;
+
+//   constructor(public navService: NavService) {}
+
+//   ngOnInit(): void {}
+// }
+
+
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit {
-  navItems = navItems;
+export class SidebarComponent {
+  constructor() {}
 
-  constructor(public navService: NavService) {}
+  ngOnInit(): void {
+    // Toggle Sidebar
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebarWrapper = document.getElementById('wrapper');
 
-  ngOnInit(): void {}
+    if (menuToggle && sidebarWrapper) {
+      menuToggle.addEventListener('click', () => {
+        sidebarWrapper.classList.toggle('toggled');
+      });
+    }
+  }
 }

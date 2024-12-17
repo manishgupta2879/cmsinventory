@@ -62,7 +62,7 @@ export class StocksComponent implements OnInit{
               this.stock =[];
               console.log("ohter side")
               this.noData= true;
-              console.log("nodata is",this.noData)
+              console.log("nodata is",this.noData,"and stock is ",this.stock)
             }
 
 

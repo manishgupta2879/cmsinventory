@@ -16,12 +16,22 @@ export class InwardstockComponent implements OnInit {
   materialName!: FormGroup;
   inwardForm!: FormGroup;
   materialGroups: any[] = [];
+  filterMaterialGroups :any[]=[];
   material:any[]=[];
   selectedMaterialGroupId:any='';
   selectedMaterialNameId:any='';
   inwardListData:any[]=[];
+  totalPages:number=0;
+  currentPage:number=1;
+  totalItems:number=0;
+  pageSize:number=2;
+  filterForm!: FormGroup;
+  paginatedData:any[]=[];
   isUpdating:boolean=false;
   stockId:any='';
+  filterType:any='';
+  itemId:any='';
+  transDate:any=''
 
 
   constructor(
@@ -48,7 +58,9 @@ export class InwardstockComponent implements OnInit {
     this.materialgroup.userLogin(params.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
-          this.materialGroups = response.data?.data1 || [];
+          this.materialGroups = response.data?.data1 || [] ;
+          this.filterMaterialGroups = response.data?.data1 ;
+
           console.log("material groups is ", this.materialGroups)
         } else {
           this.toastr.error('Failed to retrieve data');
@@ -95,6 +107,8 @@ this.selectedMaterialGroupId = selectedGroupId;
       }
     );
   }
+
+
 
   getMaterialName(event:Event){
     const selectElement = event.target as HTMLSelectElement;
@@ -294,13 +308,15 @@ this.selectedMaterialGroupId = selectedGroupId;
 
 
   inwardList() {
+    console.log("dat is ", this.transDate)
+
 
     const reorderedPayload = {
 
-      type:"selectinward",
+      type:this.filterType? this.filterType :"selectinward",
       key: this.cookieService.get('token'),
-
-
+      item_id:this.itemId ? this.itemId :'',
+      trans_date:this.transDate ? this.transDate :''
     };
     const httpParams = new HttpParams({ fromObject: reorderedPayload });
 
@@ -310,7 +326,10 @@ this.selectedMaterialGroupId = selectedGroupId;
         if (response.status === 'success') {
           console.log(response)
 
-  this.inwardListData=response.data.data1
+  this.inwardListData=response.data.data1 || [];
+  this.totalItems = response.data.data1.length;
+  this.totalPages = Math.ceil(this.totalItems/this.pageSize);
+  this.pagination()
 
         } else {
           this.toastr.error('Failed to retrieve data');
@@ -324,6 +343,26 @@ this.selectedMaterialGroupId = selectedGroupId;
   }
 
 
+  pagination(){
+    const startIndex = (this.currentPage -1)* this.pageSize;
+    const endIndex = startIndex+this.pageSize;
+    this.paginatedData = this.inwardListData.slice(startIndex,endIndex)
+  }
+
+
+  previousPage(){
+    if(this.currentPage >1){
+       this.currentPage--;
+       this.pagination();
+    }
+  }
+
+  nextPage(){
+    if(this.currentPage < this.totalPages){
+      this.currentPage++;
+      this.pagination();
+    }
+  }
 
   ngOnInit(): void {
     this.inwardList()
@@ -347,9 +386,24 @@ this.selectedMaterialGroupId = selectedGroupId;
       type:new FormControl('select'),
       id:new FormControl('')
 
-    })
+    });
+
+    this.filterForm = new FormGroup({
+      filtermaterialGroup:  new FormControl(''),
+      item_id:  new FormControl(''),
+      trans_date:  new FormControl('')
+    });
 
     this.showMaterial();
+  }
+
+  applyfilter(type:any){
+    this.filterType=type
+  const abc=  this.filterForm.value
+  this.itemId = this.filterForm.get('item_id')?.value;
+  this.transDate = this.filterForm.get('trans_date')?.value;
+  console.log("filter is ", abc)
+  this.inwardList();
   }
 
 
