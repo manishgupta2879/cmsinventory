@@ -16,6 +16,7 @@
 
 
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -23,7 +24,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
-  constructor() {}
+  constructor(
+    public route: Router
+  ) {}
 
   ngOnInit(): void {
     // Toggle Sidebar
@@ -35,5 +38,10 @@ export class SidebarComponent {
         sidebarWrapper.classList.toggle('toggled');
       });
     }
+  }
+  navitage(url:any){
+    console.log("navigation url is ",url)
+    this.route.navigate([url]);
+
   }
 }

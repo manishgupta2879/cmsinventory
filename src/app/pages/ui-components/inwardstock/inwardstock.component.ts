@@ -24,14 +24,15 @@ export class InwardstockComponent implements OnInit {
   totalPages:number=0;
   currentPage:number=1;
   totalItems:number=0;
-  pageSize:number=2;
+  pageSize:number=10;
   filterForm!: FormGroup;
   paginatedData:any[]=[];
   isUpdating:boolean=false;
   stockId:any='';
   filterType:any='';
   itemId:any='';
-  transDate:any=''
+  transDate:any='';
+  filterMaterialName:any='';
 
 
   constructor(
@@ -96,6 +97,42 @@ this.selectedMaterialGroupId = selectedGroupId;
       (response: any) => {
         if (response.status === 'success') {
           this.material = response.data?.data1 || [];
+
+          console.log("material  is ", this.material)
+        } else {
+          this.toastr.error('Failed to retrieve data');
+        }
+      },
+      (error: any) => {
+        console.log('Error:', error);
+        this.toastr.error(error.statusText);
+      }
+    );
+  }
+
+  getMaterialFilter(event: Event) {
+
+    const selectElement = event.target as HTMLSelectElement;
+  const selectedGroupId = selectElement.value;
+  console.log("Selected Group ID:", selectedGroupId);
+
+this.selectedMaterialGroupId = selectedGroupId;
+
+    this.materialName.patchValue({
+      type: 'select',
+      key: this.cookieService.get('token'),
+    });
+
+
+    let params = new HttpParams()
+      .set('key', this.materialName.get('key')?.value)
+      .set('type', this.materialName.get('type')?.value)
+      .set('group_id', selectedGroupId);
+    this.materialnameService.getMaterialNameByGroup(params.toString()).subscribe(
+      (response: any) => {
+        if (response.status === 'success') {
+          this.filterMaterialName = response.data?.data1 || [];
+
           console.log("material  is ", this.material)
         } else {
           this.toastr.error('Failed to retrieve data');
@@ -327,7 +364,7 @@ this.selectedMaterialGroupId = selectedGroupId;
           console.log(response)
 
   this.inwardListData=response.data.data1 || [];
-  this.totalItems = response.data.data1.length;
+  this.totalItems = this.inwardListData.length;
   this.totalPages = Math.ceil(this.totalItems/this.pageSize);
   this.pagination()
 
@@ -344,6 +381,7 @@ this.selectedMaterialGroupId = selectedGroupId;
 
 
   pagination(){
+    console.log("paginted updating")
     const startIndex = (this.currentPage -1)* this.pageSize;
     const endIndex = startIndex+this.pageSize;
     this.paginatedData = this.inwardListData.slice(startIndex,endIndex)

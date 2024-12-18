@@ -30,6 +30,7 @@ export class OutwardstockComponent implements OnInit {
   totalItems:number=0;
   pageSize:number=10;
   paginatedData:any[]=[];
+  filterName:any[]=[]
 
   constructor(
     private materialgroup: MaterialgroupService,
@@ -65,6 +66,42 @@ export class OutwardstockComponent implements OnInit {
       (response: any) => {
         if (response.status === 'success') {
           this.material = response.data?.data1 || [];
+          console.log("material  is ", this.material)
+        } else {
+          this.toastr.error('Failed to retrieve data');
+        }
+      },
+      (error: any) => {
+        console.log('Error:', error);
+        this.toastr.error(error.statusText);
+      }
+    );
+  }
+
+  getMaterialFilter(event: Event) {
+
+    const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
+  const selectedGroupId = selectElement.value;
+  console.log("Selected Group ID:", selectedGroupId);
+
+
+
+    this.materialName.patchValue({
+      type: 'select',
+      key: this.cookieService.get('token'),
+    });
+
+
+    let params = new HttpParams()
+      .set('key', this.materialName.get('key')?.value)
+      .set('type', this.materialName.get('type')?.value)
+      // .set('group_name', this.materialName.get('group_name')?.value)
+      // .set('group_id', this.materialName.get('materialgroup')?.value)
+      .set('group_id', selectedGroupId);
+    this.materialnameService.getMaterialNameByGroup(params.toString()).subscribe(
+      (response: any) => {
+        if (response.status === 'success') {
+          this.filterName = response.data?.data1 || [];
           console.log("material  is ", this.material)
         } else {
           this.toastr.error('Failed to retrieve data');

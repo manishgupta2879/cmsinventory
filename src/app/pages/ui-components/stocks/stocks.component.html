@@ -46,7 +46,7 @@
   </div>
 
 
-    <div *ngIf="StockForm.get('_date')?.value && stock.length === 0" class="alert alert-warning mt-3" role="alert">
+    <div *ngIf="noData" class="alert alert-warning mt-3" role="alert">
       No data found for the selected date.
     </div>
 

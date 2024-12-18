@@ -247,9 +247,7 @@
       <a href="">
         <li class="sb-menu">Home<i class="fa fa-home"></i>
         <div class="sb-submenu">
-          <div class="sb-item"><a href="#" class="">A</a></div>
-          <div class="sb-item">
-            <a href="#">B</a>
+          <div class="sb-item">  <a [routerLink]="['/dashboard']">Dashboard</a>
           </div>
         </div>
       </li>
@@ -257,9 +255,15 @@
       <a href="">
         <li class="sb-menu">Masters<i class="fa fa-user-shield fs-5"></i>
           <div class="sb-submenu">
-            <div class="sb-item"><a href="#" class="">A</a></div>
+            <div class="sb-item"><a [routerLink]="['/ui-components/materialGroup']">Material Group</a></div>
             <div class="sb-item">
-              <a href="#">B</a>
+              <a [routerLink]="['/ui-components/materialName']" >Material Name</a>
+            </div>
+            <div class="sb-item">
+              <a [routerLink]="['/ui-components/inventory']" >Inventory</a>
+            </div>
+            <div class="sb-item">
+              <a [routerLink]="['/ui-components/stocks']" >Stocks</a>
             </div>
           </div>
         </li>

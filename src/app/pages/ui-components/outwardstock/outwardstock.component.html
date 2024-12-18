@@ -112,7 +112,7 @@
               id="filtermaterialgroup"
               name="filtermaterialgroup"
               class="form-select"
-              (change)="getMaterial($event)"
+              (change)="getMaterialFilter($event)"
 
 
 
@@ -138,7 +138,7 @@
 
               >
                 <option value="">Select Material</option>
-                <option *ngFor="let material of material" [value]="material.id">
+                <option *ngFor="let material of filterName" [value]="material.id">
                   {{ material.material_name }}
                 </option>
               </select>
