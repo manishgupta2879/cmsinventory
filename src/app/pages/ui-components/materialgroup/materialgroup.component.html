@@ -1,8 +1,8 @@
-<div class="d-flex flex-column flex-md-row container-fluid">
-    <div class="col-md-5 col-xl-4 col-sm-12 col-12 pe-md-4 shadow-sm p-3 mb-5 bg-body rounded">
-        <form [formGroup]="materialGroup" (ngSubmit)="materialSave()">
+<div class="d-flex flex-column flex-md-row container-fluid gap-2">
+    <div class="col-md-3 col-xl-3 col-sm-12 col-12 bg-body card pe-0">
+        <form [formGroup]="materialGroup" (ngSubmit)="materialSave()" class="p-3">
             <div class="align-items-center">
-                <div class="col-xl-6 col-md-6 col-sm-12 col-12 px-0">
+                <div class="col-md-12 col-sm-12 col-12 px-0">
                     <div class="form-box">
                         <label class="form-check-label mb-2">Material Group</label>
                         <input type="text" id="group_name" name="group_name" class="form-control px-0"
@@ -26,7 +26,7 @@
             </div>
         </form>
     </div>
-    <div class="col-md-7 col-xl-8 col-sm-12 col-12 shadow-sm p-3 mb-5 bg-body rounded">
+    <div class="col-md-9 col-xl-9 col-sm-12 col-12 bg-body card ps-0">
 
 <!--
       <form [formGroup]="filterForm" >
@@ -55,7 +55,7 @@
       </form> -->
 
 
-        <div class="tablewrapper">
+        <div class="tablewrapper p-3">
             <table class="table  table-responsive">
                 <thead>
                     <tr>

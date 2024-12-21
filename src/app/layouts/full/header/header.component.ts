@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @Component({
@@ -24,11 +25,17 @@ export class HeaderComponent {
   showFiller = false;
 
   constructor(public dialog: MatDialog,
-    private route: Router
+    private route: Router,
+        private cookieService: CookieService
   ) { }
 
   logout() {
-    localStorage.removeItem('userToken'); // Remove the token from localStorage
+    // localStorage.removeItem('userToken');
+
+    this.cookieService.delete('userId');
+    this.cookieService.delete('userName');
+    this.cookieService.delete('userType');
+    this.cookieService.delete('token');
     this.route.navigate(['/authentication/login']); // Navigate to the login page
   }
 }

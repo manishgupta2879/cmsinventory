@@ -44,10 +44,10 @@ export class AppSideLoginComponent implements OnInit {
           this.toastr.success(res.msg || 'Logged In Successfully');
 
           // Save user data to cookies
-          this.cookieService.set('userId', res.user.id);
-          this.cookieService.set('userName', res.user.name);
-          this.cookieService.set('userType', res.user.user_type);
-          this.cookieService.set('token', res.user.api_token);
+          this.cookieService.set('userId', res.user.id,30);
+          this.cookieService.set('userName', res.user.name,30);
+          this.cookieService.set('userType', res.user.user_type,30);
+          this.cookieService.set('token', res.user.api_token,30);
 
           // Store the login token in local storage
           localStorage.setItem('userToken', 'LoggedIn');

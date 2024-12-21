@@ -449,7 +449,7 @@ export class AppDashboardComponent implements OnInit {
         this.currentStock = response.data?.data1 || []; // Assign the material groups to the local array
         console.log("currentStock data is ", this.currentStock)
       } else {
-        this.toastr.error('Failed to retrieve data');
+        this.toastr.error('Failed to retrieve data1');
       }
     },
     (error: any) => {
