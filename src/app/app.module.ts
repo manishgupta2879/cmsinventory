@@ -31,6 +31,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { InwardstockComponent } from './pages/ui-components/inwardstock/inwardstock.component';
 import { OutwardstockComponent } from './pages/ui-components/outwardstock/outwardstock.component';
+import { InitialStockComponent } from './pages/ui-components/initial-stock/initial-stock.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { OutwardstockComponent } from './pages/ui-components/outwardstock/outwar
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+    InitialStockComponent,
     MaterialModule,
     ToastrModule.forRoot({
       timeOut: 3000,

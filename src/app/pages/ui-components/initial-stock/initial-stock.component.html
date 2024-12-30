@@ -1,0 +1,24 @@
+<!-- initial-stock.component.html -->
+<div class="container">
+  <h1 class="my-4 text-center">Initial Stock</h1>
+
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form (ngSubmit)="onSubmit()" #uploadForm="ngForm">
+        <div class="form-group">
+          <label for="fileUpload" class="form-label">Upload Initial Stock File</label>
+          <input
+            type="file"
+            id="fileUpload"
+            class="form-control"
+            (change)="onFileChange($event)"
+            accept=".csv"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3" [disabled]="!selectedFile">Upload</button>
+      </form>
+    </div>
+  </div>
+</div>
