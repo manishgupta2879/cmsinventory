@@ -39,6 +39,9 @@ export class MaterialnameService {
     return this.http.post(`${apiUrl}/API/mitem.php`,data,httpOptions);
   }
 
+  materialNamecsv(data:any){
+    return this.http.post(`${apiUrl}/API/bulk_item_upload.php`,data);
+  }
 
   getMaterialNameByGroup(data: any) {
     const httpOptions = getHttpOptions(this.cookieService);

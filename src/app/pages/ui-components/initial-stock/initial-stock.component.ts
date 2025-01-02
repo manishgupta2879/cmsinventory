@@ -1,7 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CookieService } from 'ngx-cookie-service';
+import { ToastrService } from 'ngx-toastr';
 import * as Papa from 'papaparse';
+import { HttpParams } from '@angular/common/http';
+import { StockService } from 'src/app/services/stock/stock.service';
+
 
 
 @Component({
@@ -11,10 +16,26 @@ import * as Papa from 'papaparse';
   templateUrl: './initial-stock.component.html',
   styleUrl: './initial-stock.component.scss'
 })
-export class InitialStockComponent {
+export class InitialStockComponent implements OnInit{
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+
 
   selectedFile: File | null = null;
   parsedData: any[] = [];
+key:any;
+
+    constructor(
+      private cookieService: CookieService,
+      private toastr: ToastrService,
+      private stockService:StockService
+
+    ) { }
+
+    ngOnInit(): void {
+      this.key = this.cookieService.get('token')
+
+    }
+
 
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -35,27 +56,55 @@ export class InitialStockComponent {
       Papa.parse(csvData, {
         complete: (result) => {
           this.parsedData = result.data;
-          console.log('Parsed Data:', this.parsedData);
         },
-        header: true, // Assuming CSV has headers
+        header: true,
       });
     };
     reader.readAsText(file);
   }
 
-    // Handle the form submission and prepare data for API
+
+
+
     onSubmit(): void {
-      if (this.selectedFile && this.parsedData.length > 0) {
-        const payload = {
-          fileName: this.selectedFile.name,
-          data: this.parsedData,
-        };
-        console.log('Submitting payload:', payload);
-        // You can make the API call here using a service to send the payload.
-        // Example: this.myService.uploadStockData(payload);
-      } else {
-        console.error('No file selected or CSV data is empty');
+      if (!this.selectedFile) {
+        this.toastr.error('Please select a file to upload');
+        return;
       }
+
+      const formData = new FormData();
+      formData.append('key',this.key); // Add the key
+      formData.append('file', this.selectedFile as File); // Attach the actual file
+
+      console.log('Submitting form data:', formData);
+
+
+
+
+      console.log('Submitting form data:', formData);
+
+
+      this.stockService.initialStock(formData).subscribe(
+        (response: any) => {
+          if (response.status === 'success') {
+            this.toastr.success('File uploaded successfully');
+            this.resetForm();
+
+          } else {
+            this.toastr.error('Failed to upload file');
+          }
+        },
+        (error: any) => {
+          console.error('Error:', error);
+          this.toastr.error(error.statusText || 'Error uploading file');
+        }
+      );
+    }
+
+
+    resetForm(): void {
+      this.selectedFile = null;
+      this.fileInput.nativeElement.value = ''; // Reset the file input
     }
 
 

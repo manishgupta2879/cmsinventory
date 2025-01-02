@@ -1,8 +1,38 @@
-<div class="d-flex flex-column flex-md-row container-fluid gap-2">
+<div class="d-flex flex-column flex-md-row container-fluid gap-2 p-0">
+  <div class="col-2 d-flex flex-column pe-0">
+  <div class="d-flex justify-content-center align-items-center">
+    <div class="form-check me-3">
+      <input
+        type="radio"
+        id="form1Radio"
+        name="formToggle"
+        class="form-check-input"
+        [(ngModel)]="formType"
+        value="form1"
+      />
+      <label class="form-check-label" for="form1Radio">Form</label>
+    </div>
+    <div class="form-check">
+      <input
+        type="radio"
+        id="form2Radio"
+        name="formToggle"
+        class="form-check-input"
+        [(ngModel)]="formType"
+        value="form2"
+      />
+      <label class="form-check-label" for="form2Radio">Upload</label>
+    </div>
+  </div>
+  <div class="col-12 p-0">
+
+
+
+
   <div
-    class="col-md-2 col-xl-2 col-sm-12 col-12 bg-body card pe-0"
+    class="col-md-12 col-xl-12 col-sm-12 col-12 bg-body card pe-0 mt-2 mt-md-4"  *ngIf="formType === 'form1'"
   >
-    <form [formGroup]="materialName" (ngSubmit)="createMaterialName()" class="p-3">
+    <form [formGroup]="materialName" (ngSubmit)="createMaterialName()" class="py-3 px-2"   >
       <div class="align-items-center">
         <div class="row gy-3">
           <div class="col-xl-12 col-md-12 col-sm-12 col-12">
@@ -91,12 +121,40 @@
 
       </div>
     </form>
+
+
   </div>
+
+  <div
+  class="col-md-12 col-xl-12 col-sm-12 col-12 bg-body card pe-0 mt-2 mt-md-4"   *ngIf="formType === 'form2'"
+>
+<form  #uploadForm="ngForm" (ngSubmit)="uploadSubmit()" class="py-3 px-2"
+>
+  <div class="form-group">
+    <label for="fileUpload" class="form-label fw-bold">Upload CSV File</label>
+    <input
+      type="file"
+      id="fileUpload"
+      class="form-control"
+      #fileInput
+      (change)="onFileChange($event)"
+      accept=".csv"
+      required
+    />
+  </div>
+
+  <button type="submit"  class="btn btn-primary mt-3" >Upload</button>
+</form>
+
+
+</div>
+</div>
+</div>
 
 
 
   <div
-    class="col-md-10 col-xl-10 col-sm-12 col-12  bg-body card ps-0"
+    class="col-md-10 col-xl-10 col-sm-12 col-12  bg-body card ps-0 mt-5"
   >
 
 

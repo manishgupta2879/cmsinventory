@@ -62,7 +62,6 @@ export class InwardstockComponent implements OnInit {
           this.materialGroups = response.data?.data1 || [] ;
           this.filterMaterialGroups = response.data?.data1 ;
 
-          console.log("material groups is ", this.materialGroups)
         } else {
           this.toastr.error('Failed to retrieve data');
         }
@@ -79,7 +78,6 @@ export class InwardstockComponent implements OnInit {
 
     const selectElement = event.target as HTMLSelectElement;
   const selectedGroupId = selectElement.value;
-  console.log("Selected Group ID:", selectedGroupId);
 
 this.selectedMaterialGroupId = selectedGroupId;
 
@@ -98,7 +96,6 @@ this.selectedMaterialGroupId = selectedGroupId;
         if (response.status === 'success') {
           this.material = response.data?.data1 || [];
 
-          console.log("material  is ", this.material)
         } else {
           this.toastr.error('Failed to retrieve data');
         }
@@ -114,7 +111,6 @@ this.selectedMaterialGroupId = selectedGroupId;
 
     const selectElement = event.target as HTMLSelectElement;
   const selectedGroupId = selectElement.value;
-  console.log("Selected Group ID:", selectedGroupId);
 
 this.selectedMaterialGroupId = selectedGroupId;
 
@@ -133,7 +129,6 @@ this.selectedMaterialGroupId = selectedGroupId;
         if (response.status === 'success') {
           this.filterMaterialName = response.data?.data1 || [];
 
-          console.log("material  is ", this.material)
         } else {
           this.toastr.error('Failed to retrieve data');
         }
@@ -150,7 +145,6 @@ this.selectedMaterialGroupId = selectedGroupId;
   getMaterialName(event:Event){
     const selectElement = event.target as HTMLSelectElement;
     const selectedMaterialId = selectElement.value;
-    console.log("selectedMaterial ID:", selectedMaterialId);
 
   this.selectedMaterialNameId = selectedMaterialId;
   }
@@ -160,7 +154,6 @@ this.selectedMaterialGroupId = selectedGroupId;
   deleteInward(item:any){
 
       const reorderedPayload = {
-
         type:"delete",
         stockid:item.id,
         key: this.cookieService.get('token'),
@@ -174,7 +167,6 @@ this.selectedMaterialGroupId = selectedGroupId;
       this.materialnameService.createInward(httpParams.toString()).subscribe(
         (response: any) => {
           if (response.status === 'success') {
-            console.log(response)
 
             this.toastr.success('Inward deleted successfully');
             this.inwardList();
@@ -281,7 +273,6 @@ this.selectedMaterialGroupId = selectedGroupId;
 
 
     };
-    console.log("full value is ",this.inwardForm.value)
 
     const httpParams = new HttpParams({ fromObject: reorderedPayload });
 
@@ -308,7 +299,6 @@ this.selectedMaterialGroupId = selectedGroupId;
 
 
   inwardSubmit() {
-    console.log("Inward Form Values:", this.inwardForm.value);
 
     const reorderedPayload = {
       invoice_no: this.inwardForm.value.invoice,

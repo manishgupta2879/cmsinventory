@@ -40,7 +40,6 @@ export class SidebarComponent {
     }
   }
   navitage(url:any){
-    console.log("navigation url is ",url)
     this.route.navigate([url]);
 
   }

@@ -66,7 +66,6 @@ export class OutwardstockComponent implements OnInit {
       (response: any) => {
         if (response.status === 'success') {
           this.material = response.data?.data1 || [];
-          console.log("material  is ", this.material)
         } else {
           this.toastr.error('Failed to retrieve data');
         }
@@ -82,7 +81,6 @@ export class OutwardstockComponent implements OnInit {
 
     const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
   const selectedGroupId = selectElement.value;
-  console.log("Selected Group ID:", selectedGroupId);
 
 
 
@@ -95,14 +93,11 @@ export class OutwardstockComponent implements OnInit {
     let params = new HttpParams()
       .set('key', this.materialName.get('key')?.value)
       .set('type', this.materialName.get('type')?.value)
-      // .set('group_name', this.materialName.get('group_name')?.value)
-      // .set('group_id', this.materialName.get('materialgroup')?.value)
       .set('group_id', selectedGroupId);
     this.materialnameService.getMaterialNameByGroup(params.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
           this.filterName = response.data?.data1 || [];
-          console.log("material  is ", this.material)
         } else {
           this.toastr.error('Failed to retrieve data');
         }
@@ -116,7 +111,6 @@ export class OutwardstockComponent implements OnInit {
 
 
   outwardSubmit() {
-    console.log("Inward Form Values:", this.outwardForm.value);
 
     const reorderedPayload = {
       invoice_no: this.outwardForm.value.invoice,
@@ -125,7 +119,6 @@ export class OutwardstockComponent implements OnInit {
       group_id: this.outwardForm.value.materialgroup,
       item_id: this.outwardForm.value.materialname,
       qty: this.outwardForm.value.quantity,
-      // trans_date: this.outwardForm.value.transdate,
       trans_date: '2024-11-28',
       type:"outward",
       key: this.cookieService.get('token'),
@@ -170,7 +163,6 @@ export class OutwardstockComponent implements OnInit {
     this.materialnameService.createInward(httpParams.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
-          console.log(response)
 this.outwardListData= response.data.data1;
 this.totalItems = response.data.data1.length;
 this.totalPages = Math.ceil(this.totalItems/this.pageSize);
@@ -188,14 +180,7 @@ this.pagination()
 
   onUpdate() {
 
-    // const reorderedPayload = {
 
-    //   type:"inwardupdate",
-    //   stockid:'23',
-    //   key: this.cookieService.get('token'),
-
-
-    // };
 
     const reorderedPayload = {
       invoice_no:'',
@@ -211,7 +196,6 @@ this.pagination()
 
 
     };
-    console.log("full value is ",this.outwardForm.value)
 
     const httpParams = new HttpParams({ fromObject: reorderedPayload });
 
@@ -219,7 +203,6 @@ this.pagination()
     this.materialnameService.createInward(httpParams.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
-          console.log(response)
 
           this.toastr.success('outward updated successfully');
           this.outwardList();
@@ -237,24 +220,7 @@ this.pagination()
     );
   }
 
-  // updateOutward(item: any) {
-  //   console.log("item is ",item)
-  //   this.getMaterial(item.group_id)
-  //   this.outwardForm.patchValue({
-  //     materialgroup: item.group_id,
-  //     invoice: item.invoice_no,
-  //     quantity: item.qty,
-  //     invoicedate: item.invoice_date,
-  //     transdate: item.transition_date,
-  //     materialname: item.item_id,
-  //     nooforders:item.outward_orders
 
-  //   });
-  //   console.log("updated materialNamae",this.outwardForm)
-
-  //   // Set isUpdating to true to hide the submit button
-  //   this.isUpdating = true;
-  // }
 
 
   deleteOutward(item:any){
@@ -274,7 +240,6 @@ this.pagination()
     this.materialnameService.createInward(httpParams.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
-          console.log(response)
 
           this.toastr.success('Outward deleted successfully');
           this.outwardList();
@@ -296,7 +261,6 @@ this.pagination()
 
   updateOutward(item: any) {
     this.getMaterialNameBasedOnGroup(item.group_id,item);
-    console.log("item is ",item)
     this.stockId = item.id;
 
 
@@ -304,7 +268,6 @@ this.pagination()
 
   getMaterialNameBasedOnGroup(groupId: string,item:any) {
 
-    // Trigger the material fetch based on the group ID
     this.materialName.patchValue({
       type: 'select',
       key: this.cookieService.get('token'),
@@ -342,10 +305,8 @@ this.pagination()
                 materialname: item.item_id,
                 nooforders: item.outward_orders
             });
-            console.log("updated materialName", this.outwardForm);
         }, 0);
 
-          console.log("updated materialNamae",this.outwardForm)
 
           this.isUpdating = true;
 
@@ -419,7 +380,6 @@ this.pagination()
           this.filterMaterialGroups = response.data?.data1 || [];
 
 
-          console.log("material groups is ", this.materialGroups)
         } else {
           this.toastr.error('Failed to retrieve data');
         }
@@ -437,7 +397,6 @@ this.pagination()
   const abc=  this.filterForm.value
   this.itemId = this.filterForm.get('item_id')?.value;
   this.transDate = this.filterForm.get('trans_date')?.value;
-  console.log("filter is ", abc)
   this.outwardList();
   }
 

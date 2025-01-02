@@ -3,14 +3,17 @@
   <h1 class="my-4 text-center">Initial Stock</h1>
 
   <div class="row justify-content-center">
-    <div class="col-md-6">
+    <!-- <div class="col-md-6"> -->
+      <div class="col-md-6 col-xl-6 col-sm-12 col-12 bg-body card  p-3">
+
       <form (ngSubmit)="onSubmit()" #uploadForm="ngForm">
-        <div class="form-group">
-          <label for="fileUpload" class="form-label">Upload Initial Stock File</label>
+        <div class="form-group text-center">
+          <label for="fileUpload" class="form-label fs-4 fw-bold">Upload CSV File</label>
           <input
             type="file"
             id="fileUpload"
             class="form-control"
+            #fileInput
             (change)="onFileChange($event)"
             accept=".csv"
             required

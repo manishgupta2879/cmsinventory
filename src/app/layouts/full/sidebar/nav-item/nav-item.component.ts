@@ -16,7 +16,6 @@ export class AppNavItemComponent implements OnChanges,OnInit {
 
   ngOnInit(): void {
 
-    console.log("itemis ",this.item)
 
   }
 
@@ -31,7 +30,6 @@ export class AppNavItemComponent implements OnChanges,OnInit {
 
   ngOnChanges() {
 
-    console.log("NavItem is ",this.item)
     this.navService.currentUrl.subscribe((url: string) => {
       if (this.item.route && url) {
       }
@@ -39,7 +37,6 @@ export class AppNavItemComponent implements OnChanges,OnInit {
   }
 
   onItemSelected(item: NavItem) {
-    console.log("inenr item is ",item)
     if (!item.children || !item.children.length) {
       this.router.navigate([item.route]);
     }
@@ -54,6 +51,5 @@ export class AppNavItemComponent implements OnChanges,OnInit {
   toggleExpand(item:any) {
     this.isExpanded = !this.isExpanded;
     this.cdr.detectChanges();
-    console.log("Toggling expand is ", this.isExpanded,"and itemis  ",item,item.navCap,"sispad",item.displayName)
   }
 }

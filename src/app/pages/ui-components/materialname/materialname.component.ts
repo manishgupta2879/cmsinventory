@@ -6,6 +6,8 @@ import { MaterialgroupService } from 'src/app/services/materialGroup/materialgro
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { MaterialnameService } from 'src/app/services/materialName/materialname.service';
 import { UomService } from 'src/app/services/uom/uom.service';
+import * as Papa from 'papaparse';
+
 
 
 @Component({
@@ -15,6 +17,9 @@ import { UomService } from 'src/app/services/uom/uom.service';
   styleUrl: './materialname.component.scss'
 })
 export class MaterialnameComponent implements OnInit {
+  selectedFile: File | null = null;
+  parsedData: any[] = [];
+  formType:any='form1';
   materialName!: FormGroup;
   filterForm!: FormGroup;
   materialGroups: any[] = [];
@@ -26,6 +31,7 @@ export class MaterialnameComponent implements OnInit {
   currentPage:number=1;
   pageSize:number=10;
   paginatedData: any[] = [];
+  key:any;
 uomList:any[]=[];
   constructor(
     private materialgroup: MaterialgroupService,
@@ -36,10 +42,13 @@ uomList:any[]=[];
 
 
 
+
   ) { }
 
   ngOnInit(): void {
+
     const token = this.cookieService.get('token');
+    this.key = token;
     this.materialName = new FormGroup({
       key: new FormControl(token),
       materialgroup: new FormControl(''),
@@ -62,6 +71,34 @@ uomList:any[]=[];
     this.showMaterialName();
     this.showMaterialUom();
   }
+
+
+    onFileChange(event: Event): void {
+      const input = event.target as HTMLInputElement;
+      if (input && input.files) {
+        const file = input.files[0];
+        if (file) {
+          this.selectedFile = file;
+          this.parseCSV(file);
+        }
+      }
+    }
+
+
+    parseCSV(file: File): void {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const csvData = reader.result as string;
+        Papa.parse(csvData, {
+          complete: (result) => {
+            this.parsedData = result.data;
+            console.log('Parsed Data:', this.parsedData);
+          },
+          header: true, // Assuming CSV has headers
+        });
+      };
+      reader.readAsText(file);
+    }
 
 
   showMaterial() {
@@ -307,7 +344,36 @@ uomList:any[]=[];
   }
 
 
+  uploadSubmit(): void {
+    console.log("abcde")
+    if (!this.selectedFile) {
+      this.toastr.error('Please select a file to upload');
+      return;
+    }
 
+    const formData = new FormData();
+    formData.append('key',this.key); // Add the key
+    formData.append('file', this.selectedFile as File); // Attach the actual file
+
+    console.log('Submitting form data:', formData);
+    console.log('Submitting form data:', formData);
+
+    this.materialnameService.materialNamecsv(formData).subscribe(
+      (response: any) => {
+        if (response.status === 'success') {
+          this.toastr.success('File uploaded successfully');
+          this.resetForm();
+
+        } else {
+          this.toastr.error('Failed to upload file');
+        }
+      },
+      (error: any) => {
+        console.error('Error:', error);
+        this.toastr.error(error.statusText || 'Error uploading file');
+      }
+    );
+  }
 
   updateMaterialName(item: any) {
     console.log("item is ",item)

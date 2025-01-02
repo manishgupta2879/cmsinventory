@@ -53,16 +53,13 @@ export class StocksComponent implements OnInit{
       this.stockService.getStock(params.toString()).subscribe(
         (response: any) => {
           if (response.status === 'success') {
-            // if(response.data?.data1 !==null){
               this.stock = response.data?.data1 || [];
               console.log("stock items is ", this.stock);
               if(this.stock && this.stock.length <=0){
                 this.noData= true;
-                console.log("nodata is",this.noData,"and stock is ",this.stock)
               }else{
                 this.noData = false;
               }
-            // }
 
           } else {
             this.toastr.error('Failed to retrieve data');

@@ -21,4 +21,11 @@ export class StockService {
     return this.http.post(`${apiUrl}/API/stock.php`,data,httpOptions);
   }
 
+  initialStock(data:any){
+    const httpOptions = getHttpOptions(this.cookieService);
+
+    return this.http.post(`${apiUrl}API/upload_initial_item_price.php`,data);
+  }
+
+
 }
