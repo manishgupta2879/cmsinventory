@@ -4,7 +4,7 @@
  box-sizing: border-box;
 }
 .login_page{
-  background-image: url(/assets/images/img/login_img.webp);
+  /* background-image: url('../../../../assets/images/img/login_img.webp'); */
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

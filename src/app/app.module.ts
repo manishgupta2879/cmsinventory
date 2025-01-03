@@ -32,6 +32,7 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { InwardstockComponent } from './pages/ui-components/inwardstock/inwardstock.component';
 import { OutwardstockComponent } from './pages/ui-components/outwardstock/outwardstock.component';
 import { InitialStockComponent } from './pages/ui-components/initial-stock/initial-stock.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { InitialStockComponent } from './pages/ui-components/initial-stock/initi
     }),
     TablerIconsModule.pick(TablerIcons),
   ],
+  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
   exports: [TablerIconsModule],
   bootstrap: [AppComponent],
 })
