@@ -171,7 +171,7 @@
 
           <div class="col-md-3">
             <div class="form-box">
-              <label class="form-check-label mb-2">Inward Date</label>
+              <label class="form-check-label mb-2">Outward Date</label>
               <input
                 type="date"
                 formControlName="trans_date"
@@ -201,6 +201,7 @@
             <th>Quantity</th>
             <th>Transaction Date</th>
             <th>No. of order processed</th>
+            <th>Outward Date</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -217,6 +218,7 @@
             <td>{{ item.qty * -1 }}</td>
             <td>{{ item.transition_date }}</td>
             <td>{{ item.outward_orders }}</td>
+            <td>{{ item.outward_date }}</td>
 
             <td style="cursor: pointer" (click)="deleteOutward(item)">
               <i class="fa-solid fa-trash"></i>

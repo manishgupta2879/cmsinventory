@@ -18,7 +18,7 @@ export class AppSideLoginComponent implements OnInit {
   constructor(private router: Router,
     private loginservice: LoginService,
     private cookieService: CookieService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
   ) { }
 
   ngOnInit(): void {
@@ -54,7 +54,15 @@ export class AppSideLoginComponent implements OnInit {
 
           // Navigate to the dashboard
           this.router.navigate(['/dashboard']);
-        } else {
+        }
+        else if(response.message[0].status == 101){
+                this.cookieService.delete('userId');
+            this.cookieService.delete('userName');
+            this.cookieService.delete('userType');
+            this.cookieService.delete('token');
+            this.router.navigate(['/authentication/login']);
+
+              }else {
           // Handle cases where status is not 200
           this.toastr.error('Invalid Credentials');
         }

@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { MaterialgroupService } from 'src/app/services/materialGroup/materialgroup.service';
@@ -37,6 +38,7 @@ export class OutwardstockComponent implements OnInit {
     private toastr: ToastrService,
     private cookieService: CookieService,
     private materialnameService: MaterialnameService,
+    private router: Router
 
 
   ) { }
@@ -66,7 +68,14 @@ export class OutwardstockComponent implements OnInit {
       (response: any) => {
         if (response.status === 'success') {
           this.material = response.data?.data1 || [];
-        } else {
+        }  else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -98,7 +107,14 @@ export class OutwardstockComponent implements OnInit {
       (response: any) => {
         if (response.status === 'success') {
           this.filterName = response.data?.data1 || [];
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -133,7 +149,14 @@ export class OutwardstockComponent implements OnInit {
           this.toastr.success('Invard added successfully');
           this.resetForm();
           this.outwardList();
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -167,7 +190,14 @@ this.outwardListData= response.data.data1;
 this.totalItems = response.data.data1.length;
 this.totalPages = Math.ceil(this.totalItems/this.pageSize);
 this.pagination()
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -187,7 +217,7 @@ this.pagination()
       invoice_date:'',
       group_id: this.outwardForm.value.materialgroup,
       item_id: this.outwardForm.value.materialname,
-      qty: this.outwardForm.value.quantity,
+       qty: Math.abs(this.outwardForm.value.quantity),
       trans_date: this.outwardForm.value.transdate,
       type:"outwardupdate",
       key: this.cookieService.get('token'),
@@ -209,7 +239,14 @@ this.pagination()
           this.resetForm();
 
 
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -244,7 +281,14 @@ this.pagination()
           this.toastr.success('Outward deleted successfully');
           this.outwardList();
 
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -380,7 +424,14 @@ this.pagination()
           this.filterMaterialGroups = response.data?.data1 || [];
 
 
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -397,6 +448,7 @@ this.pagination()
   const abc=  this.filterForm.value
   this.itemId = this.filterForm.get('item_id')?.value;
   this.transDate = this.filterForm.get('trans_date')?.value;
+  this.currentPage=1;
   this.outwardList();
   }
 

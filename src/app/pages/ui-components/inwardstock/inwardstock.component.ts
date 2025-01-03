@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { MaterialgroupService } from 'src/app/services/materialGroup/materialgroup.service';
@@ -40,6 +41,7 @@ export class InwardstockComponent implements OnInit {
     private cookieService: CookieService,
     private toastr: ToastrService,
     private materialnameService: MaterialnameService,
+    private router: Router
 
   ) { }
 
@@ -62,7 +64,15 @@ export class InwardstockComponent implements OnInit {
           this.materialGroups = response.data?.data1 || [] ;
           this.filterMaterialGroups = response.data?.data1 ;
 
-        } else {
+        }
+        else if(response.message[0].status == 101){
+                this.cookieService.delete('userId');
+            this.cookieService.delete('userName');
+            this.cookieService.delete('userType');
+            this.cookieService.delete('token');
+            this.router.navigate(['/authentication/login']);
+
+              }else{
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -96,7 +106,14 @@ this.selectedMaterialGroupId = selectedGroupId;
         if (response.status === 'success') {
           this.material = response.data?.data1 || [];
 
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else{
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -129,7 +146,14 @@ this.selectedMaterialGroupId = selectedGroupId;
         if (response.status === 'success') {
           this.filterMaterialName = response.data?.data1 || [];
 
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -152,6 +176,10 @@ this.selectedMaterialGroupId = selectedGroupId;
 
 
   deleteInward(item:any){
+    if(item.initial_state =='1'){
+      this.toastr.error('Initial Stock cannot be deleted');
+      return;
+    }
 
       const reorderedPayload = {
         type:"delete",
@@ -171,7 +199,14 @@ this.selectedMaterialGroupId = selectedGroupId;
             this.toastr.success('Inward deleted successfully');
             this.inwardList();
 
-          } else {
+          } else if(response.message[0].status == 101){
+            this.cookieService.delete('userId');
+        this.cookieService.delete('userName');
+        this.cookieService.delete('userType');
+        this.cookieService.delete('token');
+        this.router.navigate(['/authentication/login']);
+
+          }else {
             this.toastr.error('Failed to retrieve data');
           }
         },
@@ -188,6 +223,10 @@ this.selectedMaterialGroupId = selectedGroupId;
 
 
   updateInward(item: any) {
+    if(item.initial_state =='1'){
+      this.toastr.error('Initial Stock cannot be updated');
+      return;
+    }
     this.getMaterialNameBasedOnGroup(item.group_id,item);
     console.log("item is ",item)
     this.stockId = item.id;
@@ -260,8 +299,8 @@ this.selectedMaterialGroupId = selectedGroupId;
 
 
     const reorderedPayload = {
-      invoice_no: this.inwardForm.value.invoice,
-      invoice_date: this.inwardForm.value.invoicedate,
+      invoice_no: this.inwardForm.value.invoice?this.inwardForm.value.invoice:'',
+      invoice_date: this.inwardForm.value.invoicedate?this.inwardForm.value.invoicedate:'',
       group_id: this.inwardForm.value.materialgroup,
       item_id: this.inwardForm.value.materialname,
       qty: this.inwardForm.value.quantity,
@@ -286,7 +325,14 @@ this.selectedMaterialGroupId = selectedGroupId;
           this.inwardList();
           this.resetForm();
 
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -322,7 +368,14 @@ this.selectedMaterialGroupId = selectedGroupId;
           this.resetForm();
           this.inwardList();
 
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -358,7 +411,14 @@ this.selectedMaterialGroupId = selectedGroupId;
   this.totalPages = Math.ceil(this.totalItems/this.pageSize);
   this.pagination()
 
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -431,6 +491,7 @@ this.selectedMaterialGroupId = selectedGroupId;
   this.itemId = this.filterForm.get('item_id')?.value;
   this.transDate = this.filterForm.get('trans_date')?.value;
   console.log("filter is ", abc)
+  this.currentPage=1;
   this.inwardList();
   }
 

@@ -7,6 +7,8 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { MaterialnameService } from 'src/app/services/materialName/materialname.service';
 import { UomService } from 'src/app/services/uom/uom.service';
 import * as Papa from 'papaparse';
+import { CsvdownloadService } from 'src/app/services/csvdownload.service';
+import { Route, Router } from '@angular/router';
 
 
 
@@ -39,10 +41,8 @@ uomList:any[]=[];
     private cookieService: CookieService,
     private toastr: ToastrService,
     private materialnameService: MaterialnameService,
-
-
-
-
+    private csvDownloadService:CsvdownloadService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -94,7 +94,7 @@ uomList:any[]=[];
             this.parsedData = result.data;
             console.log('Parsed Data:', this.parsedData);
           },
-          header: true, // Assuming CSV has headers
+          header: true,
         });
       };
       reader.readAsText(file);
@@ -102,11 +102,7 @@ uomList:any[]=[];
 
 
   showMaterial() {
-    // Set the type value as 'select' before submitting the form
-    // this.materialName.patchValue({
-    //   type: 'select',
-    //   key: this.cookieService.get('token'),
-    // });
+
 
     // Create HttpParams for URL-encoded format
     let params = new HttpParams()
@@ -115,16 +111,22 @@ uomList:any[]=[];
       .set('group_name', this.materialName.get('group_name')?.value)
       .set('group_id', this.materialName.get('group_id')?.value)
 
-    // Make HTTP call and rely on the service to handle headers
     this.materialgroup.userLogin(params.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
-          // this.toastr.success(response.data?.msg || 'Material Group Created');
-          this.materialGroups = response.data?.data1 || []; // Assign the material groups to the local array
+          this.materialGroups = response.data?.data1 || [];
           this.filterMaterialGroups = response.data?.data1 || [];
 
           console.log("material groups is ", this.materialGroups)
-        } else {
+        }
+        else if(response.message[0].status == 101){
+                this.cookieService.delete('userId');
+            this.cookieService.delete('userName');
+            this.cookieService.delete('userType');
+            this.cookieService.delete('token');
+            this.router.navigate(['/authentication/login']);
+
+              }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -135,13 +137,20 @@ uomList:any[]=[];
     );
   }
 
+  download(): void {
+    const data = [
+      { 'Material Group': 'Disposables','Material Name':"cup",uom:'NOS.',Description:'sampl1'},
+      { 'Material Group': 'Disposables','Material Name':"plate",uom:'NOS.',Description:'sample2'},
+      { 'Material Group': 'cold drinks','Material Name':"coca cola",uom:'LTR',Description:'discription'},
+    ];
+
+    this.csvDownloadService.downloadCSV(data, 'MaterialName_sample.csv');
+  }
+
+
 
   showMaterialUom() {
-    // Set the type value as 'select' before submitting the form
-    // this.materialName.patchValue({
-    //   type: 'select',
-    //   key: this.cookieService.get('token'),
-    // });
+
 
     // Create HttpParams for URL-encoded format
     let params = new HttpParams()
@@ -152,10 +161,16 @@ uomList:any[]=[];
     this.uomService.getUomList(params.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
-          // this.toastr.success(response.data?.msg || 'Material Group Created');
           this.uomList = response.data?.data1 || []; // Assign the material groups to the local array
           console.log("uom items is ", this.uomList)
-        } else {
+        }  else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else{
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -189,7 +204,14 @@ uomList:any[]=[];
           this.totalPages=Math.ceil(this.totalItems / this.pageSize)
           this.paginateData()
           console.log("material data is ", this.materialTableData)
-        } else {
+        }  else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -257,7 +279,14 @@ uomList:any[]=[];
           this.showMaterialName();
           const data = response.data;
           console.log('Key:', data);
-        } else {
+        }  else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to Create');
         }
       },
@@ -295,7 +324,14 @@ uomList:any[]=[];
             const key = response.data?.key;
             this.showMaterialName();
             console.log('Key:', key);
-          } else {
+          }  else if(response.message[0].status == 101){
+            this.cookieService.delete('userId');
+        this.cookieService.delete('userName');
+        this.cookieService.delete('userType');
+        this.cookieService.delete('token');
+        this.router.navigate(['/authentication/login']);
+
+          }else {
             this.toastr.error('Failed to Update');
           }
         },
@@ -332,7 +368,14 @@ uomList:any[]=[];
         if (response.status === 'success') {
           this.toastr.success(response.data?.msg || 'Material Deleted');
           this.showMaterialName();
-        } else {
+        }  else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to delete material');
         }
       },
@@ -363,8 +406,17 @@ uomList:any[]=[];
         if (response.status === 'success') {
           this.toastr.success('File uploaded successfully');
           this.resetForm();
+          this.showMaterialName();
 
-        } else {
+
+        }  else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to upload file');
         }
       },
@@ -376,6 +428,7 @@ uomList:any[]=[];
   }
 
   updateMaterialName(item: any) {
+    this.formType='form1'
     console.log("item is ",item)
     // Patch the form fields with the values from the selected row
     this.materialName.patchValue({

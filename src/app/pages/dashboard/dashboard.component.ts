@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, ViewEncapsulation, ViewChild, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   ApexChart,
   ChartComponent,
@@ -227,6 +228,8 @@ export class AppDashboardComponent implements OnInit {
     private CurrentStockData: DashboardService,
     private toastr: ToastrService,
     private cookieService: CookieService,
+        private route: Router,
+
 
 
   ) {
@@ -447,9 +450,15 @@ export class AppDashboardComponent implements OnInit {
       if (response.status === 'success') {
         // this.toastr.success(response.data?.msg || 'Material Group Created');
         this.currentStock = response.data?.data1 || []; // Assign the material groups to the local array
-        console.log("currentStock data is ", this.currentStock)
-      } else {
-        this.toastr.error('Failed to retrieve data1');
+      } else if(response.message[0].status == 101){
+        this.cookieService.delete('userId');
+    this.cookieService.delete('userName');
+    this.cookieService.delete('userType');
+    this.cookieService.delete('token');
+    this.route.navigate(['/authentication/login']);
+
+      }else{
+        this.toastr.error('Failed to retrieve data');
       }
     },
     (error: any) => {

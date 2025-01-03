@@ -9,7 +9,8 @@
       <form (ngSubmit)="onSubmit()" #uploadForm="ngForm">
         <div class="form-group text-center">
           <label for="fileUpload" class="form-label fs-4 fw-bold">Upload CSV File</label>
-          <input
+          <div class="d-flex gap-2  align-items-center">
+            <input
             type="file"
             id="fileUpload"
             class="form-control"
@@ -18,6 +19,9 @@
             accept=".csv"
             required
           />
+          <i class="fa-solid fa-download" title="Download Sample CSV"  (click)="download()"></i>
+          </div>
+
         </div>
 
         <button type="submit" class="btn btn-primary mt-3" [disabled]="!selectedFile">Upload</button>

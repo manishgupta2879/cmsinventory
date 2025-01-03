@@ -191,6 +191,7 @@
                         <th>Quantity</th>
                         <th>Invoice Date</th>
                         <th>Transaction Date</th>
+                        <th>Inward Date</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -206,6 +207,7 @@
                         <td>{{ item.qty }}</td>
                         <td>{{ item.invoice_date }}</td>
                         <td>{{ item.transition_date }}</td>
+                        <td>{{ item.inward_date }}</td>
                         <td style="cursor: pointer;"(click)="deleteInward(item)"><i class="fa-solid fa-trash"></i></td>
                     </tr>
 

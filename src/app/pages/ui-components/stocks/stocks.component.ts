@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { StockService } from 'src/app/services/stock/stock.service';
@@ -21,6 +22,7 @@ export class StocksComponent implements OnInit{
     private cookieService: CookieService,
     private stockService:StockService,
     private toastr: ToastrService,
+    private router: Router
 
   ) { }
   ngOnInit(): void {
@@ -61,7 +63,14 @@ export class StocksComponent implements OnInit{
                 this.noData = false;
               }
 
-          } else {
+          } else if(response.message[0].status == 101){
+            this.cookieService.delete('userId');
+        this.cookieService.delete('userName');
+        this.cookieService.delete('userType');
+        this.cookieService.delete('token');
+        this.router.navigate(['/authentication/login']);
+
+          }else {
             this.toastr.error('Failed to retrieve data');
           }
         },

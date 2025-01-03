@@ -21,6 +21,7 @@
         [(ngModel)]="formType"
         value="form2"
       />
+
       <label class="form-check-label" for="form2Radio">Upload</label>
     </div>
   </div>
@@ -132,15 +133,19 @@
 >
   <div class="form-group">
     <label for="fileUpload" class="form-label fw-bold">Upload CSV File</label>
-    <input
-      type="file"
-      id="fileUpload"
-      class="form-control"
-      #fileInput
-      (change)="onFileChange($event)"
-      accept=".csv"
-      required
-    />
+<div class="d-flex gap-2 align-items-center">
+  <input
+  type="file"
+  id="fileUpload"
+  class="form-control"
+  #fileInput
+  (change)="onFileChange($event)"
+  accept=".csv"
+  required
+/>
+<i class="fa-solid fa-download" title="Download Sample CSV"  (click)="download()"></i>
+</div>
+
   </div>
 
   <button type="submit"  class="btn btn-primary mt-3" >Upload</button>
@@ -189,20 +194,20 @@
       <table class="table table-responsive">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>S.No</th>
             <th>Material Group</th>
             <th>Material Name</th>
             <th>UOM</th>
             <th>Delete</th>
           </tr>
         </thead>
-        <tbody *ngFor="let item of paginatedData">
+        <tbody *ngFor="let item of paginatedData;let i = index">
           <tr>
             <td
               (click)="updateMaterialName(item)"
               style="color: blue; font-weight: 600; cursor: pointer"
             >
-              {{ item.id }}
+              {{ i+1 }}
             </td>
             <td>{{ item.group_name }}</td>
             <td>{{ item.material_name }}</td>

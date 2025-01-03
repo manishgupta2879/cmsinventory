@@ -28,8 +28,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of stock">
-            <td>{{ item.id }}</td>
+          <tr *ngFor="let item of stock;let i = index ">
+            <td>{{ i+1}}</td>
             <td>{{ item.group_name }}</td>
             <td>{{ item.material_name }}</td>
             <td>{{ item.material_unit }}</td>

@@ -6,6 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import * as Papa from 'papaparse';
 import { HttpParams } from '@angular/common/http';
 import { StockService } from 'src/app/services/stock/stock.service';
+import { CsvdownloadService } from 'src/app/services/csvdownload.service';
+import { Router } from '@angular/router';
 
 
 
@@ -27,7 +29,9 @@ key:any;
     constructor(
       private cookieService: CookieService,
       private toastr: ToastrService,
-      private stockService:StockService
+      private stockService:StockService,
+      private csvDownloadService:CsvdownloadService,
+      private router: Router
 
     ) { }
 
@@ -64,6 +68,15 @@ key:any;
   }
 
 
+  download(): void {
+    const data = [
+      { 'Material Name': 'Spoons',Transaction:"2024-11-11",Quantity:3},
+      { 'Material Name': 'bricks',Transaction:"2024-08-12",Quantity:4},
+    ];
+
+    this.csvDownloadService.downloadCSV(data, 'InitialStock_sample.csv');
+  }
+
 
 
     onSubmit(): void {
@@ -90,7 +103,15 @@ key:any;
             this.toastr.success('File uploaded successfully');
             this.resetForm();
 
-          } else {
+          }
+          else if(response.message[0].status == 101){
+                  this.cookieService.delete('userId');
+              this.cookieService.delete('userName');
+              this.cookieService.delete('userType');
+              this.cookieService.delete('token');
+              this.router.navigate(['/authentication/login']);
+
+                }else{
             this.toastr.error('Failed to upload file');
           }
         },

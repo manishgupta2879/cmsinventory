@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { MaterialgroupService } from 'src/app/services/materialGroup/materialgroup.service';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-materialgroup',
@@ -28,6 +29,7 @@ export class MaterialgroupComponent implements OnInit {
     private cookieService: CookieService,
     private toastr: ToastrService,
     private materialgroup: MaterialgroupService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -73,7 +75,14 @@ export class MaterialgroupComponent implements OnInit {
           this.showMaterial();
           const key = response.data?.key;
           console.log('Key:', key);
-        } else {
+        } else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
+        }else {
           this.toastr.error('Failed to Create');
         }
       },
@@ -117,7 +126,15 @@ export class MaterialgroupComponent implements OnInit {
             const key = response.data?.key;
             this.showMaterial();
             console.log('Key:', key);
-          } else {
+          }
+          else if(response.message[0].status == 101){
+                  this.cookieService.delete('userId');
+              this.cookieService.delete('userName');
+              this.cookieService.delete('userType');
+              this.cookieService.delete('token');
+              this.router.navigate(['/authentication/login']);
+
+                }else {
             this.toastr.error('Failed to Update');
           }
         },
@@ -156,7 +173,15 @@ export class MaterialgroupComponent implements OnInit {
          this.pagination();
 
 
-        } else {
+        }
+        else if(response.message[0].status == 101){
+                this.cookieService.delete('userId');
+            this.cookieService.delete('userName');
+            this.cookieService.delete('userType');
+            this.cookieService.delete('token');
+            this.router.navigate(['/authentication/login']);
+
+              }else {
           this.toastr.error('Failed to retrieve data');
         }
       },
@@ -207,7 +232,16 @@ export class MaterialgroupComponent implements OnInit {
           this.toastr.success(response.data?.msg || 'Material Group Deleted');
           this.materialGroups = response.data?.data1 || []; // Refresh the list after deletion
           this.showMaterial();
-        } else {
+        }
+        else if(response.message[0].status == 101){
+                this.cookieService.delete('userId');
+            this.cookieService.delete('userName');
+            this.cookieService.delete('userType');
+            this.cookieService.delete('token');
+            this.router.navigate(['/authentication/login']);
+
+              }
+              else {
           this.toastr.error('Failed to delete material group');
         }
       },
