@@ -10,8 +10,14 @@
   <!-- --------------------------------------------------------------- -->
   <!-- <button mat-icon-button><mat-icon>m</mat-icon></button> -->
 
-  <button mat-icon-button aria-label="Notifications">
-    <i-tabler class="d-flex" name="bell" matBadge="1" matBadgeColor="primary"></i-tabler>
+  <button mat-icon-button aria-label="Notifications" (click)="toggle()">
+    <!-- <i-tabler class="d-flex" name="bell" matBadge="1" matBadgeColor="primary"></i-tabler> -->
+     <span id="site-name">
+      <label for="menu_active">
+        <i *ngIf='showToggleIcon' class="fa fa-bars"></i>
+        <i *ngIf='!showToggleIcon' class="fa fa-arrow-left"></i>
+      </label>
+    </span>
   </button>
 
   <span class="flex-1-auto"></span>
@@ -28,7 +34,7 @@
   >
     Download Free
   </a> -->
-  <button mat-icon-button [matMenuTriggerFor]="profilemenu" aria-label="Notifications">
+  <button mat-icon-button [matMenuTriggerFor]="profilemenu" aria-label="Notifications" (click)="toggle()">
     <img src="/assets/images/profile/user-1.jpg" class="rounded-circle object-cover" width="35" />
   </button>
   <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">

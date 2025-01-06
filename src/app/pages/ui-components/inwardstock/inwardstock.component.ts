@@ -253,7 +253,6 @@ this.selectedMaterialGroupId = selectedGroupId;
       (response: any) => {
         if (response.status === 'success') {
           this.material = response.data?.data1 || [];
-          console.log("Materials for selected group:", this.material);
 
           //this.inwardForm.patchValue({
             //materialname: "3",
@@ -319,7 +318,6 @@ this.selectedMaterialGroupId = selectedGroupId;
     this.materialnameService.createInward(httpParams.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
-          console.log(response)
 
           this.toastr.success('Inward updated successfully');
           this.inwardList();

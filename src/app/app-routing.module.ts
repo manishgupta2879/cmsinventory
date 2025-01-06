@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
-import { authguard } from 'src/guard/authguard.guard'; // Import the AuthGuard
+import { authguard } from 'src/guard/authguard.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: FullComponent,
-    canActivate: [authguard], // Protect this route
+    canActivate: [authguard],
     children: [
       {
         path: '',
@@ -19,7 +19,7 @@ const routes: Routes = [
         path: 'dashboard',
         loadChildren: () =>
           import('./pages/pages.module').then((m) => m.PagesModule),
-        canActivate: [authguard], // Protect the dashboard route
+        canActivate: [authguard],
       },
       {
         path: 'ui-components',
@@ -27,13 +27,13 @@ const routes: Routes = [
           import('./pages/ui-components/ui-components.module').then(
             (m) => m.UicomponentsModule
           ),
-        canActivate: [authguard], // Protect this route too
+        canActivate: [authguard],
       },
       {
         path: 'extra',
         loadChildren: () =>
           import('./pages/extra/extra.module').then((m) => m.ExtraModule),
-        canActivate: [authguard], // Protect this route too
+        canActivate: [authguard],
       },
     ],
   },

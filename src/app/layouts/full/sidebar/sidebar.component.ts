@@ -1,34 +1,29 @@
-// import { Component, OnInit } from '@angular/core';
-// import { navItems } from './sidebar-data';
-// import { NavService } from '../../../services/nav.service';
-
-// @Component({
-//   selector: 'app-sidebar',
-//   templateUrl: './sidebar.component.html',
-// })
-// export class SidebarComponent implements OnInit {
-//   navItems = navItems;
-
-//   constructor(public navService: NavService) {}
-
-//   ngOnInit(): void {}
-// }
 
 
-import { Component } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { SharedServiceService } from 'src/app/shared-service.service';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit{
+  showToggleIcon: boolean = true;
+
   constructor(
-    public route: Router
+    public route: Router,
+    private sharedService: SharedServiceService
   ) {}
 
   ngOnInit(): void {
+
+
+    this.sharedService.showToggleIcon$.subscribe((value: boolean) => {
+      this.showToggleIcon = value; // Update the local value when it changes
+    });
     // Toggle Sidebar
     const menuToggle = document.getElementById('menu-toggle');
     const sidebarWrapper = document.getElementById('wrapper');

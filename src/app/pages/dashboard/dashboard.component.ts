@@ -462,7 +462,6 @@ export class AppDashboardComponent implements OnInit {
       }
     },
     (error: any) => {
-      console.log('Error:', error);
       this.toastr.error(error.statusText);
     }
   );

@@ -1,6 +1,6 @@
 import { NavItem } from './nav-item/nav-item';
 
-export const navItems: NavItem[] = [
+export const navItems: any[] = [
   {
     navCap: 'Home',
     new:[
@@ -42,6 +42,12 @@ export const navItems: NavItem[] = [
 
     ]
   },
+  {
+    navCap: 'Inventory',
+  },
+  {
+    navCap: 'Stock',
+  }
   // {
   //   displayName: 'Material Group',
   //   iconName: 'rosette',

@@ -1,10 +1,10 @@
-<div class="container-fluid">
-    <div class="d-flex flex-column flex-md-row ">
-        <div class="col-md-5 col-xl-4 col-sm-12 col-12 pe-md-4 shadow-sm p-3 mb-5 bg-body rounded">
-            <div class="align-items-center">
-                <div class="row">
-                    <div class="col-xl-6 col-md-6 col-sm-12 col-12">
-                        <div class="form-box">
+<div class="container-fluid p-0">
+    <div class="d-flex flex-column flex-md-row justify-content-end">
+        <div class="col-md-5 col-xl-4 col-sm-12 col-12 pe-md-4 shadow-sm p-3 mb-3 bg-body rounded">
+            <div class="d-flex align-items-center">
+                <div class="col-12 col-md-6">
+                    <div class="">
+                        <div class="form-box d-flex">
                             <input class="form-check-input me-2" type="radio" name="inventory" id="inward"
                                 [value]="'inward'" [(ngModel)]="selectedOption" (change)="onSelectionChange('inward')">
                             <label class="form-check-label" for="inward">
@@ -12,8 +12,8 @@
                             </label>
                         </div>
                     </div>
-                    <div class="col-xl-6 col-md-6 col-sm-12 col-12 px-0">
-                        <div class="form-box">
+                    <div class="">
+                        <div class="form-box d-flex">
                             <input class="form-check-input me-2" type="radio" name="inventory" id="outward"
                                 [value]="'outward'" [(ngModel)]="selectedOption"
                                 (change)="onSelectionChange('outward')">

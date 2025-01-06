@@ -86,15 +86,8 @@ key:any;
       }
 
       const formData = new FormData();
-      formData.append('key',this.key); // Add the key
-      formData.append('file', this.selectedFile as File); // Attach the actual file
-
-      console.log('Submitting form data:', formData);
-
-
-
-
-      console.log('Submitting form data:', formData);
+      formData.append('key',this.key);
+      formData.append('file', this.selectedFile as File);
 
 
       this.stockService.initialStock(formData).subscribe(
@@ -125,7 +118,7 @@ key:any;
 
     resetForm(): void {
       this.selectedFile = null;
-      this.fileInput.nativeElement.value = ''; // Reset the file input
+      this.fileInput.nativeElement.value = '';
     }
 
 

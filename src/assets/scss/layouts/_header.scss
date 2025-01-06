@@ -4,6 +4,7 @@ html .topbar {
   top: 0;
   z-index: 9;
   height: $header-height;
+  padding: 0 16px !important;
 }
 
 .topbar-dd {
