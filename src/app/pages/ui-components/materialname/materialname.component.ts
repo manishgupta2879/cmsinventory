@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
@@ -9,6 +9,12 @@ import { UomService } from 'src/app/services/uom/uom.service';
 import * as Papa from 'papaparse';
 import { CsvdownloadService } from 'src/app/services/csvdownload.service';
 import { Route, Router } from '@angular/router';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { MaterialgrpConfComponent } from 'src/app/materialgrp-conf/materialgrp-conf.component';
+
 
 
 
@@ -18,7 +24,11 @@ import { Route, Router } from '@angular/router';
   templateUrl: './materialname.component.html',
   styleUrl: './materialname.component.scss'
 })
-export class MaterialnameComponent implements OnInit {
+export class MaterialnameComponent implements OnInit,AfterViewInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatSort) sort!: MatSort;
+    displayedColumns: string[] = ['sno', 'group_name','material_name','material_unit', 'actions'];
+    dataSource: MatTableDataSource<any> = new MatTableDataSource();
   selectedFile: File | null = null;
   parsedData: any[] = [];
   formType:any='form1';
@@ -42,7 +52,8 @@ uomList:any[]=[];
     private toastr: ToastrService,
     private materialnameService: MaterialnameService,
     private csvDownloadService:CsvdownloadService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -72,6 +83,27 @@ uomList:any[]=[];
     this.showMaterialUom();
   }
 
+  ngAfterViewInit() {
+    // Initialize sorting and pagination after view is initialized
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+
+    // Set the filterPredicate before applying the filter
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      console.log("data:",data)
+      const materialName = data.material_name ? data.material_name.toLowerCase() : ''; // Correct key names
+      const materialGroup = data.group_name ? data.group_name.toLowerCase() : ''; // Correct key names
+      const materialUnit = data.material_unit ? data.material_unit.toLowerCase() : '';
+      return materialName.includes(filter) || materialGroup.includes(filter) ||  materialUnit.includes(filter);;
+    };
+
+    // Apply the filter
+    this.dataSource.filter = filterValue;
+  }
 
     onFileChange(event: Event): void {
       const input = event.target as HTMLInputElement;
@@ -116,8 +148,10 @@ uomList:any[]=[];
         if (response.status === 'success') {
           this.materialGroups = response.data?.data1 || [];
           this.filterMaterialGroups = response.data?.data1 || [];
+          // this.dataSource.data = this.materialGroups;
 
-          console.log("material groups is ", this.materialGroups)
+
+          // console.log("Material group  new is ",this.dataSource.data,"andother is ",this.materialGroups)
         }
         else if(response.message[0].status == 101){
                 this.cookieService.delete('userId');
@@ -200,6 +234,10 @@ uomList:any[]=[];
         if (response.status === 'success') {
           // this.toastr.success(response.data?.msg || 'Material Group Created');
           this.materialTableData = response.data?.data1 || []; // Assign the material groups to the local array
+          this.dataSource.data = this.materialTableData;
+
+
+          console.log("Material group  new is ",this.dataSource.data,"andother is ",this.materialTableData)
           this.totalItems= response.data?.data1.length;
           this.totalPages=Math.ceil(this.totalItems / this.pageSize)
           this.paginateData()
@@ -343,6 +381,50 @@ uomList:any[]=[];
     } else {
       this.toastr.error('Please fill out the form correctly');
     }
+  }
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+    this.paginateData();
+  }
+
+
+
+
+  onSortData(sort: any) {
+    this.paginatedData = this.paginatedData.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'group_name':
+          return this.compare(a.group_name, b.group_name, isAsc);
+        case 'created_at':
+          return this.compare(a.created_at, b.created_at, isAsc);
+
+
+        default:
+          return 0;
+      }
+    });
+    this.dataSource.data = this.paginatedData;
+  }
+
+  compare(a: string | number, b: string | number, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+  onDelete(item: any): void {
+    const dialogRef = this.dialog.open(MaterialgrpConfComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Proceed with the delete action, e.g., call a service to delete the item
+        console.log('Item deleted:', item);
+        this.deleteMaterialName(item)
+        // Your delete logic here
+      } else {
+        console.log('Delete canceled');
+      }
+    });
   }
 
 

@@ -28,11 +28,24 @@ import { MaterialnameComponent } from './pages/ui-components/materialname/materi
 import { InventoryComponent } from './pages/ui-components/inventory/inventory.component';
 import { StocksComponent } from './pages/ui-components/stocks/stocks.component';
 import { ToastrModule } from 'ngx-toastr';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatCardModule } from '@angular/material/card';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { InwardstockComponent } from './pages/ui-components/inwardstock/inwardstock.component';
 import { OutwardstockComponent } from './pages/ui-components/outwardstock/outwardstock.component';
 import { InitialStockComponent } from './pages/ui-components/initial-stock/initial-stock.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ConfirmationComponent } from './confirmation/confirmation.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MaterialgrpConfComponent } from './materialgrp-conf/materialgrp-conf.component';
+
+
+
 
 @NgModule({
   declarations: [
@@ -48,7 +61,9 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     InventoryComponent,
     StocksComponent,
     InwardstockComponent,
-    OutwardstockComponent
+    OutwardstockComponent,
+    ConfirmationComponent,
+    MaterialgrpConfComponent
 
   ],
   imports: [
@@ -56,9 +71,18 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
+
+    MatFormFieldModule,
+    MatDialogModule,    // Import MatDialogModule for dialog components
+    MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
     InitialStockComponent,
+    MatTableModule,
+    MatSortModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatCardModule,
     MaterialModule,
     ToastrModule.forRoot({
       timeOut: 3000,

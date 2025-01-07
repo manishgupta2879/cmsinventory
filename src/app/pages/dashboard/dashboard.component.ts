@@ -1,6 +1,9 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, ViewEncapsulation, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, ViewChild, OnInit, AfterViewInit } from '@angular/core';
+import { MatSort } from '@angular/material/sort';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import {
   ApexChart,
@@ -127,7 +130,9 @@ const ELEMENT_DATA: productsData[] = [
   templateUrl: './dashboard.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export class AppDashboardComponent implements OnInit {
+export class AppDashboardComponent implements OnInit,AfterViewInit {
+  @ViewChild(MatSort, { static: false }) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('chart') chart: ChartComponent = Object.create(null);
   currentStockForm!: FormGroup;
 
@@ -140,8 +145,8 @@ export class AppDashboardComponent implements OnInit {
 
 
 
-  displayedColumns: string[] = ['materialgroup','material_unit', 'materialname', 'quantity'];
-  dataSource = ELEMENT_DATA;
+  displayedColumns: string[] = ['materialgroup','materialname','material_unit', 'quantity'];
+  dataSource = new MatTableDataSource<any>([]);
 
   months: month[] = [
     { value: 'mar', viewValue: 'March 2023' },
@@ -228,7 +233,7 @@ export class AppDashboardComponent implements OnInit {
     private CurrentStockData: DashboardService,
     private toastr: ToastrService,
     private cookieService: CookieService,
-        private route: Router,
+    private route: Router,
 
 
 
@@ -425,8 +430,33 @@ export class AppDashboardComponent implements OnInit {
 
     })
 
+
+
     this.getCurrentStock()
 
+  }
+
+
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+
+    // Set the filterPredicate before applying the filter
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const materialName = data.material_name ? data.material_name.toLowerCase() : ''; // Correct key names
+      const materialGroup = data.group_name ? data.group_name.toLowerCase() : ''; // Correct key names
+      const materialUnit = data.material_unit ? data.material_unit.toLowerCase() : '';
+      return materialName.includes(filter) || materialGroup.includes(filter) ||  materialUnit.includes(filter);;
+    };
+
+    // Apply the filter
+    this.dataSource.filter = filterValue;
+  }
+
+
+  ngAfterViewInit() {
+    // After the view is initialized, assign the sort and paginator
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
 
@@ -450,6 +480,9 @@ export class AppDashboardComponent implements OnInit {
       if (response.status === 'success') {
         // this.toastr.success(response.data?.msg || 'Material Group Created');
         this.currentStock = response.data?.data1 || []; // Assign the material groups to the local array
+        this.dataSource.data = this.currentStock; // Bind the data to MatTableDataSource
+        this.dataSource.sort = this.sort; // Link sorting
+        this.dataSource.paginator = this.paginator;
       } else if(response.message[0].status == 101){
         this.cookieService.delete('userId');
     this.cookieService.delete('userName');

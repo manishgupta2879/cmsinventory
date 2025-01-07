@@ -1,4 +1,4 @@
-<div class="stocks-container">
+<!-- <div class="stocks-container">
   <form [formGroup]="StockForm" (ngSubmit)="submit()" class="d-flex gap-3">
     <div class="form-group">
       <label for="date">Select Date:</label>
@@ -42,6 +42,189 @@
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+
+
+    <div *ngIf="noData" class="alert alert-warning mt-3" role="alert">
+      No data found for the selected date.
+    </div>
+
+
+  <div *ngIf="!StockForm.get('_date')?.value && stock.length === 0" class="alert alert-info mt-3" role="alert">
+    Please select a date to show data.
+  </div>
+
+
+</div>
+ -->
+
+
+ <div class="stocks-container">
+  <form [formGroup]="StockForm" (ngSubmit)="submit()" class="d-flex gap-3">
+    <div class="form-group">
+      <label for="date">Select Date:</label>
+      <input type="date" id="date" class="form-control w-auto" formControlName="_date" />
+    </div>
+    <div class="form-group d-flex align-items-end">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+
+  <div *ngIf="stock.length> 0" class="stock-list mt-5">
+
+    <div class="table-responsive">
+      <!-- <table class="table table-bordered table-striped">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Group Name</th>
+            <th>Material Name</th>
+            <th>Material Unit</th>
+            <th>Material Description</th>
+            <th>Transaction Date</th>
+            <th>Opening Qty</th>
+            <th>Purchase Qty</th>
+            <th>Sale Qty</th>
+            <th>Closing Qty</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of stock;let i = index ">
+            <td>{{ i+1}}</td>
+            <td>{{ item.group_name }}</td>
+            <td>{{ item.material_name }}</td>
+            <td>{{ item.material_unit }}</td>
+            <td>{{ item.material_description }}</td>
+            <td>{{ item.transaction_date }}</td>
+            <td>{{ item.opening_qty }}</td>
+            <td>{{ item.purchase_qty ? item.purchase_qty : '-' }}</td>
+            <td>{{ item.sale_qty ? item.sale_qty : '-' }}</td>
+            <td>{{ item.closing_qty }}</td>
+          </tr>
+        </tbody>
+      </table> -->
+
+
+
+
+
+      <div class="col-md-10 col-xl-10 col-sm-12 col-12 bg-body card ps-0">
+        <div class="d-flex justify-content-between align-items-center px-3 pt-3">
+          <div><b class="fs-6 fs-md-5">Daily Stock Report</b></div>
+          <div id="" class="d-flex justify-content-end mb-md-2">
+            <div class="dt-search">
+              <label for="dt-search-0"
+                ><div class="input-group">
+                  <span class="input-group-addon"
+                    ><span class="fa fa-search" aria-hidden="true"></span></span
+                  ><input
+                    type="search"
+                    (keyup)="applyFilter($event)"
+                    id="dt-search-0"
+                    placeholder="Search..."
+                    aria-controls="users-table"
+                    class="dt-input"
+                  /></div
+              ></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="tablewrapper p-3 table-container table-responsive">
+          <table mat-table [dataSource]="dataSource" matSort class="table-bordered">
+            <ng-container matColumnDef="sno">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">S.No</th>
+              <td
+                mat-cell
+                *matCellDef="let item; let i = index"
+                style="color: blue; font-weight: 600; cursor: pointer"
+              >
+                {{ i + 1 }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="group_name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                Material Group
+              </th>
+              <td mat-cell *matCellDef="let item">{{ item.group_name }}</td>
+            </ng-container>
+            <ng-container matColumnDef="material_name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                Material Name
+              </th>
+              <td mat-cell *matCellDef="let item">{{ item.material_name }}</td>
+            </ng-container>
+            <ng-container matColumnDef="material_unit">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                UOM
+              </th>
+              <td mat-cell *matCellDef="let item">{{ item.material_unit }}</td>
+            </ng-container>
+            <ng-container matColumnDef="material_description">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                Material Description
+              </th>
+              <td mat-cell *matCellDef="let item">{{ item.material_description }}</td>
+            </ng-container>
+            <ng-container matColumnDef="transaction_date">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                Transaction Date
+              </th>
+              <td mat-cell *matCellDef="let item">{{ item.transaction_date }}</td>
+            </ng-container>
+            <ng-container matColumnDef="opening_qty">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                Opening Qty
+              </th>
+              <td mat-cell *matCellDef="let item">{{ item.opening_qty }}</td>
+            </ng-container>
+            <ng-container matColumnDef="purchase_qty">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                Purchase Qty
+              </th>
+              <td mat-cell *matCellDef="let item">{{ item.purchase_qty }}</td>
+            </ng-container>
+            <ng-container matColumnDef="sale_qty">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                Sale Qty
+              </th>
+              <td mat-cell *matCellDef="let item">{{ item.sale_qty }}</td>
+            </ng-container>
+            <ng-container matColumnDef="closing_qty">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                Closing Qty
+              </th>
+              <td mat-cell *matCellDef="let item">{{ item.closing_qty }}</td>
+            </ng-container>
+
+
+
+
+
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+
+          <mat-paginator
+            [pageSize]="pageSize"
+            [pageIndex]="currentPage - 1"
+            [length]="totalItems"
+            (page)="onPageChange($event)"
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            aria-label="Select page"
+          >
+          </mat-paginator>
+        </div>
+      </div>
+
+
+
+
     </div>
   </div>
 

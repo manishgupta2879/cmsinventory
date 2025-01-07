@@ -1,11 +1,15 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { MaterialgroupService } from 'src/app/services/materialGroup/materialgroup.service';
 import { MaterialnameService } from 'src/app/services/materialName/materialname.service';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+
 
 @Component({
   selector: 'app-inwardstock',
@@ -14,6 +18,12 @@ import { MaterialnameService } from 'src/app/services/materialName/materialname.
   styleUrl: './inwardstock.component.scss'
 })
 export class InwardstockComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatSort) sort!: MatSort;
+
+    displayedColumns: string[] = ['sno', 'group_name','material_name','material_unit', 'invoice_no','qty','invoice_date','transition_date', 'actions'];
+    dataSource: MatTableDataSource<any> = new MatTableDataSource();
+
   materialName!: FormGroup;
   inwardForm!: FormGroup;
   materialGroups: any[] = [];
@@ -34,6 +44,10 @@ export class InwardstockComponent implements OnInit {
   itemId:any='';
   transDate:any='';
   filterMaterialName:any='';
+  searchTerm: string = '';
+  totalPage: number = 0;
+
+
 
 
   constructor(
@@ -162,6 +176,38 @@ this.selectedMaterialGroupId = selectedGroupId;
         this.toastr.error(error.statusText);
       }
     );
+  }
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+    this.paginateData();
+  }
+
+  paginateData() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedData = this.dataSource.data.slice(startIndex, endIndex);
+    this.totalPage = Math.ceil(this.dataSource.data.length / this.pageSize);
+  }
+
+  onSortData(sort: any) {
+    this.paginatedData = this.paginatedData.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'group_name':
+          return this.compare(a.group_name, b.group_name, isAsc);
+        case 'created_at':
+          return this.compare(a.created_at, b.created_at, isAsc);
+        default:
+          return 0;
+      }
+    });
+    this.dataSource.data = this.paginatedData;
+  }
+
+  compare(a: string | number, b: string | number, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
 
@@ -341,6 +387,25 @@ this.selectedMaterialGroupId = selectedGroupId;
     );
   }
 
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+
+    // Set the filterPredicate before applying the filter
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const materialName = data.material_name ? data.material_name.toLowerCase() : ''; // Correct key names
+      const materialGroup = data.group_name ? data.group_name.toLowerCase() : ''; // Correct key names
+      const Invoiceno = data.invoice_no ? data.invoice_no.toLowerCase() : '';
+      const QTY = data.qty ? data.qty.toLowerCase() : '';
+      const materialUnit = data.material_unit ? data.material_unit.toLowerCase() : '';
+      return materialName.includes(filter) || materialGroup.includes(filter) ||  Invoiceno.includes(filter) || QTY.includes(filter)|| materialUnit.includes(filter);
+    };
+
+    // Apply the filter
+    this.dataSource.filter = filterValue;
+  }
+
+
+
 
   inwardSubmit() {
 
@@ -408,6 +473,9 @@ this.selectedMaterialGroupId = selectedGroupId;
   this.totalItems = this.inwardListData.length;
   this.totalPages = Math.ceil(this.totalItems/this.pageSize);
   this.pagination()
+  this.dataSource.data = this.inwardListData;
+  console.log("Material group  new is ",this.dataSource.data,"andother is ",this.inwardListData)
+
 
         } else if(response.message[0].status == 101){
           this.cookieService.delete('userId');
@@ -432,7 +500,8 @@ this.selectedMaterialGroupId = selectedGroupId;
     console.log("paginted updating")
     const startIndex = (this.currentPage -1)* this.pageSize;
     const endIndex = startIndex+this.pageSize;
-    this.paginatedData = this.inwardListData.slice(startIndex,endIndex)
+    this.paginatedData = this.inwardListData.slice(startIndex,endIndex);
+    this.dataSource.data = this.paginatedData;
   }
 
 
