@@ -1,15 +1,3 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-inwardconf',
-//   standalone: true,
-//   imports: [],
-//   templateUrl: './inwardconf.component.html',
-//   styleUrl: './inwardconf.component.scss'
-// })
-// export class InwardconfComponent {
-
-// }
 
 
 
@@ -20,7 +8,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-inwardconf',
-  imports: [],
   templateUrl: './inwardconf.component.html',
   styleUrl: './inwardconf.component.scss'
 })

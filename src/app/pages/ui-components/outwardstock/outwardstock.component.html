@@ -522,7 +522,7 @@
                   <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
                     Transaction Date
                   </th>
-                  <td mat-cell *matCellDef="let item">{{ item.transition_date }}</td>
+                  <td mat-cell *matCellDef="let item">{{ item.transition_date | date: 'dd-yyyy-MM' }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="outward_orders">
@@ -536,7 +536,7 @@
                   <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
                     Outward Date
                   </th>
-                  <td mat-cell *matCellDef="let item">{{ item.outward_date }}</td>
+                  <td mat-cell *matCellDef="let item">{{ item.outward_date | date: 'dd-yyyy-MM'}}</td>
                 </ng-container>
 
 
@@ -549,7 +549,7 @@
                     style="cursor: pointer; font-weight: 600"
                     class="text-danger d-flex gap-3"
                   >
-                    <i class="fa-solid fa-trash" (click)="deleteOutward(item)"></i>
+                    <i class="fa-solid fa-trash" (click)="onDelete(item)"></i>
                     <i
                       class="fa-solid fa-pencil-alt text-success"
                       (click)="updateOutward(item)"

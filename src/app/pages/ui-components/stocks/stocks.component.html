@@ -173,7 +173,7 @@
               <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
                 Transaction Date
               </th>
-              <td mat-cell *matCellDef="let item">{{ item.transaction_date }}</td>
+              <td mat-cell *matCellDef="let item">{{ item.transaction_date | date: 'dd-yyyy-MM' }}</td>
             </ng-container>
             <ng-container matColumnDef="opening_qty">
               <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">

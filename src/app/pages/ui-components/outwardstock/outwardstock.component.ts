@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
@@ -9,6 +9,8 @@ import { MaterialnameService } from 'src/app/services/materialName/materialname.
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { OutwardconfComponent } from 'src/app/outwardconf/outwardconf.component';
 
 
 @Component({
@@ -17,7 +19,7 @@ import { MatSort } from '@angular/material/sort';
   templateUrl: './outwardstock.component.html',
   styleUrl: './outwardstock.component.scss'
 })
-export class OutwardstockComponent implements OnInit {
+export class OutwardstockComponent implements OnInit,AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
       @ViewChild(MatSort) sort!: MatSort;
 
@@ -48,7 +50,9 @@ export class OutwardstockComponent implements OnInit {
     private toastr: ToastrService,
     private cookieService: CookieService,
     private materialnameService: MaterialnameService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
+
 
 
   ) { }
@@ -95,6 +99,14 @@ export class OutwardstockComponent implements OnInit {
       }
     );
   }
+
+
+  ngAfterViewInit() {
+    // Initialize sorting and pagination after view is initialized
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
 
   getMaterialFilter(event: Event) {
 
@@ -254,6 +266,22 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
       }
     );
   }
+
+    onDelete(item: any): void {
+        const dialogRef = this.dialog.open(OutwardconfComponent);
+
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            // Proceed with the delete action, e.g., call a service to delete the item
+            console.log('Item deleted:', item);
+            this.deleteOutward(item)
+            // Your delete logic here
+          } else {
+            console.log('Delete canceled');
+          }
+        });
+      }
+
 
   onUpdate() {
 

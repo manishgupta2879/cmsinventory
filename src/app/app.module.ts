@@ -43,6 +43,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MaterialgrpConfComponent } from './materialgrp-conf/materialgrp-conf.component';
+import { InwardconfComponent } from './inwardconf/inwardconf.component';
+import { OutwardconfComponent } from './outwardconf/outwardconf.component';
 
 
 
@@ -63,7 +65,9 @@ import { MaterialgrpConfComponent } from './materialgrp-conf/materialgrp-conf.co
     InwardstockComponent,
     OutwardstockComponent,
     ConfirmationComponent,
-    MaterialgrpConfComponent
+    MaterialgrpConfComponent,
+    InwardconfComponent,
+    OutwardconfComponent
 
   ],
   imports: [
@@ -71,7 +75,6 @@ import { MaterialgrpConfComponent } from './materialgrp-conf/materialgrp-conf.co
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-
     MatFormFieldModule,
     MatDialogModule,    // Import MatDialogModule for dialog components
     MatButtonModule,

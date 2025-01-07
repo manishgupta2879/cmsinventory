@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
@@ -9,6 +9,8 @@ import { MaterialnameService } from 'src/app/services/materialName/materialname.
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { InwardconfComponent } from 'src/app/inwardconf/inwardconf.component';
 
 
 @Component({
@@ -17,7 +19,7 @@ import { MatTableDataSource } from '@angular/material/table';
   templateUrl: './inwardstock.component.html',
   styleUrl: './inwardstock.component.scss'
 })
-export class InwardstockComponent implements OnInit {
+export class InwardstockComponent implements OnInit,AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
 
@@ -55,7 +57,9 @@ export class InwardstockComponent implements OnInit {
     private cookieService: CookieService,
     private toastr: ToastrService,
     private materialnameService: MaterialnameService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
+
 
   ) { }
 
@@ -96,7 +100,26 @@ export class InwardstockComponent implements OnInit {
       }
     );
   }
+  ngAfterViewInit() {
+    // Initialize sorting and pagination after view is initialized
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
 
+    onDelete(item: any): void {
+      const dialogRef = this.dialog.open(InwardconfComponent);
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          // Proceed with the delete action, e.g., call a service to delete the item
+          console.log('Item deleted:', item);
+          this.deleteInward(item)
+          // Your delete logic here
+        } else {
+          console.log('Delete canceled');
+        }
+      });
+    }
 
   getMaterial(event: Event) {
 
