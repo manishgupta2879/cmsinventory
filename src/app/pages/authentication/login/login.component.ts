@@ -28,9 +28,6 @@ export class AppSideLoginComponent implements OnInit {
     })
   }
 
-  // navigate(){
-  //   this.router.navigate(['/authentication/register']);
-  // }
 
   navigate(){
     this.router.navigate(['/authentication/forgotPassword']);

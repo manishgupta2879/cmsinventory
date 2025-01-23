@@ -17,7 +17,6 @@ export class FullComponent implements OnInit {
   @ViewChild('leftsidenav')
   public sidenav: MatSidenav | any;
 
-  //get options from service
   private layoutChangesSubscription = Subscription.EMPTY;
   private isMobileScreen = false;
   private isContentWidthFixed = true;
@@ -33,7 +32,6 @@ export class FullComponent implements OnInit {
     this.layoutChangesSubscription = this.breakpointObserver
       .observe([MOBILE_VIEW, TABLET_VIEW, MONITOR_VIEW])
       .subscribe((state) => {
-        // SidenavOpened must be reset true when layout changes
 
         this.isMobileScreen = state.breakpoints[MOBILE_VIEW];
 

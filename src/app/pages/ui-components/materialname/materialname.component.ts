@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { MaterialgroupService } from 'src/app/services/materialGroup/materialgroup.service';
@@ -18,6 +18,7 @@ import { MaterialgrpConfComponent } from 'src/app/materialgrp-conf/materialgrp-c
 
 
 
+
 @Component({
   selector: 'app-materialname',
   standalone: false,
@@ -27,7 +28,7 @@ import { MaterialgrpConfComponent } from 'src/app/materialgrp-conf/materialgrp-c
 export class MaterialnameComponent implements OnInit,AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
-    displayedColumns: string[] = ['sno', 'group_name','material_name','material_unit', 'actions'];
+    displayedColumns: string[] = ['sno', 'group_name','material_name','alert_qty','material_unit', 'actions'];
     dataSource: MatTableDataSource<any> = new MatTableDataSource();
   selectedFile: File | null = null;
   parsedData: any[] = [];
@@ -35,8 +36,9 @@ export class MaterialnameComponent implements OnInit,AfterViewInit {
   materialName!: FormGroup;
   filterForm!: FormGroup;
   materialGroups: any[] = [];
-  filterMaterialGroups:any[]=[]
+  filterMaterialGroups:any[]=[];
   materialTableData : any[]=[];
+  errorData:any[]=[];
   totalPages:number=0;
   isUpdating :boolean = false;
   totalItems:number=0;
@@ -62,9 +64,11 @@ uomList:any[]=[];
     this.key = token;
     this.materialName = new FormGroup({
       key: new FormControl(token),
-      materialgroup: new FormControl(''),
-      materialname: new FormControl(''),
-      uom: new FormControl(''),
+
+      materialgroup: new FormControl('', [Validators.required]),
+      materialname: new FormControl('', [Validators.required]),
+      alert_qty: new FormControl(''),
+      uom: new FormControl('', [Validators.required]),
       des:new FormControl(''),
       type:new FormControl('select'),
       id:new FormControl('')
@@ -84,7 +88,6 @@ uomList:any[]=[];
   }
 
   ngAfterViewInit() {
-    // Initialize sorting and pagination after view is initialized
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
@@ -92,16 +95,14 @@ uomList:any[]=[];
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
 
-    // Set the filterPredicate before applying the filter
     this.dataSource.filterPredicate = (data: any, filter: string) => {
-      console.log("data:",data)
-      const materialName = data.material_name ? data.material_name.toLowerCase() : ''; // Correct key names
-      const materialGroup = data.group_name ? data.group_name.toLowerCase() : ''; // Correct key names
+      const materialName = data.material_name ? data.material_name.toLowerCase() : '';
+      const materialGroup = data.group_name ? data.group_name.toLowerCase() : '';
       const materialUnit = data.material_unit ? data.material_unit.toLowerCase() : '';
-      return materialName.includes(filter) || materialGroup.includes(filter) ||  materialUnit.includes(filter);;
+      const alertQty = data.alert_qty ? data.alert_qty.toLowerCase() : '';
+      return materialName.includes(filter) || materialGroup.includes(filter) ||  materialUnit.includes(filter) || alertQty.includes(filter);
     };
 
-    // Apply the filter
     this.dataSource.filter = filterValue;
   }
 
@@ -117,6 +118,35 @@ uomList:any[]=[];
     }
 
 
+    exportAsCSV(): void {
+      const csvData = this.createCSV(this.materialTableData);
+      const blob = new Blob([csvData], { type: 'text/csv' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'materials.csv';
+      link.click();
+    }
+
+    createCSV(data: any[]): string {
+      const header = ['SNo', 'Material Group', 'Material Name','Alert Quantity', 'UOM'];
+
+      const rows = data.map((item,index) => [
+        index+1,
+        item.group_name,
+        item.material_name,
+        item.alert_qty,
+        item.material_unit,
+      ]);
+
+      const csvContent = [
+        header.join(','),
+        ...rows.map(row => row.join(','))
+      ].join('\n');
+
+      return csvContent;
+    }
+
+
     parseCSV(file: File): void {
       const reader = new FileReader();
       reader.onload = () => {
@@ -124,7 +154,6 @@ uomList:any[]=[];
         Papa.parse(csvData, {
           complete: (result) => {
             this.parsedData = result.data;
-            console.log('Parsed Data:', this.parsedData);
           },
           header: true,
         });
@@ -136,7 +165,6 @@ uomList:any[]=[];
   showMaterial() {
 
 
-    // Create HttpParams for URL-encoded format
     let params = new HttpParams()
       .set('key', this.materialName.get('key')?.value)
       .set('type', this.materialName.get('type')?.value)
@@ -148,10 +176,6 @@ uomList:any[]=[];
         if (response.status === 'success') {
           this.materialGroups = response.data?.data1 || [];
           this.filterMaterialGroups = response.data?.data1 || [];
-          // this.dataSource.data = this.materialGroups;
-
-
-          // console.log("Material group  new is ",this.dataSource.data,"andother is ",this.materialGroups)
         }
         else if(response.message[0].status == 101){
                 this.cookieService.delete('userId');
@@ -185,18 +209,14 @@ uomList:any[]=[];
 
   showMaterialUom() {
 
-
-    // Create HttpParams for URL-encoded format
     let params = new HttpParams()
       .set('key', this.materialName.get('key')?.value)
       .set('type', this.materialName.get('type')?.value)
 
-    // Make HTTP call and rely on the service to handle headers
     this.uomService.getUomList(params.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
-          this.uomList = response.data?.data1 || []; // Assign the material groups to the local array
-          console.log("uom items is ", this.uomList)
+          this.uomList = response.data?.data1 || [];
         }  else if(response.message[0].status == 101){
           this.cookieService.delete('userId');
       this.cookieService.delete('userName');
@@ -217,31 +237,25 @@ uomList:any[]=[];
 
 
   showMaterialName() {
-    // Set the type value as 'select' before submitting the form
     this.materialName.patchValue({
       type: 'select',
       key: this.cookieService.get('token'),
     });
 
-    // Create HttpParams for URL-encoded format
     let params = new HttpParams()
       .set('key', this.materialName.get('key')?.value)
       .set('type', this.materialName.get('type')?.value)
 
-    // Make HTTP call and rely on the service to handle headers
     this.materialnameService.getMaterialName(params.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
-          // this.toastr.success(response.data?.msg || 'Material Group Created');
-          this.materialTableData = response.data?.data1 || []; // Assign the material groups to the local array
+          this.materialTableData = response.data?.data1 || [];
           this.dataSource.data = this.materialTableData;
 
 
-          console.log("Material group  new is ",this.dataSource.data,"andother is ",this.materialTableData)
           this.totalItems= response.data?.data1.length;
           this.totalPages=Math.ceil(this.totalItems / this.pageSize)
           this.paginateData()
-          console.log("material data is ", this.materialTableData)
         }  else if(response.message[0].status == 101){
           this.cookieService.delete('userId');
       this.cookieService.delete('userName');
@@ -265,6 +279,7 @@ uomList:any[]=[];
     const startIndex = (this.currentPage - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.paginatedData = this.materialTableData.slice(startIndex, endIndex);
+
   }
 
 
@@ -283,30 +298,26 @@ uomList:any[]=[];
     }
   }
 
-  // setPageSize(size: number) {
-  //   this.pageSize = size;
-  //   this.currentPage = 1;
-  //   this.paginateData();
-  // }
-
 
   createMaterialName() {
-    // Set the type value as 'insert' before submitting the form
+    if (this.materialName.invalid) {
+      this.materialName.markAllAsTouched();
+      return;
+    }
     this.materialName.patchValue({
       type: 'insert'
     });
 
-    // Create HttpParams for URL-encoded format
     let params = new HttpParams()
       .set('key', this.materialName.get('key')?.value)
       .set('type', this.materialName.get('type')?.value)
       .set('material_unit', this.materialName.get('uom')?.value)
       .set('group_id', this.materialName.get('materialgroup')?.value)
       .set('material_name', this.materialName.get('materialname')?.value)
-      .set('material_description', this.materialName.get('des')?.value);
+      .set('material_description', this.materialName.get('des')?.value)
+      .set('alert_qty', this.materialName.get('alert_qty')?.value);
 
 
-    // Make HTTP call and rely on the service to handle headers
     this.materialnameService.createMaterialName(params.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
@@ -336,29 +347,26 @@ uomList:any[]=[];
   }
 
   onUpdate() {
-    // Ensure form is valid before submitting
     if (this.materialName.valid) {
-      // Create HttpParams for URL-encoded format
       let params = new HttpParams()
 
 
         .set('key', this.materialName.get('key')?.value)
       .set('type', this.materialName.get('type')?.value)
-      // .set('material_unit', this.materialName.get('material_unit')?.value)
       .set('group_id', this.materialName.get('materialgroup')?.value)
       .set('material_name', this.materialName.get('materialname')?.value)
       .set('munitid',this.materialName.get('uom')?.value)
       .set('material_description', this.materialName.get('des')?.value)
       .set('material_id', this.materialName.get('id')?.value)
+      .set('alert_qty', this.materialName.get('alert_qty')?.value)
 
 
-      // Make HTTP call and rely on the service to handle headers
       this.materialnameService.updateMaterialName(params.toString()).subscribe(
         (response: any) => {
           if (response.status === 'success') {
             const message = response.data?.msg || 'Material Group Updated';
             this.toastr.success(message);
-            this.resetForm(); // Reset form after successful update
+            this.resetForm();
             const key = response.data?.key;
             this.showMaterialName();
             console.log('Key:', key);
@@ -391,24 +399,6 @@ uomList:any[]=[];
 
 
 
-
-  onSortData(sort: any) {
-    this.paginatedData = this.paginatedData.sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      switch (sort.active) {
-        case 'group_name':
-          return this.compare(a.group_name, b.group_name, isAsc);
-        case 'created_at':
-          return this.compare(a.created_at, b.created_at, isAsc);
-
-
-        default:
-          return 0;
-      }
-    });
-    this.dataSource.data = this.paginatedData;
-  }
-
   compare(a: string | number, b: string | number, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
@@ -417,10 +407,7 @@ uomList:any[]=[];
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Proceed with the delete action, e.g., call a service to delete the item
-        console.log('Item deleted:', item);
         this.deleteMaterialName(item)
-        // Your delete logic here
       } else {
         console.log('Delete canceled');
       }
@@ -450,7 +437,9 @@ uomList:any[]=[];
         if (response.status === 'success') {
           this.toastr.success(response.data?.msg || 'Material Deleted');
           this.showMaterialName();
-        }  else if(response.message[0].status == 101){
+        }else if(response.status === 'error'){
+          this.toastr.error(response.data?.msg);
+        }else if(response?.message[0].status == 101){
           this.cookieService.delete('userId');
       this.cookieService.delete('userName');
       this.cookieService.delete('userType');
@@ -470,25 +459,28 @@ uomList:any[]=[];
 
 
   uploadSubmit(): void {
-    console.log("abcde")
     if (!this.selectedFile) {
       this.toastr.error('Please select a file to upload');
       return;
     }
 
     const formData = new FormData();
-    formData.append('key',this.key); // Add the key
-    formData.append('file', this.selectedFile as File); // Attach the actual file
+    formData.append('key',this.key);
+    formData.append('file', this.selectedFile as File);
 
-    console.log('Submitting form data:', formData);
-    console.log('Submitting form data:', formData);
 
     this.materialnameService.materialNamecsv(formData).subscribe(
       (response: any) => {
         if (response.status === 'success') {
-          this.toastr.success('File uploaded successfully');
+          if(response?.data?.data1?.errors?.length >0){
+            this.errorData=response?.data?.data1?.errors;
+          }else{
+            this.errorData=[]
+          }
+          this.toastr.success('Material uploaded successfully');
           this.resetForm();
           this.showMaterialName();
+
 
 
         }  else if(response.message[0].status == 101){
@@ -511,26 +503,24 @@ uomList:any[]=[];
 
   updateMaterialName(item: any) {
     this.formType='form1'
-    console.log("item is ",item)
-    // Patch the form fields with the values from the selected row
     this.materialName.patchValue({
-      materialgroup: item.group_id, // Patch group_name from the item
-      materialname: item.material_name, // Use item.id for group_id
+      materialgroup: item.group_id,
+      materialname: item.material_name,
       uom:item.munitid,
       des:item.material_description,
-      type: 'update' ,// Set type as 'update'
-      id:item.id
-    });
-    console.log("updated materialNamae",this.materialName)
+      alert_qty:item.alert_qty,
+      type: 'update' ,
+      id:item.id,
 
-    // Set isUpdating to true to hide the submit button
+    });
+
     this.isUpdating = true;
   }
 
   resetForm() {
     this.isUpdating = false;
     this.materialName.reset({
-      key: '',
+      key: this.cookieService.get('token'),
       type: '',
       materialgroup: '',
       materialname: '',

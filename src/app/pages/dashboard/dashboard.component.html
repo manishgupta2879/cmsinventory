@@ -1,194 +1,171 @@
-<!-- <div class="row">
 
-
-  <div class="col-lg-12">
-    <mat-card class="cardWithShadow">
-      <mat-card-content class="p-24">
-        <mat-card-title>Current Stock</mat-card-title>
-        <div class="table-responsive m-t-16">
-          <table mat-table [dataSource]="currentStock" class="w-100">
-            <ng-container matColumnDef="materialgroup">
-              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
-                Material Group
-              </th>
-              <td mat-cell *matCellDef="let element">
-                <h6 class="mat-subtitle-1 f-s-14 f-w-600">{{ element.group_name }}</h6>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="materialname">
-              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
-                Material Name
-              </th>
-              <td mat-cell *matCellDef="let element">{{ element.material_name }}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="material_unit">
-              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
-                Material Unit
-              </th>
-              <td mat-cell *matCellDef="let element">{{ element.material_unit }}</td>
-            </ng-container>
-
-
-
-            <ng-container matColumnDef="quantity">
-              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
-               Available Quantity
-              </th>
-              <td mat-cell *matCellDef="let element">
-                <span class="bg-light-success text-primary rounded f-w-600 p-6 p-y-4 f-s-12">
-                  {{ element.avaqty }}
-                </span>
-              </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-          </table>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-</div>
-
- -->
-
-<!-- data table -->
-<!--
- <div class="row">
-  <div class="col-lg-12">
-    <mat-card class="cardWithShadow">
-      <mat-card-content class="p-24">
-        <mat-card-title>Current Stock</mat-card-title>
-        <div class="table-responsive m-t-16">
-          <table mat-table [dataSource]="dataSource" matSort class="w-100">
-            <ng-container matColumnDef="materialgroup">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
-                Material Group
-              </th>
-              <td mat-cell *matCellDef="let element">
-                <h6 class="mat-subtitle-1 f-s-14 f-w-600">{{ element.group_name }}</h6>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="materialname">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
-                Material Name
-              </th>
-              <td mat-cell *matCellDef="let element">{{ element.material_name }}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="material_unit">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
-                Material Unit
-              </th>
-              <td mat-cell *matCellDef="let element">{{ element.material_unit }}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="quantity">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header class="f-w-600 mat-subtitle-1 f-s-14">
-               Available Quantity
-              </th>
-              <td mat-cell *matCellDef="let element">
-                <span class="bg-light-success text-primary rounded f-w-600 p-6 p-y-4 f-s-12">
-                  {{ element.avaqty }}
-                </span>
-              </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-          </table>
-
-          <mat-paginator [length]="currentStock.length" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
-          </mat-paginator>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-</div>
- -->
 <h1 class="fs-4 fw-bold mb-3">Dashboard</h1>
-<div class="dashboard-container card p-3 col-12 col-md-8">
-  <!-- Search Bar -->
-  <!-- <div class="search-container">
-    <mat-form-field appearance="outline" class="search-field">
-      <mat-label>Search by Material Name or Material Group</mat-label>
-      <span class="input-group-addon">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </span>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Search"/>
-    </mat-form-field>
-  </div> -->
-  <div class="d-flex justify-content-between align-items-center">
-  <div class="">
-    <b class="fs-5">Current Stock</b>
-  </div>
+<div class="row gy-3">
+  <div class="col-12 col-md-6">
+    <div class="dashboard-container card p-3 p-md-4">
 
-  <div id="" class=" d-flex justify-content-end mb-2">
-    <div class="dt-search">
-      <label for="dt-search-0"
-        ><div class="input-group">
-          <span class="input-group-addon"
-            ><span class="fa fa-search"></span></span
-          ><input
-          (keyup)="applyFilter($event)"
-            type="search"
-            class="dt-input"
-            id="dt-search-0"
-            placeholder="Search..."
-            aria-controls="users-table"
-          /></div
-      ></label>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="">
+          <b class="fs-md-5 mb-2 mb-md-0 table-heading">Current Stock</b>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <button type="button" class="btn ch_button btn-sm" (click)="exportAsCSV()">Export</button>
+          <div id="" class="d-flex justify-content-end">
+            <div class="dt-search">
+              <label for="dt-search-0"
+                ><div class="input-group">
+                  <span class="input-group-addon"
+                    ><span class="fa fa-search"></span></span
+                  ><input
+                    (keyup)="applyFilter($event)"
+                    type="search"
+                    class="dt-input"
+                    id="dt-search-0"
+                    placeholder="Search..."
+                    aria-controls="users-table"
+                  /></div
+              ></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="table-container table-responsive">
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          matSort
+          class="table-striped table-bordered"
+        >
+        <ng-container matColumnDef="sno">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="heading"
+
+          >
+            S.No
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let item; let i = index"
+            style="color: blue; font-weight: 600; cursor: pointer"
+          >
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+          <ng-container matColumnDef="group_name" >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="heading"
+            >
+              Material Group
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.group_name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="material_name">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="heading"
+            >
+              Material Item
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.material_name }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="material_unit">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="heading"
+            >
+              UOM
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.material_unit }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="avaqty" >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              class="heading"
+            >
+              Quantity
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.avaqty }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"
+          [ngClass]="{
+            'red-bg': row.quantityStatus === 'red',
+            'orange-bg': row.quantityStatus === 'orange',
+            'green-bg': row.quantityStatus === 'green'
+          }">
+          ></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center font-weight-bold" colspan="5">No data found</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="pagination-container">
+        <mat-paginator
+          [length]="dataSource?.data?.length"
+          [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+        >
+        </mat-paginator>
+      </div>
     </div>
   </div>
-</div>
 
-  <!-- Table for Material Data -->
-  <div class="table-container">
-    <table mat-table [dataSource]="dataSource" matSort class="table-striped table-bordered">
-      <!-- Material Group Column -->
-      <ng-container matColumnDef="materialgroup">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
-          Material Group
-        </th>
-        <td mat-cell *matCellDef="let element">{{ element.group_name }}</td>
-      </ng-container>
 
-      <!-- Material Name Column -->
-      <ng-container matColumnDef="materialname">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">Material Name</th>
-        <td mat-cell *matCellDef="let element">{{ element.material_name }}</td>
-      </ng-container>
+  <div class="col-12 col-md-6">
+    <div class="card p-3 p-md-4">
+      <div class="chart-container">
+        <b class="table-heading">Purchase Vs Sales</b>
 
-      <!-- Material Unit Column -->
-      <ng-container matColumnDef="material_unit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">UOM</th>
-        <td mat-cell *matCellDef="let element">{{ element.material_unit }}</td>
-      </ng-container>
+        <div class="filters d-flex gap-2 mt-2">
+          <select [(ngModel)]="UserselectedYear" (change)="graphfilter()" class="rounded-1 p-1 shadow-sm">
+            <option *ngFor="let year of yearArray" [value]="year">{{ year }}</option>
+          </select>
 
-      <!-- Quantity Column -->
-      <ng-container matColumnDef="quantity">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">Quantity</th>
-        <td mat-cell *matCellDef="let element" class="text-end">{{ element.avaqty }}</td>
-      </ng-container>
+          <select [(ngModel)]="selectProduct" (change)="graphfilter()" class="rounded-1 p-1 shadow-sm">
+            <option value="" selected>Select Product</option>
+            <option *ngFor="let product of materialTableData"  [value]="product.id">{{ product.material_name }}</option>
+          </select>
+        </div>
 
-      <!-- Table Header -->
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-
-      <!-- Table Row -->
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+        <canvas
+          baseChart
+          [data]="barChartData"
+          [options]="barChartOptions"
+          [type]="barChartType"
+          width="600"
+          height="380"
+        >
+        </canvas>
+      </div>
+    </div>
   </div>
 
-  <!-- Pagination -->
-  <div class="pagination-container">
-    <mat-paginator
-      [length]="dataSource?.data?.length"
-      [pageSize]="5"
-      [pageSizeOptions]="[5, 10, 25, 50]"
-    >
-    </mat-paginator>
-  </div>
+
+
 </div>

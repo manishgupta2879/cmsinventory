@@ -22,9 +22,8 @@ export class SidebarComponent implements OnInit{
 
 
     this.sharedService.showToggleIcon$.subscribe((value: boolean) => {
-      this.showToggleIcon = value; // Update the local value when it changes
+      this.showToggleIcon = value;
     });
-    // Toggle Sidebar
     const menuToggle = document.getElementById('menu-toggle');
     const sidebarWrapper = document.getElementById('wrapper');
 

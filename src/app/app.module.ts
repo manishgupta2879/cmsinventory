@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
@@ -45,6 +45,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MaterialgrpConfComponent } from './materialgrp-conf/materialgrp-conf.component';
 import { InwardconfComponent } from './inwardconf/inwardconf.component';
 import { OutwardconfComponent } from './outwardconf/outwardconf.component';
+import { ResetpasswordComponent } from './pages/authentication/resetpassword/resetpassword.component';
+import { NgChartsModule } from 'ng2-charts';
+import { ServiceWorkerModule } from '@angular/service-worker';
+
 
 
 
@@ -67,7 +71,9 @@ import { OutwardconfComponent } from './outwardconf/outwardconf.component';
     ConfirmationComponent,
     MaterialgrpConfComponent,
     InwardconfComponent,
-    OutwardconfComponent
+    OutwardconfComponent,
+    ResetpasswordComponent,
+    InitialStockComponent
 
   ],
   imports: [
@@ -76,23 +82,32 @@ import { OutwardconfComponent } from './outwardconf/outwardconf.component';
     HttpClientModule,
     BrowserAnimationsModule,
     MatFormFieldModule,
-    MatDialogModule,    // Import MatDialogModule for dialog components
+    MatDialogModule,
     MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
-    InitialStockComponent,
     MatTableModule,
     MatSortModule,
     MatInputModule,
     MatPaginatorModule,
     MatCardModule,
     MaterialModule,
+    NgChartsModule,
     ToastrModule.forRoot({
       timeOut: 3000,
       closeButton: true,
       preventDuplicates: true,
     }),
     TablerIconsModule.pick(TablerIcons),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode()
+    }),
   ],
   providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
   exports: [TablerIconsModule],

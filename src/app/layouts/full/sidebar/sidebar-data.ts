@@ -11,11 +11,7 @@ export const navItems: any[] = [
       },
     ]
   },
-  // {
-  //   displayName: 'Dashboard',
-  //   iconName: 'layout-dashboard',
-  //   route: '/dashboard',
-  // },
+
   {
     navCap: 'Masters',
     new:[
@@ -25,7 +21,7 @@ export const navItems: any[] = [
         route: '/ui-components/materialGroup',
       },
       {
-        displayName: 'Material Name',
+        displayName: 'Material Item',
         iconName: 'poker-chip',
         route: '/ui-components/materialName',
       },

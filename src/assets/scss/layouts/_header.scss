@@ -77,8 +77,64 @@ html .topbar {
 }
 .ch_button{
   background-color: #ca1d24 !important;
-  border-radius: 7px !important;
+  color: #fff !important;
+  border-radius: 5px !important;
   border: none !important;
+}
+.ch_button:hover{
+  background-color: #ca1d23d7 !important;
+}
+.table-heading{
+  font-size: 20px !important;
 }
 
 
+@media screen and (max-width: 768px){
+  .dt-search input:focus{
+    width: 90px !important;
+
+  }
+  .mat-mdc-paginator-container{
+    padding: 12px 0px 0px 0px !important;
+  }
+  .mat-drawer[style*="visibility: hidden"] {
+    display: block !important;
+}
+  .mat-drawer{
+    visibility: visible !important;
+  }
+  .mat-drawer{
+    // width: 100% !important;
+    // left: 272px !important;
+    transform: translate3d(0%, 0, 0) !important;
+}
+#wrapper{
+  padding-left: 318px !important;
+}
+#menu{
+  width: 184px !important;
+}
+  #menu{
+    position: fixed;
+    top: 0;
+    left: 0 !important;
+    bottom: 0;
+    width: 184px !important;
+    background-color: #1f1f1f;
+    transition: all 1s;
+  }
+  #menu_active:checked + #wrapper {
+    padding-left: 44px !important;
+    transition: all 1s;
+}
+  #menu_active:checked + #wrapper #menu {
+    left: -148px !important;
+    transition: all 1s;
+}
+.side-fav{
+  margin-left: 79% !important;
+}
+  // .table-heading{
+  //   font-size: 16px !important;
+  // }
+}

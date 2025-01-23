@@ -1,17 +1,3 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-confirmation',
-//   standalone: true,
-//   imports: [],
-//   templateUrl: './confirmation.component.html',
-//   styleUrl: './confirmation.component.scss'
-// })
-// export class ConfirmationComponent {
-
-// }
-
-
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';

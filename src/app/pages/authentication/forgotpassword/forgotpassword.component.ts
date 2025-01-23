@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { LoginService } from 'src/app/services/Login/login.service';
 
 @Component({
   selector: 'app-forgotpassword',
@@ -11,7 +13,11 @@ import { Router } from '@angular/router';
 })
 export class ForgotpasswordComponent implements OnInit{
   forgotPasswordForm!: FormGroup;
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+   private loginservice: LoginService,
+            private toastr: ToastrService
+
+  ) {}
 
 
 
@@ -23,8 +29,29 @@ export class ForgotpasswordComponent implements OnInit{
     })
   }
 
-  forgotSubmit(){
 
+  forgotSubmit() {
+    const data = this.forgotPasswordForm.value;
+    const formData = new FormData();
+    formData.append('email', this.forgotPasswordForm.get('email')?.value);
+
+
+    this.loginservice.forgotPassword(formData).subscribe(
+      (response: any) => {
+        const res = response;
+        if (res.status == 'success') {
+          this.toastr.success(res?.data?.msg);
+          this.forgotPasswordForm.reset();
+
+
+        }else{
+          this.toastr.error('Invalid email address');
+        }
+      },
+      (error: any) => {
+        this.toastr.error(error.statusText);
+      }
+    );
   }
 
 

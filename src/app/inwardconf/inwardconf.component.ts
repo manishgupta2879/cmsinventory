@@ -15,10 +15,10 @@ export class InwardconfComponent {
   constructor(public dialogRef: MatDialogRef<InwardconfComponent>) {}
 
   onCancel(): void {
-    this.dialogRef.close(false);  // Closes the dialog and sends 'false' to the caller
+    this.dialogRef.close(false);
   }
 
   onConfirm(): void {
-    this.dialogRef.close(true);  // Closes the dialog and sends 'true' to the caller
+    this.dialogRef.close(true);
   }
 }

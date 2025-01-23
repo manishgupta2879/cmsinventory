@@ -1,19 +1,3 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-outwardconf',
-//   standalone: true,
-//   imports: [],
-//   templateUrl: './outwardconf.component.html',
-//   styleUrl: './outwardconf.component.scss'
-// })
-// export class OutwardconfComponent {
-
-// }
-
-
-
-
 
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -29,10 +13,10 @@ export class OutwardconfComponent {
   constructor(public dialogRef: MatDialogRef<OutwardconfComponent>) {}
 
   onCancel(): void {
-    this.dialogRef.close(false);  // Closes the dialog and sends 'false' to the caller
+    this.dialogRef.close(false);
   }
 
   onConfirm(): void {
-    this.dialogRef.close(true);  // Closes the dialog and sends 'true' to the caller
+    this.dialogRef.close(true);
   }
 }
