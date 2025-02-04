@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
@@ -60,9 +60,8 @@ export class OutwardstockComponent implements OnInit,AfterViewInit {
 
   getMaterial(event: Event) {
 
-    const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
+    const selectElement = event.target as HTMLSelectElement;
   const selectedGroupId = selectElement.value;
-  console.log("Selected Group ID:", selectedGroupId);
 
 
 
@@ -75,14 +74,13 @@ export class OutwardstockComponent implements OnInit,AfterViewInit {
     let params = new HttpParams()
       .set('key', this.materialName.get('key')?.value)
       .set('type', this.materialName.get('type')?.value)
-      // .set('group_name', this.materialName.get('group_name')?.value)
-      // .set('group_id', this.materialName.get('materialgroup')?.value)
+
       .set('group_id', selectedGroupId);
     this.materialnameService.getMaterialNameByGroup(params.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
           this.material = response.data?.data1 || [];
-        }  else if(response.message[0].status == 101){
+        }else if(response.message[0].status == 101){
           this.cookieService.delete('userId');
       this.cookieService.delete('userName');
       this.cookieService.delete('userType');
@@ -91,18 +89,20 @@ export class OutwardstockComponent implements OnInit,AfterViewInit {
 
         }else {
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
+
       }
     );
   }
 
 
   ngAfterViewInit() {
-    // Initialize sorting and pagination after view is initialized
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
@@ -110,7 +110,7 @@ export class OutwardstockComponent implements OnInit,AfterViewInit {
 
   getMaterialFilter(event: Event) {
 
-    const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
+    const selectElement = event.target as HTMLSelectElement;
   const selectedGroupId = selectElement.value;
 
 
@@ -138,17 +138,26 @@ export class OutwardstockComponent implements OnInit,AfterViewInit {
 
         }else {
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
+
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
+
       }
     );
   }
 
 
   outwardSubmit() {
+    if (this.outwardForm.invalid) {
+      this.outwardForm.markAllAsTouched();
+      return;
+    }
+
 
     const reorderedPayload = {
       invoice_no: this.outwardForm.value.invoice,
@@ -157,7 +166,7 @@ export class OutwardstockComponent implements OnInit,AfterViewInit {
       group_id: this.outwardForm.value.materialgroup,
       item_id: this.outwardForm.value.materialname,
       qty: this.outwardForm.value.quantity,
-      trans_date: '2024-11-28',
+      trans_date: this.outwardForm.value.transdate,
       type:"outward",
       key: this.cookieService.get('token'),
 
@@ -167,11 +176,18 @@ export class OutwardstockComponent implements OnInit,AfterViewInit {
 
     this.materialnameService.createInward(httpParams.toString()).subscribe(
       (response: any) => {
+
+
         if (response.status === 'success') {
-          this.toastr.success('Invard added successfully');
+          this.toastr.success('Outward added successfully');
           this.resetForm();
           this.outwardList();
-        } else if(response.message[0].status == 101){
+          window.scrollTo(0, 0);
+        }else if(response?.message){
+          this.toastr.error(response.message.msg);
+          this.resetForm();
+          window.scrollTo(0, 0);
+        }else if(response.message[0].status == 101){
           this.cookieService.delete('userId');
       this.cookieService.delete('userName');
       this.cookieService.delete('userType');
@@ -180,11 +196,14 @@ export class OutwardstockComponent implements OnInit,AfterViewInit {
 
         }else {
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
+
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
       }
     );
   }
@@ -248,7 +267,6 @@ this.totalItems = response.data.data1.length;
 this.totalPages = Math.ceil(this.totalItems/this.pageSize);
 this.pagination()
 this.dataSource.data = this.outwardListData;
-console.log("Material group  new is ",this.dataSource.data,"andother is ",this.outwardListData)
         } else if(response.message[0].status == 101){
           this.cookieService.delete('userId');
       this.cookieService.delete('userName');
@@ -258,11 +276,14 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
 
         }else {
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
+
       }
     );
   }
@@ -272,10 +293,7 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
 
         dialogRef.afterClosed().subscribe(result => {
           if (result) {
-            // Proceed with the delete action, e.g., call a service to delete the item
-            console.log('Item deleted:', item);
             this.deleteOutward(item)
-            // Your delete logic here
           } else {
             console.log('Delete canceled');
           }
@@ -284,6 +302,10 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
 
 
   onUpdate() {
+    if (this.outwardForm.invalid) {
+      this.outwardForm.markAllAsTouched();
+      return;
+    }
 
 
 
@@ -312,7 +334,7 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
           this.toastr.success('outward updated successfully');
           this.outwardList();
           this.resetForm();
-
+          window.scrollTo(0, 0);
 
         } else if(response.message[0].status == 101){
           this.cookieService.delete('userId');
@@ -323,11 +345,14 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
 
         }else {
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
+
       }
     );
   }
@@ -355,6 +380,7 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
 
           this.toastr.success('Outward deleted successfully');
           this.outwardList();
+          window.scrollTo(0, 0);
 
         } else if(response.message[0].status == 101){
           this.cookieService.delete('userId');
@@ -365,17 +391,54 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
 
         }else {
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
+
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
+
       }
     );
 
 
 
 }
+
+exportAsCSV(): void {
+  const csvData = this.createCSV(this.outwardListData);
+  const blob = new Blob([csvData], { type: 'text/csv' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'outwardStock.csv';
+  link.click();
+}
+
+createCSV(data: any[]): string {
+
+  const header = ['SNo', 'Material Group', 'Material Name','Quantity', 'UOM','Transaction Date',' No. of Order procceed','Outward Date',];
+
+  const rows = data.map((item,index) => [
+    index+1,
+    item.group_name,
+    item.material_name,
+    item.qty,
+    item.material_unit,
+    item.transition_date,
+    item.outward_orders,
+    item.outward_date
+  ]);
+
+  const csvContent = [
+    header.join(','),
+    ...rows.map(row => row.join(','))
+  ].join('\n');
+
+  return csvContent;
+}
+
 
 
   updateOutward(item: any) {
@@ -395,30 +458,19 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
     let params = new HttpParams()
       .set('key', this.materialName.get('key')?.value)
       .set('type', this.materialName.get('type')?.value)
-      .set('group_id', groupId); // Pass the group ID to get materials of that group
+      .set('group_id', groupId);
 
     this.materialnameService.getMaterialNameByGroup(params.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
           this.material = response.data?.data1 || [];
-          console.log("Materials for selected group:", this.material);
-
-          //this.inwardForm.patchValue({
-            //materialname: "3",
-            // materialgroup: item.group_id,
-            // invoice: item.invoice_no,
-            // quantity: item.qty,
-            // invoicedate: item.invoice_date,
-            // transdate: item.transition_date,
-            // nooforders:item.outward_orders
-          //});
 
 
           setTimeout(() => {
             this.outwardForm.patchValue({
                 materialgroup: item.group_id,
                 invoice: item.invoice_no,
-                quantity: item.qty,
+                quantity: Math.abs(item.qty),
                 invoicedate: item.invoice_date,
                 transdate: item.transition_date,
                 materialname: item.item_id,
@@ -429,14 +481,24 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
 
           this.isUpdating = true;
 
+        }else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
         } else {
           this.toastr.error('Failed to retrieve materials');
-          //done
+          window.scrollTo(0, 0);
+
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
+
       }
     );
   }
@@ -446,12 +508,12 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
     const token = this.cookieService.get('token');
 
     this.outwardForm = new FormGroup({
-      materialgroup: new FormControl(''),
-      materialname: new FormControl(''),
-      transdate: new FormControl(''),
-      quantity: new FormControl(''),
+      materialgroup: new FormControl('',[Validators.required]),
+      materialname: new FormControl('',[Validators.required]),
+      transdate: new FormControl('',[Validators.required]),
+      quantity: new FormControl('',[Validators.required]),
       orderprocess: new FormControl(''),
-      nooforders: new FormControl(''),
+      nooforders: new FormControl('',[Validators.required]),
 
     })
 
@@ -484,7 +546,6 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
   showMaterial() {
 
 
-    // Create HttpParams for URL-encoded format
     let params = new HttpParams()
       .set('key', this.materialName.get('key')?.value)
       .set('type', this.materialName.get('type')?.value)
@@ -508,17 +569,31 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
 
         }else {
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
       }
     );
   }
 
 
   applyfilter(type:any){
+
+    const itemId = this.filterForm?.get('item_id')?.value;
+    const filterMaterialGroup = this.filterForm?.get('filtermaterialGroup')?.value;
+
+    if ((itemId && !filterMaterialGroup) || (!itemId && filterMaterialGroup)) {
+      this.toastr.error('Please select both Material Item and Material  Group.');
+      return;
+    }
+
+    // if (itemId && filterMaterialGroup) {
+    // }
+
     this.filterType=type
   const abc=  this.filterForm.value
   this.itemId = this.filterForm.get('item_id')?.value;
@@ -531,16 +606,15 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
 
-    // Set the filterPredicate before applying the filter
     this.dataSource.filterPredicate = (data: any, filter: string) => {
-      const materialName = data.material_name ? data.material_name.toLowerCase() : ''; // Correct key names
-      const materialGroup = data.group_name ? data.group_name.toLowerCase() : ''; // Correct key names
+      const materialName = data.material_name ? data.material_name.toLowerCase() : '';
+      const materialGroup = data.group_name ? data.group_name.toLowerCase() : '';
       const QTY = data.qty ? data.qty.toLowerCase() : '';
       const materialUnit = data.material_unit ? data.material_unit.toLowerCase() : '';
-      return materialName.includes(filter) || materialGroup.includes(filter)  || QTY.includes(filter)|| materialUnit.includes(filter);
+      const nooforders = data.outward_orders ? data.outward_orders.toLowerCase() : '';
+      return materialName.includes(filter) || materialGroup.includes(filter)  || QTY.includes(filter)|| materialUnit.includes(filter) || nooforders.includes(filter);
     };
 
-    // Apply the filter
     this.dataSource.filter = filterValue;
   }
 
@@ -574,6 +648,7 @@ console.log("Material group  new is ",this.dataSource.data,"andother is ",this.o
       invoicedate: '',
       transdate: '',
     })
+    this.isUpdating = false;
   }
 
 

@@ -33,17 +33,15 @@ export class HeaderComponent {
   ) { }
 
   logout() {
-    // localStorage.removeItem('userToken');
 
     this.cookieService.delete('userId');
     this.cookieService.delete('userName');
     this.cookieService.delete('userType');
     this.cookieService.delete('token');
-    this.route.navigate(['/authentication/login']); // Navigate to the login page
+    this.route.navigate(['/authentication/login']);
   }
   toggle(){
     this.showToggleIcon = !this.showToggleIcon;
-    console.log('value is ',this.showToggleIcon)
     this.sharedService.setShowToggleIcon(this.showToggleIcon);
 
   }

@@ -1,70 +1,3 @@
-<!-- <div class="d-flex flex-column flex-md-row container-fluid gap-3 ps-0">
-    <div class="col-md-2 col-xl-2 col-sm-12 col-12 bg-body card p-0">
-        <form [formGroup]="materialGroup" (ngSubmit)="materialSave()" class="p-3">
-            <div class="align-items-center">
-                <div class="col-md-12 col-sm-12 col-12 px-0">
-                    <div class="form-box">
-                        <label class="form-check-label mb-2">Material Group</label>
-                        <input type="text" id="group_name" name="group_name" class="form-control px-0"
-                            formControlName="group_name" placeholder=" Enter Material Group">
-                    </div>
-                </div>
-
-                <div class="d-flex">
-                    <div class="submit-btn pt-4" *ngIf="!isUpdating">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-
-                    <div class="submit-btn pt-4" *ngIf="isUpdating">
-                        <button type="button" class="btn btn-primary" (click)="onUpdate()">Update</button>
-                    </div>
-
-                    <div class="submit-btn pt-4 ms-2">
-                        <button type="button" class="btn btn-primary" (click)="resetForm()">Reset</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-    <div class="col-md-10 col-xl-10 col-sm-12 col-12 bg-body card ps-0">
-
-
-
-
-        <div class="tablewrapper  p-3">
-            <table class="table  table-responsive">
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Material Group</th>
-                        <th>Created At</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody *ngFor="let item of paginatedData;let i = index">
-                    <tr>
-                        <td (click)="updateMaterial(item)"
-                            style="color: blue; font-weight: 600; cursor: pointer;">{{i+1}}</td>
-                        <td>{{item.group_name}}</td>
-                        <td>{{item.created_at}}</td>
-                        <td style="cursor: pointer; color: red; font-weight: 600;" (click)="deleteMaterial(item.id)">
-                            Delete</td>
-                    </tr>
-                </tbody>
-            </table>
-
-
-            <div class="pagination-controls">
-              <button class="btn btn-secondary" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
-              <span class="mx-3">Page {{ currentPage }} of {{ totalPage }}</span>
-              <button class="btn btn-secondary" (click)="nextPage()" [disabled]="currentPage >= totalPage">Next</button>
-            </div>
-
-
-        </div>
-    </div>
-</div> -->
-
 <h1 class="fs-4 fw-bold mb-3">Material Group</h1>
 <div class="d-flex flex-column flex-md-row container-fluid gap-3 ps-0">
   <div class="col-md-2 col-xl-2 col-sm-12 col-12 bg-body card p-0">
@@ -81,6 +14,9 @@
               formControlName="group_name"
               placeholder="Enter Material Group"
             />
+            <div *ngIf="materialGroup.get('group_name')?.invalid && materialGroup.get('group_name')?.touched">
+              <small class="text-danger">Group Name is required</small>
+            </div>
           </div>
         </div>
 
@@ -105,9 +41,9 @@
     </form>
   </div>
 
-  <div class="col-md-10 col-xl-10 col-sm-12 col-12 bg-body card ps-0">
-    <div class="d-flex justify-content-between align-items-center px-3 pt-3">
-      <div><b class="fs-6 fs-md-5">Material Group List</b></div>
+  <div class="col-md-10 col-xl-10 col-sm-12 col-12 bg-body card ">
+    <div class="d-flex justify-content-between align-items-center px-md-3 pt-3">
+      <div><b class="fs-md-5 table-heading">Material Group List</b></div>
       <div id="" class="d-flex justify-content-end mb-md-2">
         <div class="dt-search">
           <label for="dt-search-0"
@@ -126,13 +62,11 @@
         </div>
       </div>
     </div>
-    <!-- <div class="d-flex justify-content-between p-3">
-      <input matInput [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" placeholder="Search by Material Group" class="form-control" />
-    </div> -->
-    <div class="tablewrapper p-3 table-container table-responsive">
+
+    <div class="tablewrapper pt-3 pt-md-0 p-md-3 table-container table-responsive">
       <table mat-table [dataSource]="dataSource" matSort class="table-bordered">
         <ng-container matColumnDef="sno">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">S.No</th>
+          <th mat-header-cell *matHeaderCellDef  class="heading">S.No</th>
           <td
             mat-cell
             *matCellDef="let item; let i = index"
@@ -151,8 +85,7 @@
 
         <ng-container matColumnDef="created_at">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">Created At</th>
-          <td mat-cell *matCellDef="let item">{{ item.created_at | date: 'dd-yyyy-MM' }}</td>
-          <!-- <td mat-cell *matCellDef="let item">{{ item.created_at }}</td> -->
+          <td mat-cell *matCellDef="let item">{{ item.created_at | date: "dd-MM-yyyy" }}</td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
@@ -169,22 +102,23 @@
               (click)="updateMaterial(item)"
             ></i>
           </td>
-          <!-- <td mat-cell *matCellDef="let item" style="cursor: pointer; font-weight: 600;" class="text-success" (click)="updateMaterial(item)">
-            <i class="fa-solid fa-pencil-alt"></i>
-          </td> -->
+
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center font-weight-bold" colspan="4">No data found</td>
+        </tr>
       </table>
 
+    </div>
+    <div class="pagination-container">
       <mat-paginator
-        [pageSize]="pageSize"
-        [pageIndex]="currentPage - 1"
-        [length]="totalItems"
-        (page)="onPageChange($event)"
+        [length]="dataSource?.data?.length"
+        [pageSize]="10"
         [pageSizeOptions]="[5, 10, 25, 50]"
-        aria-label="Select page"
       >
       </mat-paginator>
     </div>

@@ -28,10 +28,6 @@ export class AppSideLoginComponent implements OnInit {
     })
   }
 
-  // navigate(){
-  //   this.router.navigate(['/authentication/register']);
-  // }
-
   navigate(){
     this.router.navigate(['/authentication/forgotPassword']);
   }
@@ -41,6 +37,7 @@ export class AppSideLoginComponent implements OnInit {
 
     this.loginservice.userLogin(data).subscribe(
       (response: any) => {
+        // debugger;
         const res = response[0];
         if (res.status == 200) {
           this.toastr.success(res.msg || 'Logged In Successfully');
@@ -58,6 +55,7 @@ export class AppSideLoginComponent implements OnInit {
         }
       },
       (error: any) => {
+        console.log("login error is",error);
         this.toastr.error(error.statusText);
       }
     );

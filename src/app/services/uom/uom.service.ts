@@ -16,7 +16,8 @@ export class UomService {
   getUomList(data: any) {
     const httpOptions = getHttpOptions(this.cookieService);
 
-    return this.http.post(`${apiUrl}/API/uom.php`, data, httpOptions);
+    // return this.http.post(`${apiUrl}/stocksightapi/uom.php`, data, httpOptions);
+    return this.http.post(`${apiUrl}/stocksightapi/uom.php`, data, httpOptions);
   }
 }
 

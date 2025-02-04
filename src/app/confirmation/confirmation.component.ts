@@ -1,17 +1,3 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-confirmation',
-//   standalone: true,
-//   imports: [],
-//   templateUrl: './confirmation.component.html',
-//   styleUrl: './confirmation.component.scss'
-// })
-// export class ConfirmationComponent {
-
-// }
-
-
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -27,10 +13,10 @@ export class ConfirmationComponent {
   constructor(public dialogRef: MatDialogRef<ConfirmationComponent>) {}
 
   onCancel(): void {
-    this.dialogRef.close(false);  // Closes the dialog and sends 'false' to the caller
+    this.dialogRef.close(false);
   }
 
   onConfirm(): void {
-    this.dialogRef.close(true);  // Closes the dialog and sends 'true' to the caller
+    this.dialogRef.close(true);
   }
 }

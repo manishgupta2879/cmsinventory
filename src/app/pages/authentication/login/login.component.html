@@ -4,12 +4,12 @@
   <div
     class="position-relative row w-100 h-100 bg-gredient justify-content-center"
   >
-    <div class="login-container bg-dark">
+    <div class="login-container bg-gray">
       <div class="row g-0 vh-100">
         <div
           class="col-md-8 bg-image d-none d-md-block login_page"
           style="
-            background-image: url('../../../../assets/images/img/champaran-bg.jpg');
+            background-image: url('../../../../assets/images/img/banner.png');
           "
         ></div>
         <div class="col-md-4 d-flex align-items-center px-5">
@@ -19,7 +19,7 @@
             <div class="box boxShaddow"></div>
             <div class="box loginBox shadow-none w-100">
               <h3 style="text-align: center">
-                <img src="../../../../assets/images/img/logo.png" />
+                <img src="../../../../assets/images/img/logo.png" style="height: 60px;" />
               </h3>
               <form
                 [formGroup]="loginForm"
@@ -37,7 +37,6 @@
                   />
                 </div>
 
-                <!-- <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Password</mat-label> -->
                 <div appearance="outline" class="w-100" color="primary border">
                   <input
                     matInput
@@ -58,9 +57,7 @@
                   >
                     Sign In
                   </button>
-                  <!-- <button  color="primary" class="btn btn-primary w-100 shadow-sm p-2 mt-2" (click)="navigate()">
-                          Register
-                        </button> -->
+
                 </div>
                 <button class="f_link text-center text-primary text-decoration-underline btn-primary bg-transparent border-0" (click)="navigate()">
                     Forgot your password?

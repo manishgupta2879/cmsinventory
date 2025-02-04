@@ -19,6 +19,6 @@ export class MaterialgroupService {
     const httpOptions = getHttpOptions(this.cookieService);
 
     // Make the POST request to the API endpoint
-    return this.http.post(`${apiUrl}/API/mgroup.php`, data, httpOptions);
+    return this.http.post(`${apiUrl}/stocksightapi/mgroup.php`, data, httpOptions);
   }
 }

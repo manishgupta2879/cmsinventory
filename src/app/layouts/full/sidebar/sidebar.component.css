@@ -22,7 +22,7 @@
   left: 0;
   bottom: 0;
   width: 176px;
-  background-color: #1f1f1f;
+  background-color: #334f79;
   transition: all 1s;
 }
 
@@ -78,8 +78,8 @@
 }
 
 #menu ul li:hover {
-  color: #d32a4a;
-  border-left: 4px solid #d32a4a;
+  color: #fff;
+  border-left: 4px solid #fff;
 }
 
 #menu ul li i {
@@ -105,7 +105,7 @@
   /* line-height: 50px; */
   color: #fff;
   /* background: #12344d; */
-  background-color: #1f1f1f;
+  background-color: #334f79;
   cursor: pointer;
   /* padding-left: 7px; */
   text-decoration: none;

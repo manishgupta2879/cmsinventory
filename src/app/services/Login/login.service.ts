@@ -20,6 +20,25 @@ export class LoginService {
     const httpOptions = getHttpOptions(this.cookieService);
 
     // Make the POST request to the login API endpoint
-    return this.http.post(`${apiUrl}/API/login.php`, data, httpOptions);
+    // return this.http.post(`${apiUrl}/stocksightapi/login.php`, data, httpOptions);
+    return this.http.post("https://stocksight.in/stocksightapi/login.php",data, httpOptions);
+
+  }
+
+
+  forgotPassword(data: any) {
+    // Get headers including the PHPSESSID cookie and other necessary options
+    // const httpOptions = getHttpOptions(this.cookieService);
+
+    // Make the POST request to the login API endpoint
+    return this.http.post(`${apiUrl}/stocksightapi/forgot_password.php`, data);
+  }
+
+  resetPassword(data: any) {
+    // Get headers including the PHPSESSID cookie and other necessary options
+    // const httpOptions = getHttpOptions(this.cookieService);
+
+    // Make the POST request to the login API endpoint
+    return this.http.post(`${apiUrl}/stocksightapi/reset_password.php`, data);
   }
 }

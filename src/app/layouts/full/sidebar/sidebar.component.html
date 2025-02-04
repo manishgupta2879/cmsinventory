@@ -3,18 +3,15 @@
 <input type="checkbox" id="menu_active" [checked]="showToggleIcon" />
 <div id="wrapper" class="active">
   <div id="menu">
-    <img src="../../../../assets/images/img/logo.png" alt="" class="img-fluid d-flex m-auto mt-3" *ngIf='!showToggleIcon' style="height: 80px;">
-      <img src="../../../../assets/images/img/toggleIcon.png" alt="" class="img-fluid pt-4 pb-2" *ngIf='showToggleIcon' style=" margin-left: 86%;">
-    <!-- <span id="site-name">
-      <label for="menu_active">
-        <i class="fa fa-bars"></i>
-        <i class="fa fa-arrow-left"></i>
-      </label>
-    </span> -->
+    <div class="bg-white">
+    <img src="../../../../assets/images/img/logo.png" alt="" class="img-fluid d-flex m-auto py-3" *ngIf='!showToggleIcon'>
+      <img src="../../../../assets/images/img/favicon.png" alt="" class="img-fluid pt-4 pb-2 side-fav" *ngIf='showToggleIcon' style=" margin-left: 79%;">
+    </div>
+
     <ul class="">
 
       <a href="">
-        <li class="sb-menu ps-2 pe-2">Home<i class="fa fa-home ps-3"></i>
+        <li class="sb-menu ps-2 pe-2 d-flex justify-content-between align-items-center">Dashboard <img src="../../../../assets/images/img/dashboard (1).png" alt="" class="" style="width: 19px;">
         <div class="sb-submenu">
           <div class="sb-item">  <a [routerLink]="['/dashboard']">Dashboard</a>
           </div>
@@ -22,27 +19,23 @@
       </li>
       </a>
       <a href="">
-        <li class="sb-menu ps-2 pe-2">Masters<i class="fa fa-user-shield fs-5 ps-3"></i>
+        <li class="sb-menu ps-2 pe-2 d-flex justify-content-between align-items-center">Masters<img src="../../../../assets/images/img/master.png" alt="" class="" style="width: 24px;">
           <div class="sb-submenu">
             <div class="sb-item"><a [routerLink]="['/ui-components/materialGroup']">Material Group</a></div>
             <div class="sb-item">
-              <a [routerLink]="['/ui-components/materialName']" >Material Name</a>
+              <a [routerLink]="['/ui-components/materialName']" >Material Item</a>
             </div>
           </div>
         </li>
       </a>
 
       <a [routerLink]="['/ui-components/inventory']">
-        <li class="sb-menu ps-2 pe-2">Inventory<i class="fa fa-user-shield fs-5 ps-3"></i>
-          <!-- <div class="sb-submenu">
-            <div class="sb-item">
-              <a [routerLink]="['/ui-components/inventory']" >Inventory</a>
-            </div>
-          </div> -->
+        <li class="sb-menu ps-2 pe-2 d-flex justify-content-between align-items-center">Inventory<img src="../../../../assets/images/img/inventory (2).png" alt="" class="" style="width: 24px;">
+
         </li>
       </a>
       <a href="">
-        <li class="sb-menu ps-2 pe-2">Stock<i class="fa fa-user-shield fs-5 ps-3"></i>
+        <li class="sb-menu ps-2 pe-2 d-flex justify-content-between align-items-center">Stock<img src="../../../../assets/images/img/stock (1).png" alt="" class="" style="width: 24px;">
           <div class="sb-submenu">
 
             <div class="sb-item">

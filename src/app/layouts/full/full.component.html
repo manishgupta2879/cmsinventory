@@ -5,9 +5,6 @@
   dir="ltr"
   style="display: flex;"
 >
-  <!-- ============================================================== -->
-  <!-- Vertical Sidebar -->
-  <!-- ============================================================== -->
 
   <mat-sidenav
     #leftsidenav
@@ -19,24 +16,18 @@
   >
     <app-sidebar></app-sidebar>
   </mat-sidenav>
-  <!-- ============================================================== -->
-  <!-- Main Content -->
-  <!-- ============================================================== -->
+
   <mat-sidenav-content class="contentWrappe m-0 w-100" style="max-width: 100%;">
-    <!-- ============================================================== -->
-    <!-- VerticalHeader -->
-    <!-- ============================================================== -->
+
 
     <app-header
     [showToggle]="!isOver"
 
   ></app-header>
 
-    <main class="pageWrapper w-100" style="max-width: 100%;">
+    <main class="pageWrapper mb-0 py-2 w-100" style="max-width: 100%;">
 
-      <!-- ============================================================== -->
-      <!-- Outlet -->
-      <!-- ============================================================== -->
+
       <router-outlet></router-outlet>
     </main>
   </mat-sidenav-content>

@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
@@ -11,6 +11,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { InwardconfComponent } from 'src/app/inwardconf/inwardconf.component';
+import { validateHorizontalPosition } from '@angular/cdk/overlay';
 
 
 @Component({
@@ -92,16 +93,17 @@ export class InwardstockComponent implements OnInit,AfterViewInit {
 
               }else{
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
       }
     );
   }
   ngAfterViewInit() {
-    // Initialize sorting and pagination after view is initialized
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
@@ -111,15 +113,51 @@ export class InwardstockComponent implements OnInit,AfterViewInit {
 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          // Proceed with the delete action, e.g., call a service to delete the item
-          console.log('Item deleted:', item);
           this.deleteInward(item)
-          // Your delete logic here
         } else {
           console.log('Delete canceled');
         }
       });
     }
+
+
+    exportAsCSV(): void {
+      const csvData = this.createCSV(this.inwardListData);
+      const blob = new Blob([csvData], { type: 'text/csv' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'inwardStock.csv';
+      link.click();
+    }
+
+    // Helper function to convert data to CSV format
+    createCSV(data: any[]): string {
+      // Define the headerd
+      const header = ['SNo', 'Material Group', 'Material Name', 'UOM','Invoice No.','Quantity','Invoice Date','Transaction Date'];
+
+      // Map data into rows for CSV
+      const rows = data.map((item,index) => [
+        index+1,
+        item.group_name,
+        item.material_name,
+        item.material_unit,
+        item.invoice_no,
+        item.qty,
+        item.invoice_date,
+        item.transition_date
+      ]);
+
+      // Join the header and rows with newline and comma
+      const csvContent = [
+        header.join(','), // Header row
+        ...rows.map(row => row.join(',')) // Data rows
+      ].join('\n');
+
+      return csvContent;
+    }
+
+
+
 
   getMaterial(event: Event) {
 
@@ -152,11 +190,13 @@ this.selectedMaterialGroupId = selectedGroupId;
 
         }else{
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
       }
     );
   }
@@ -192,11 +232,13 @@ this.selectedMaterialGroupId = selectedGroupId;
 
         }else {
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
       }
     );
   }
@@ -247,6 +289,7 @@ this.selectedMaterialGroupId = selectedGroupId;
   deleteInward(item:any){
     if(item.initial_state =='1'){
       this.toastr.error('Initial Stock cannot be deleted');
+      window.scrollTo(0, 0);
       return;
     }
 
@@ -266,6 +309,7 @@ this.selectedMaterialGroupId = selectedGroupId;
           if (response.status === 'success') {
 
             this.toastr.success('Inward deleted successfully');
+            window.scrollTo(0, 0);
             this.inwardList();
 
           } else if(response.message[0].status == 101){
@@ -277,11 +321,13 @@ this.selectedMaterialGroupId = selectedGroupId;
 
           }else {
             this.toastr.error('Failed to retrieve data');
+            window.scrollTo(0, 0);
           }
         },
         (error: any) => {
           console.log('Error:', error);
           this.toastr.error(error.statusText);
+          window.scrollTo(0, 0);
         }
       );
 
@@ -294,10 +340,10 @@ this.selectedMaterialGroupId = selectedGroupId;
   updateInward(item: any) {
     if(item.initial_state =='1'){
       this.toastr.error('Initial Stock cannot be updated');
+      window.scrollTo(0, 0);
       return;
     }
     this.getMaterialNameBasedOnGroup(item.group_id,item);
-    console.log("item is ",item)
     this.stockId = item.id;
 
 
@@ -344,25 +390,37 @@ this.selectedMaterialGroupId = selectedGroupId;
                 materialname: item.item_id,
                 nooforders: item.outward_orders
             });
-            console.log("updated materialName", this.inwardForm);
         }, 0);
 
-          console.log("updated materialNamae",this.inwardForm)
 
           this.isUpdating = true;
 
+        }else if(response.message[0].status == 101){
+          this.cookieService.delete('userId');
+      this.cookieService.delete('userName');
+      this.cookieService.delete('userType');
+      this.cookieService.delete('token');
+      this.router.navigate(['/authentication/login']);
+
         } else {
           this.toastr.error('Failed to retrieve materials');
+          window.scrollTo(0, 0);
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
       }
     );
   }
 
   onUpdate() {
+    if (this.inwardForm.invalid) {
+      this.inwardForm.markAllAsTouched(); // Mark all controls as touched to trigger validation
+      return;
+    }
+
 
 
 
@@ -391,6 +449,7 @@ this.selectedMaterialGroupId = selectedGroupId;
           this.toastr.success('Inward updated successfully');
           this.inwardList();
           this.resetForm();
+          window.scrollTo(0, 0);
 
         } else if(response.message[0].status == 101){
           this.cookieService.delete('userId');
@@ -398,14 +457,17 @@ this.selectedMaterialGroupId = selectedGroupId;
       this.cookieService.delete('userType');
       this.cookieService.delete('token');
       this.router.navigate(['/authentication/login']);
+      window.scrollTo(0, 0);
 
         }else {
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
       }
     );
   }
@@ -431,6 +493,10 @@ this.selectedMaterialGroupId = selectedGroupId;
 
 
   inwardSubmit() {
+    if (this.inwardForm.invalid) {
+      this.inwardForm.markAllAsTouched(); // Mark all controls as touched to trigger validation
+      return;
+    }
 
     const reorderedPayload = {
       invoice_no: this.inwardForm.value.invoice,
@@ -453,6 +519,7 @@ this.selectedMaterialGroupId = selectedGroupId;
           this.toastr.success('Invard added successfully');
           this.resetForm();
           this.inwardList();
+          window.scrollTo(0, 0);
 
         } else if(response.message[0].status == 101){
           this.cookieService.delete('userId');
@@ -460,9 +527,11 @@ this.selectedMaterialGroupId = selectedGroupId;
       this.cookieService.delete('userType');
       this.cookieService.delete('token');
       this.router.navigate(['/authentication/login']);
+      window.scrollTo(0, 0);
 
         }else {
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
         }
       },
       (error: any) => {
@@ -474,7 +543,6 @@ this.selectedMaterialGroupId = selectedGroupId;
 
 
   inwardList() {
-    console.log("dat is ", this.transDate)
 
 
     const reorderedPayload = {
@@ -490,14 +558,12 @@ this.selectedMaterialGroupId = selectedGroupId;
     this.materialnameService.createInward(httpParams.toString()).subscribe(
       (response: any) => {
         if (response.status === 'success') {
-          console.log(response)
 
   this.inwardListData=response.data.data1 || [];
   this.totalItems = this.inwardListData.length;
   this.totalPages = Math.ceil(this.totalItems/this.pageSize);
   this.pagination()
   this.dataSource.data = this.inwardListData;
-  console.log("Material group  new is ",this.dataSource.data,"andother is ",this.inwardListData)
 
 
         } else if(response.message[0].status == 101){
@@ -509,18 +575,19 @@ this.selectedMaterialGroupId = selectedGroupId;
 
         }else {
           this.toastr.error('Failed to retrieve data');
+          window.scrollTo(0, 0);
         }
       },
       (error: any) => {
         console.log('Error:', error);
         this.toastr.error(error.statusText);
+        window.scrollTo(0, 0);
       }
     );
   }
 
 
   pagination(){
-    console.log("paginted updating")
     const startIndex = (this.currentPage -1)* this.pageSize;
     const endIndex = startIndex+this.pageSize;
     this.paginatedData = this.inwardListData.slice(startIndex,endIndex);
@@ -546,12 +613,12 @@ this.selectedMaterialGroupId = selectedGroupId;
     this.inwardList()
     const token = this.cookieService.get('token');
     this.inwardForm = new FormGroup({
-      materialgroup: new FormControl(''),
-      materialname: new FormControl(''),
-      invoice: new FormControl(''),
-      quantity: new FormControl(''),
-      invoicedate: new FormControl(''),
-      transdate: new FormControl(''),
+      materialgroup: new FormControl('',[Validators.required]),
+      materialname: new FormControl('',[Validators.required]),
+      invoice: new FormControl('',[Validators.required]),
+      quantity: new FormControl('',[Validators.required]),
+      invoicedate: new FormControl('',[Validators.required]),
+      transdate: new FormControl('',[Validators.required]),
 
     })
 
@@ -576,11 +643,27 @@ this.selectedMaterialGroupId = selectedGroupId;
   }
 
   applyfilter(type:any){
+
+
+
+    const itemId = this.filterForm?.get('item_id')?.value;
+    const filterMaterialGroup = this.filterForm?.get('filtermaterialGroup')?.value;
+
+    if ((itemId && !filterMaterialGroup) || (!itemId && filterMaterialGroup)) {
+      this.toastr.error('Please select both Material Item and Material  Group.');
+      return;
+    }
+
+    // if (itemId && filterMaterialGroup) {
+    // }
+
+
+
+
     this.filterType=type
   const abc=  this.filterForm.value
   this.itemId = this.filterForm.get('item_id')?.value;
   this.transDate = this.filterForm.get('trans_date')?.value;
-  console.log("filter is ", abc)
   this.currentPage=1;
   this.inwardList();
   }
@@ -595,6 +678,7 @@ this.selectedMaterialGroupId = selectedGroupId;
       invoicedate: '',
       transdate: '',
     })
+    this.isUpdating=false;
   }
 
 }

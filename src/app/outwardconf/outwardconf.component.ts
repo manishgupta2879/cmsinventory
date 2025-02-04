@@ -1,20 +1,3 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-outwardconf',
-//   standalone: true,
-//   imports: [],
-//   templateUrl: './outwardconf.component.html',
-//   styleUrl: './outwardconf.component.scss'
-// })
-// export class OutwardconfComponent {
-
-// }
-
-
-
-
-
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';

@@ -17,10 +17,17 @@ export class DashboardService {
   getCurrentStock(data: any) {
     const httpOptions = getHttpOptions(this.cookieService);
 
-    return this.http.post(`${apiUrl}/API/currentstock.php`,data,httpOptions);
+    return this.http.post(`${apiUrl}/stocksightapi/currentstock.php`,data,httpOptions);
   }
 
-  
+
+  getGraphData(data: any) {
+    const httpOptions = getHttpOptions(this.cookieService);
+
+    return this.http.post(`${apiUrl}/stocksightapi/item_stock_data_chart.php`,data);
+  }
+
+
 
 
 
