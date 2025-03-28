@@ -3,36 +3,34 @@
   autosize
   autoFocus
   dir="ltr"
+  style="display: flex;"
 >
-  <!-- ============================================================== -->
-  <!-- Vertical Sidebar -->
-  <!-- ============================================================== -->
 
   <mat-sidenav
     #leftsidenav
     [mode]="isOver ? 'over' : 'side'"
     [opened]="!isOver"
-    (openedChange)="onSidenavOpenedChange($event)"
-    (closedStart)="onSidenavClosedStart()"
-    class="sidebarNav"
+    style="position: relative;"
+
+
   >
     <app-sidebar></app-sidebar>
   </mat-sidenav>
   <!-- ============================================================== -->
   <!-- Main Content -->
   <!-- ============================================================== -->
-  <mat-sidenav-content class="contentWrapper">
+  <mat-sidenav-content class="contentWrappe m-0 w-100" style="max-width: 100%;">
     <!-- ============================================================== -->
     <!-- VerticalHeader -->
     <!-- ============================================================== -->
 
     <app-header
-      [showToggle]="!isOver"
-      (toggleCollapsed)="toggleCollapsed()"
-      (toggleMobileNav)="sidenav.toggle()"
-    ></app-header>
+    [showToggle]="!isOver"
 
-    <main class="pageWrapper">
+  ></app-header>
+
+    <main class="pageWrapper mb-0 py-2 w-100" style="max-width: 100%;">
+
       <!-- ============================================================== -->
       <!-- Outlet -->
       <!-- ============================================================== -->

@@ -1,109 +1,321 @@
-<div class="d-flex flex-column flex-md-row container-fluid">
-    <div class="col-md-6 col-xl-6 col-sm-12 col-12 pe-md-4 shadow-sm p-3 mb-5 bg-body rounded">
-        <form [formGroup]="outwardForm">
-            <div class="align-items-center">
-                <div class="row">
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                        <div class="form-box">
-                            <label class="form-check-label mb-2">Material Group</label>
-                            <select id="materialgroup" name="materialgroup" class="form-select"
-                                formControlName="materialgroup">
-                                <option value="">Select Material Group</option>
-                                <option [value]="">Iron</option>
-                                <option [value]="">Gold</option>
-                                <option [value]="">Silver</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                        <div class="form-box">
-                            <label class="form-check-label mb-2">Material Name</label>
-                            <select id="materialname" name="materialname" class="form-select"
-                                formControlName="materialname">
-                                <option value="">Select Material Name</option>
-                                <option [value]="">Iron</option>
-                                <option [value]="">Gold</option>
-                                <option [value]="">Silver</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mt-1">
-                        <div class="form-box">
-                            <label class="form-check-label mb-2">Transaction Date</label>
-                            <input type="date" id="transdate" name="transdate" class="form-control px-0"
-                                formControlName="transdate">
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mt-1">
-                        <div class="form-box">
-                            <label class="form-check-label mb-2">Quantity</label>
-                            <input type="text" id="quantity" name="quantity" class="form-control px-0"
-                                formControlName="quantity" placeholder=" Enter Quantity">
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mt-1"></div>
-                    <div class="form-box">
-                        <label class="form-check-label mb-2">No. of order processed</label>
-                        <input type="text" id="orderprocess" name="orderprocess" class="form-control px-0"
-                            formControlName="orderprocess" placeholder="Order Processed">
-                    </div>
-                </div>
-            </div>
+<div class="d-flex flex-column flex-md-row container-fluid gap-2 p-0">
+  <div
+    class="col-md-2 col-xl-2 col-sm-12 col-12 bg-body card p-0"
+  >
+    <form [formGroup]="outwardForm" class="py-2 px-2 px-md-3">
+      <div class="align-items-center">
+        <div class="row gy-3">
+          <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+            <b class="table-heading">Add Outward</b>
+            <div class="form-box mt-2">
+              <label class="form-check-label mb-1">Material Group</label>
+              <select
+                id="materialgroup"
+                name="materialgroup"
+                class="form-select"
+                formControlName="materialgroup"
+                (change)="getMaterial($event)"
+              >
+                <option value="">Select Material Group</option>
 
-            <div class="submit-btn pt-3">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <option *ngFor="let group of materialGroups" [value]="group.id">
+                  {{ group.group_name }}
+                </option>
+              </select>
+              <div *ngIf="outwardForm.get('materialgroup')?.invalid && outwardForm.get('materialgroup')?.touched">
+                <small class="text-danger">Material Group is required</small>
+              </div>
             </div>
+          </div>
 
-        </form>
-    </div>
-    <div class="col-md-6 col-xl-6 col-sm-12 col-12 shadow-sm p-3 mb-5 bg-body rounded">
-        <div class="tablewrapper">
-            <table class="table table-striped table-responsive">
-                <thead>
-                    <tr>
-                        <th>Material Group</th>
-                        <th>Material Name</th>
-                        <th>Transaction Date</th>
-                        <th>Quantity</th>
-                        <th>Order Processed</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Iron</td>
-                        <td>Iron</td>
-                        <td>Iron</td>
-                        <td>Iron</td>
-                        <td>Iron</td>
-                        <td style="cursor: pointer;"><i class="fa-solid fa-trash"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Gold</td>
-                        <td>Gold</td>
-                        <td>Gold</td>
-                        <td>Gold</td>
-                        <td>Gold</td>
-                        <td style="cursor: pointer;"><i class="fa-solid fa-trash"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Silver</td>
-                        <td>Silver</td>
-                        <td>Silver</td>
-                        <td>Silver</td>
-                        <td>Silver</td>
-                        <td style="cursor: pointer;"><i class="fa-solid fa-trash"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Alluminium</td>
-                        <td>Alluminium</td>
-                        <td>Alluminium</td>
-                        <td>Alluminium</td>
-                        <td>Alluminium</td>
-                        <td style="cursor: pointer;"><i class="fa-solid fa-trash"></i></td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- <div class="text-center py-2"> No Items Found </div> -->
+          <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+            <div class="form-box">
+              <label class="form-check-label mb-1">Material Item</label>
+              <select
+                id="materialname"
+                name="materialname"
+                class="form-select"
+                formControlName="materialname"
+              >
+                <option value="">Select Material</option>
+
+                <option *ngFor="let group of material" [value]="group.id">
+                  {{ group.material_name }}
+                </option>
+              </select>
+              <div *ngIf="outwardForm.get('materialname')?.invalid && outwardForm.get('materialname')?.touched">
+                <small class="text-danger">Material Item is required</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+            <div class="form-box">
+              <label class="form-check-label mb-1">Transaction Date</label>
+              <input
+                type="date"
+                id="transdate"
+                name="transdate"
+                class="form-control"
+                formControlName="transdate"
+              />
+              <div *ngIf="outwardForm.get('transdate')?.invalid && outwardForm.get('transdate')?.touched">
+                <small class="text-danger">Transaction Date is required</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+            <div class="form-box">
+              <label class="form-check-label mb-1">Quantity</label>
+              <input
+                type="text"
+                id="quantity"
+                name="quantity"
+                class="form-control"
+                formControlName="quantity"
+                placeholder=" Enter Quantity"
+              />
+              <div *ngIf="outwardForm.get('quantity')?.invalid && outwardForm.get('quantity')?.touched">
+                <small class="text-danger">Quantity is required</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12"></div>
+          <div class="form-box">
+            <label class="form-check-label mb-1">No. of order processed</label>
+            <input
+              type="text"
+              id="nooforders"
+              name="nooforders"
+              class="form-control"
+              formControlName="nooforders"
+              placeholder="Order Processed"
+            />
+            <div *ngIf="outwardForm.get('nooforders')?.invalid && outwardForm.get('nooforders')?.touched">
+              <small class="text-danger">No. of Orders is required</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <div class="d-flex">
+        <div class="submit-btn pt-3" *ngIf="!isUpdating">
+            <button type="submit" class="btn btn-primary ch_button" (click)="outwardSubmit()">Submit</button>
+        </div>
+
+        <div class="submit-btn pt-3" *ngIf="isUpdating">
+            <button type="button" class="btn btn-primary ch_button" (click)="onUpdate()">Update</button>
+        </div>
+
+        <div class="submit-btn pt-3 ms-2">
+            <button type="button" class="btn btn-primary ch_button" (click)="resetForm()">Reset</button>
         </div>
     </div>
+    </form>
+  </div>
+
+  <div
+    class="col-md-10 col-xl-10 col-sm-12 col-12 bg-body card"
+  >
+
+  <div class="d-flex justify-content-between align-items-center px-2 px-md-3 pt-3">
+    <div><b class="table-heading">Outward List</b></div>
+    <div id="" class="d-flex justify-content-end mb-md-2">
+      <div class="dt-search">
+        <label for="dt-search-0"
+          ><div class="input-group">
+            <span class="input-group-addon"
+              ><span class="fa fa-search" aria-hidden="true"></span></span
+            ><input
+              type="search"
+              (keyup)="applyFilter($event)"
+              id="dt-search-0"
+              placeholder="Search..."
+              aria-controls="users-table"
+              class="dt-input"
+            /></div
+        ></label>
+      </div>
+    </div>
+  </div>
+
+
+      <form [formGroup]="filterForm" class="p-3">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-box">
+              <label class="form-check-label mb-2">Material Group</label>
+              <select formControlName="filtermaterialGroup" class="form-select"
+              id="filtermaterialgroup"
+              name="filtermaterialgroup"
+              class="form-select"
+              (change)="getMaterialFilter($event)"
+
+
+
+              >
+                <option value="">Select Material Group</option>
+                <option *ngFor="let group of filterMaterialGroups" [value]="group.id">
+                  {{ group.group_name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+
+
+
+
+          <div class="col-md-3">
+            <div class="form-box">
+              <label class="form-check-label mb-2">Material Item</label>
+              <select formControlName="item_id" class="form-select"
+              id="materialname"
+                name="materialname"
+
+              >
+                <option value="">Select Material</option>
+                <option *ngFor="let material of filterName" [value]="material.id">
+                  {{ material.material_name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+
+
+
+          <div class="col-md-3">
+            <div class="form-box">
+              <label class="form-check-label mb-2">Outward Date</label>
+              <input
+                type="date"
+                formControlName="trans_date"
+              class="form-control"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-3  mt-4">
+            <div class="d-flex align-items-center gap-2">
+            <button type="submit" class="btn btn-primary mt-2 ch_button" (click)="applyfilter('filteroutward')">Apply</button>
+            <button _ngcontent-ng-c1853146763="" _ngcontent-ng-c3952619377="" type="button" class="btn ch_button mt-1" (click)="exportAsCSV()">Export</button>
+          </div>
+          </div>
+
+        </div>
+
+
+      </form>
+
+
+
+        <div class="col-md-12 col-xl-12 col-sm-12 col-12 bg-body  ps-0 p-md-0">
+
+
+            <div class="tablewrapper p-3 table-container table-responsive">
+              <table mat-table [dataSource]="dataSource" matSort class="table-bordered">
+                <ng-container matColumnDef="sno">
+                  <th mat-header-cell *matHeaderCellDef class="heading">S.No</th>
+                  <td
+                    mat-cell
+                    *matCellDef="let item; let i = index"
+                    style="color: blue; font-weight: 600; cursor: pointer"
+                  >
+                    {{ i + 1 }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="group_name">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                    Material Group
+                  </th>
+                  <td mat-cell *matCellDef="let item">{{ item.group_name }}</td>
+                </ng-container>
+                <ng-container matColumnDef="material_name">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                    Material Item
+                  </th>
+                  <td mat-cell *matCellDef="let item">{{ item.material_name }}</td>
+                </ng-container>
+                <ng-container matColumnDef="qty">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                    Quantity
+                  </th>
+                  <td mat-cell *matCellDef="let item" class="text-end">{{ item.qty }}</td>
+                </ng-container>
+                <ng-container matColumnDef="material_unit">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                    UOM
+                  </th>
+                  <td mat-cell *matCellDef="let item">{{ item.material_unit }}</td>
+                </ng-container>
+                <ng-container matColumnDef="transition_date">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                    Transaction Date
+                  </th>
+                  <td mat-cell *matCellDef="let item">{{ item.transition_date | date: "dd-MM-yyyy" }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="outward_orders">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                     No. of Order procceed
+                  </th>
+                  <td mat-cell *matCellDef="let item">{{ item.outward_orders }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="outward_date">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+                    Outward Date
+                  </th>
+                  <td mat-cell *matCellDef="let item">{{ item.outward_date | date: "dd-MM-yyyy"}}</td>
+                </ng-container>
+
+
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef class="heading">Action</th>
+                  <td
+                    mat-cell
+                    *matCellDef="let item"
+                    style="cursor: pointer; font-weight: 600"
+                    class="text-danger d-flex gap-3"
+                  >
+                    <i class="fa-solid fa-trash" (click)="onDelete(item)"></i>
+                    <i
+                      class="fa-solid fa-pencil-alt text-success"
+                      (click)="updateOutward(item)"
+                    ></i>
+                  </td>
+
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                  <td class="mat-cell text-center font-weight-bold" colspan="9">No data found</td>
+                </tr>
+              </table>
+
+
+            </div>
+            <mat-paginator
+            [pageSize]="pageSize"
+            [pageIndex]="currentPage - 1"
+            [length]="totalItems"
+            (page)="onPageChange($event)"
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            aria-label="Select page"
+          >
+          </mat-paginator>
+          </div>
+
+
+
+
+
+  </div>
+</div>

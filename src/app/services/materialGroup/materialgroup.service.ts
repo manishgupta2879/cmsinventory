@@ -15,10 +15,8 @@ export class MaterialgroupService {
   ) { }
 
   userLogin(data: any) {
-    // Get headers including the PHPSESSID cookie and other necessary options
     const httpOptions = getHttpOptions(this.cookieService);
 
-    // Make the POST request to the API endpoint
     return this.http.post(`${apiUrl}/API/mgroup.php`, data, httpOptions);
   }
 }

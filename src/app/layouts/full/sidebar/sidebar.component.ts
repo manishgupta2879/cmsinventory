@@ -1,15 +1,40 @@
+
+
+
 import { Component, OnInit } from '@angular/core';
-import { navItems } from './sidebar-data';
-import { NavService } from '../../../services/nav.service';
+import { Router } from '@angular/router';
+import { SharedServiceService } from 'src/app/shared-service.service';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit {
-  navItems = navItems;
+export class SidebarComponent implements OnInit{
+  showToggleIcon: boolean = true;
 
-  constructor(public navService: NavService) {}
+  constructor(
+    public route: Router,
+    private sharedService: SharedServiceService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+
+    this.sharedService.showToggleIcon$.subscribe((value: boolean) => {
+      this.showToggleIcon = value;
+    });
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebarWrapper = document.getElementById('wrapper');
+
+    if (menuToggle && sidebarWrapper) {
+      menuToggle.addEventListener('click', () => {
+        sidebarWrapper.classList.toggle('toggled');
+      });
+    }
+  }
+  navitage(url:any){
+    this.route.navigate([url]);
+
+  }
 }

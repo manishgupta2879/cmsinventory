@@ -9,6 +9,7 @@ import { MaterialgroupComponent } from './materialgroup/materialgroup.component'
 import { MaterialnameComponent } from './materialname/materialname.component';
 import { InventoryComponent } from './inventory/inventory.component';
 import { StocksComponent } from './stocks/stocks.component';
+import { InitialStockComponent } from './initial-stock/initial-stock.component';
 
 export const UiComponentsRoutes: Routes = [
   {
@@ -34,6 +35,10 @@ export const UiComponentsRoutes: Routes = [
         path: 'tooltips',
         component: AppTooltipsComponent,
       },
+      {
+        path:'initialStock',
+        component:InitialStockComponent
+      }
     ],
   },
 ];

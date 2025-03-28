@@ -1,1 +1,237 @@
-<p>stocks works!</p>
+
+
+<h1 class="fs-4 fw-bold mb-2 mb-md-3">Daily Stock Report</h1>
+
+<div class="stocks-container">
+
+
+  <div class="col-md-6 col-lg-6 col-sm-6 p-0">
+    <form
+      [formGroup]="StockForm"
+      (ngSubmit)="submit()"
+      class="card p-4 flex-wrap"
+    >
+    <div class="row">
+      <div class="col-md-5"> <div class="form-group">
+        <label for="start_date" class="mb-1">To Date:</label>
+        <input
+          type="date"
+          id="start_date"
+          class="form-control"
+          formControlName="start_date"
+        />
+      </div></div>
+      <div class="col-md-5">
+        <div class="form-group">
+          <label for="end_date" class="mb-1">From Date:</label>
+          <input
+            type="date"
+            id="end_date"
+            class="form-control"
+            formControlName="end_date"
+          />
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <p for="" class="mb-1">&nbsp;&nbsp;&nbsp;</p>
+          <button type="submit" class="btn btn-primary ch_button">Submit</button>
+        </div>
+      </div>
+
+    </div>
+
+
+
+    </form>
+  </div>
+
+
+  <div *ngIf="stock.length > 0" class="stock-list mt-5">
+    <div class="table-responsive">
+
+      <div class="col-md-12 col-xl-12 col-sm-12 col-12 bg-body card ps-md-0">
+        <div
+          class="d-flex flex-column flex-md-row gap-2 gap-md-0 justify-content-between align-items-start align-items-md-center px-md-3 p-2 pt-3"
+        >
+          <div><b class="fs-6 fs-md-5">Daily Stock Report</b></div>
+          <div id="" class="d-flex justify-content-end mb-md-2 gap-2">
+            <button
+
+              type="button"
+              class="btn ch_button btn-sm"
+              (click)="exportAsCSV()"
+            >
+              Export
+            </button>
+            <div class="dt-search">
+              <label for="dt-search-0"
+                ><div class="input-group">
+                  <span class="input-group-addon"
+                    ><span class="fa fa-search" aria-hidden="true"></span></span
+                  ><input
+                    type="search"
+                    (keyup)="applyFilter($event)"
+                    id="dt-search-0"
+                    placeholder="Search..."
+                    aria-controls="users-table"
+                    class="dt-input"
+                  /></div
+              ></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="tablewrapper p-3 table-container table-responsive">
+          <table
+            mat-table
+            [dataSource]="dataSource"
+
+            class="table-bordered"
+          >
+            <ng-container matColumnDef="sno">
+
+
+              <th mat-header-cell *matHeaderCellDef class="heading">S.No</th>
+              <td
+                mat-cell
+                *matCellDef="let item; let i = index"
+                style="color: blue; font-weight: 600; cursor: pointer"
+              >
+                {{ i + 1 }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="group_name">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="heading"
+              >
+                Material Group
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.group_name }}</td>
+            </ng-container>
+            <ng-container matColumnDef="material_name">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="heading"
+              >
+
+                Material Item
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.material_name }}</td>
+            </ng-container>
+            <ng-container matColumnDef="material_unit">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="heading"
+              >
+                UOM
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.material_unit }}</td>
+            </ng-container>
+            <ng-container matColumnDef="material_description">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="heading"
+              >
+                Material Description
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.material_description }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="transaction_date">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="heading"
+              >
+                Transaction Date
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.transaction_date | date : "dd-MM-yyyy" }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="opening_qty">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="heading"
+              >
+                Opening Qty
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.opening_qty }}</td>
+            </ng-container>
+            <ng-container matColumnDef="purchase_qty">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="heading"
+              >
+                Purchase Qty
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.purchase_qty }}</td>
+            </ng-container>
+            <ng-container matColumnDef="sale_qty">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="heading"
+              >
+                Sale Qty
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.sale_qty }}</td>
+            </ng-container>
+            <ng-container matColumnDef="closing_qty">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="heading"
+              >
+                Closing Qty
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element.closing_qty }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell text-center font-weight-bold" colspan="6">No data found</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="pagination-container">
+          <mat-paginator
+            [length]="dataSource?.data?.length"
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            (page)="onPageChange($event)"
+
+          >
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="noData" class="alert alert-warning mt-3" role="alert">
+    No data found for the selected date.
+  </div>
+
+  <div
+    *ngIf="
+      !StockForm.get('start_date')?.value && !StockForm.get('end_date')?.value
+    "
+    class="alert alert-info mt-3"
+    role="alert"
+  >
+    Please select a date to show data.
+  </div>
+</div>

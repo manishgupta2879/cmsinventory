@@ -1,29 +1,50 @@
-<div class="flex-layout">
-  <app-branding></app-branding>
-  <mat-nav-list class="sidebar-list">
-    <app-nav-item *ngFor="let item of navItems" [item]="item"> </app-nav-item>
-  </mat-nav-list>
-  <div class="p-24">
-    <!-- <div class="bg-light-primary d-flex align-items-center rounded p-20 m-t-20">
-      <div>
-        <h5 class="mat-subtitle-1 f-s-16 f-w-600 m-b-8">
-          Unlimied <br />Access
-        </h5>
-        <a
-          mat-flat-button
-          color="primary"
-          href="https://adminmart.com/product/modernize-angular-admin-dashboard/"
-          target="_blank"
-          class="d-flex justify-content-center"
-        >
-          Upgrade
-        </a>
-      </div>
-      <img
-        src="/assets/images/backgrounds/rocket.png"
-        alt="imgae"
-        class="side-img"
-      />
-    </div> -->
+
+
+<input type="checkbox" id="menu_active" [checked]="showToggleIcon" />
+<div id="wrapper" class="active">
+  <div id="menu">
+    <img src="../../../../assets/images/img/logo.png" alt="" class="img-fluid d-flex m-auto mt-3" *ngIf='!showToggleIcon' style="height: 80px;">
+      <img src="../../../../assets/images/img/favicon-32x32.png" alt="" class="img-fluid pt-4 pb-2 side-fav" *ngIf='showToggleIcon' style=" margin-left: 79%;">
+
+    <ul class="">
+
+      <a href="">
+        <li class="sb-menu ps-2 pe-2 d-flex justify-content-between align-items-center">Dashboard <img src="../../../../assets/images/img/dashboard (1).png" alt="" class="" style="width: 19px;">
+        <div class="sb-submenu">
+          <div class="sb-item">  <a [routerLink]="['/dashboard']">Dashboard</a>
+          </div>
+        </div>
+      </li>
+      </a>
+      <a href="">
+        <li class="sb-menu ps-2 pe-2 d-flex justify-content-between align-items-center">Masters<img src="../../../../assets/images/img/master.png" alt="" class="" style="width: 24px;">
+          <div class="sb-submenu">
+            <div class="sb-item"><a [routerLink]="['/ui-components/materialGroup']">Material Group</a></div>
+            <div class="sb-item">
+              <a [routerLink]="['/ui-components/materialName']" >Material Item</a>
+            </div>
+          </div>
+        </li>
+      </a>
+
+      <a [routerLink]="['/ui-components/inventory']">
+        <li class="sb-menu ps-2 pe-2 d-flex justify-content-between align-items-center">Inventory<img src="../../../../assets/images/img/inventory (2).png" alt="" class="" style="width: 24px;">
+
+        </li>
+      </a>
+      <a href="">
+        <li class="sb-menu ps-2 pe-2 d-flex justify-content-between align-items-center">Stock<img src="../../../../assets/images/img/stock (1).png" alt="" class="" style="width: 24px;">
+          <div class="sb-submenu">
+
+            <div class="sb-item">
+              <a [routerLink]="['/ui-components/initialStock']" >Initial Stocks</a>
+            </div>
+            <div class="sb-item">
+              <a [routerLink]="['/ui-components/stocks']" >Daily Stock Report</a>
+            </div>
+          </div>
+        </li>
+      </a>
+    </ul>
   </div>
 </div>

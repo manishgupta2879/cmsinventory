@@ -9,6 +9,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import * as TablerIcons from 'angular-tabler-icons/icons';
 import { AppDashboardComponent } from './dashboard/dashboard.component';
+import { NgChartsModule } from 'ng2-charts';
+
 
 @NgModule({
   declarations: [AppDashboardComponent],
@@ -17,6 +19,7 @@ import { AppDashboardComponent } from './dashboard/dashboard.component';
     MaterialModule,
     FormsModule,
     NgApexchartsModule,
+    NgChartsModule,
     RouterModule.forChild(PagesRoutes),
     TablerIconsModule.pick(TablerIcons),
   ],

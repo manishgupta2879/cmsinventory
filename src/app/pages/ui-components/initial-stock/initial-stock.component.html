@@ -1,0 +1,165 @@
+
+<h1 class="fs-4 fw-bold mb-3">Initial Stock</h1>
+
+<div class="d-flex flex-column flex-md-row container-fluid gap-3 ps-0">
+  <div class="col-md-2 col-xl-2 col-sm-12 col-12 bg-body card p-0">
+
+
+    <form (ngSubmit)="onSubmit()" #uploadForm="ngForm" class="p-3">
+      <div class="align-items-center">
+        <div class="col-md-12 col-sm-12 col-12 px-0">
+          <div class="form-box">
+            <label for="fileUpload" class="form-check-label mb-2 fw-bold fs-5"
+              >Upload Initial Stock CSV File</label
+            >
+            <div class="d-flex gap-2 align-items-center">
+              <input
+                type="file"
+                id="fileUpload"
+                class="form-control"
+                #fileInput
+                (change)="onFileChange($event)"
+                accept=".csv"
+                required
+              />
+              <i
+                class="fa-solid fa-download"
+                title="Download Sample CSV"
+                (click)="download()"
+              ></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex">
+          <button
+            type="submit"
+            class="btn btn-primary mt-3 ch_button"
+            [disabled]="!selectedFile"
+          >
+            Upload
+          </button>
+        </div>
+
+
+      </div>
+    </form>
+
+    <div
+      class="alert alert-danger"
+      *ngIf="errorData?.length && errorData.length > 0"
+    >
+      <ul style="overflow-y: scroll; height: 100px">
+        <li *ngFor="let error of errorData">{{ error }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-md-10 col-xl-10 col-sm-12 col-12 bg-body card">
+    <div class="d-flex justify-content-between align-items-center px-md-3 pt-3">
+      <div><b class="fs-md-5 table-heading">Initial Stock List</b></div>
+      <div id="" class="d-flex justify-content-end mb-md-2 gap-2">
+        <button
+        type="button"
+        class="btn ch_button btn-sm"
+        (click)="exportAsCSV()"
+      >
+        Export
+      </button>
+        <div class="dt-search">
+          <label for="dt-search-0"
+            ><div class="input-group">
+              <span class="input-group-addon"
+                ><span class="fa fa-search" aria-hidden="true"></span></span
+              ><input
+                type="search"
+                (keyup)="applyFilter($event)"
+                id="dt-search-0"
+                placeholder="Search..."
+                aria-controls="users-table"
+                class="dt-input"
+              /></div
+          ></label>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="tablewrapper pt-3 pt-md-0 p-md-3 table-container table-responsive"
+    >
+      <table mat-table [dataSource]="dataSource" matSort class="table-bordered">
+
+        <ng-container *ngIf="dataSource.data.length === 0">
+          <tr>
+            <td colspan="6" style="text-align: center; font-weight: bold;">No data found</td>
+          </tr>
+        </ng-container>
+
+        <ng-container matColumnDef="sno">
+          <th mat-header-cell *matHeaderCellDef class="heading">S.No</th>
+          <td
+            mat-cell
+            *matCellDef="let item; let i = index"
+            style="color: blue; font-weight: 600; cursor: pointer"
+          >
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="group_name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+            Material Group
+          </th>
+          <td mat-cell *matCellDef="let item">{{ item.group_name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="material_name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+            Material Item
+          </th>
+          <td mat-cell *matCellDef="let item">{{ item.material_name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="material_unit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+            UOM
+          </th>
+          <td mat-cell *matCellDef="let item">{{ item.material_unit }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="qty">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+            Quantity
+          </th>
+          <td mat-cell *matCellDef="let item">{{ item.qty }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="transition_date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="heading">
+            Transaction Date
+          </th>
+          <td mat-cell *matCellDef="let item">{{ item.transition_date }}</td>
+        </ng-container>
+
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center font-weight-bold" colspan="6">No data found</td>
+        </tr>
+      </table>
+
+    </div>
+    <div class="pagination-container">
+      <mat-paginator
+        [length]="dataSource?.data?.length"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+      >
+      </mat-paginator>
+    </div>
+  </div>
+</div>
+

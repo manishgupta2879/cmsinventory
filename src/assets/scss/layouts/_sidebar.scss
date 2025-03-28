@@ -68,7 +68,16 @@
 .flex-layout {
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100%;
+  border-top-right-radius: 28px;
+    border-bottom-right-radius: 28px;
+}
+// .flex-layout:hover{
+//   width: 20%;
+// }
+.mobile-view{
+  width: 20%;
 }
 
 

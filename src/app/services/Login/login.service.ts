@@ -19,7 +19,17 @@ export class LoginService {
     // Get headers including the PHPSESSID cookie and other necessary options
     const httpOptions = getHttpOptions(this.cookieService);
 
-    // Make the POST request to the login API endpoint
     return this.http.post(`${apiUrl}/API/login.php`, data, httpOptions);
+  }
+
+
+  forgotPassword(data: any) {
+
+    return this.http.post(`${apiUrl}/API/forgot_password.php`, data);
+  }
+
+  resetPassword(data: any) {
+
+    return this.http.post(`${apiUrl}/API/reset_password.php`, data);
   }
 }

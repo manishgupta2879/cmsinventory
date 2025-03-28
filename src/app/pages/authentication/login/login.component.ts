@@ -8,6 +8,8 @@ import { LoginService } from 'src/app/services/Login/login.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+
 })
 export class AppSideLoginComponent implements OnInit {
 
@@ -16,7 +18,7 @@ export class AppSideLoginComponent implements OnInit {
   constructor(private router: Router,
     private loginservice: LoginService,
     private cookieService: CookieService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
   ) { }
 
   ngOnInit(): void {
@@ -26,36 +28,33 @@ export class AppSideLoginComponent implements OnInit {
     })
   }
 
+
+  navigate(){
+    this.router.navigate(['/authentication/forgotPassword']);
+  }
+
   loginUser() {
     const data = this.loginForm.value;
 
     this.loginservice.userLogin(data).subscribe(
       (response: any) => {
-        // If response is an array, access the first element
         const res = response[0];
         if (res.status == 200) {
-          // Show the success message from the API response
           this.toastr.success(res.msg || 'Logged In Successfully');
 
-          // Save user data to cookies
-          this.cookieService.set('userId', res.user.id);
-          this.cookieService.set('userName', res.user.name);
-          this.cookieService.set('userType', res.user.user_type);
-          this.cookieService.set('token', res.user.api_token);
+          this.cookieService.set('userId', res.user.id,30);
+          this.cookieService.set('userName', res.user.name,30);
+          this.cookieService.set('userType', res.user.user_type,30);
+          this.cookieService.set('token', res.user.api_token,30);
 
-          // Store the login token in local storage
           localStorage.setItem('userToken', 'LoggedIn');
 
-          // Navigate to the dashboard
           this.router.navigate(['/dashboard']);
-        } else {
-          // Handle cases where status is not 200
+        }else{
           this.toastr.error('Invalid Credentials');
         }
       },
       (error: any) => {
-        // Log the error to console for debugging
-        console.log('Error:', error);
         this.toastr.error(error.statusText);
       }
     );

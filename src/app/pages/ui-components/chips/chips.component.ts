@@ -23,7 +23,6 @@ export interface Vegetable {
   styleUrls: ['./chips.component.scss'],
 })
 export class AppChipsComponent {
-  // drag n drop
   vegetables: Vegetable[] = [
     { name: 'apple' },
     { name: 'banana' },
@@ -33,9 +32,7 @@ export class AppChipsComponent {
     { name: 'cherry' },
   ];
 
-    // 
-    // Stacked
-    // 
+
     availableColors: ChipColor[] = [
       {name: 'Primary', color: 'primary'},
       {name: 'Accent', color: 'accent'},
@@ -49,9 +46,7 @@ export class AppChipsComponent {
     }
   }
 
-  // 
-  //  chips with input
-  // 
+
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   fruits: Fruit[] = [{ name: 'Lemon' }, { name: 'Lime' }, { name: 'Apple' }];
@@ -59,12 +54,10 @@ export class AppChipsComponent {
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    // Add our fruit
     if (value) {
       this.fruits.push({ name: value });
     }
 
-    // Clear the input value
     event.chipInput!.clear();
   }
 
@@ -79,19 +72,17 @@ export class AppChipsComponent {
   edit(fruit: Fruit, event: MatChipEditedEvent) {
     const value = event.value.trim();
 
-    // Remove fruit if it no longer has a name
     if (!value) {
       this.remove(fruit);
       return;
     }
 
-    // Edit existing fruit
     const index = this.fruits.indexOf(fruit);
     if (index >= 0) {
       this.fruits[index].name = value;
     }
 
-  
+
   }
 }
 function isDragDrop(object: any): object is CdkDragDrop<string[]> {

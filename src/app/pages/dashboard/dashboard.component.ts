@@ -1,4 +1,10 @@
-import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
+import { Component, ViewEncapsulation, ViewChild, OnInit, AfterViewInit } from '@angular/core';
+import { MatSort } from '@angular/material/sort';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import {
   ApexChart,
   ChartComponent,
@@ -15,6 +21,13 @@ import {
   ApexMarkers,
   ApexResponsive,
 } from 'ng-apexcharts';
+import { CookieService } from 'ngx-cookie-service';
+import { ToastrService } from 'ngx-toastr';
+import { DashboardService } from 'src/app/services/Dashboard/dashboard.service';
+import { ChartOptions, ChartData, ChartType } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import { MaterialnameService } from 'src/app/services/materialName/materialname.service';
+import { isNgTemplate } from '@angular/compiler';
 
 interface month {
   value: string;
@@ -119,277 +132,384 @@ const ELEMENT_DATA: productsData[] = [
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class AppDashboardComponent {
-  @ViewChild('chart') chart: ChartComponent = Object.create(null);
+export class AppDashboardComponent implements OnInit,AfterViewInit {
+  UserselectedYear:any=2025;
+  selectProduct:any;
+  materialName!: FormGroup;
+  materialTableData : any[]=[];
+  yearArray: number[] = [];
+  selectedYear:number=2025;
+  graphData:any[]=[];
+  currentYear: number = new Date().getFullYear();
+  yearsList: number[] = [];
+  lowStock:any[]=[];
+ mediumStock:any[]=[];
+ highStock:any[] = [];
 
+  public barChartData: ChartData<'bar'> = {
+     labels: ['January','February','March','April','May','June','July','August','September','October','November','December'],  // X-axis labels
+    datasets: [
+
+      {
+        label: 'Purchases',
+        data: [],
+        backgroundColor: 'rgba(40, 167, 69, 0.6)',
+        borderColor: 'rgba(40, 167, 69, 1)',
+        borderWidth: 1
+      },
+      {
+        label: 'Sales',
+        data: [],
+        backgroundColor: 'rgba(0, 123, 255, 0.6)',
+        borderColor: 'rgba(0, 123, 255, 1)',
+        borderWidth: 1
+      }
+    ]
+  };
+
+  public barChartOptions: ChartOptions = {
+    responsive: true,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Months'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Quantity'
+        },
+        beginAtZero: true
+      }
+    }
+  };
+
+  public barChartType: ChartType = 'bar';
+
+
+  @ViewChild(MatSort, { static: true }) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('chart') chart: ChartComponent = Object.create(null);
+  currentStockForm!: FormGroup;
+
+  currentStock: any[] = [];
   public salesOverviewChart!: Partial<salesOverviewChart> | any;
   public yearlyChart!: Partial<yearlyChart> | any;
   public monthlyChart!: Partial<monthlyChart> | any;
 
-  displayedColumns: string[] = ['materialgroup', 'materialname', 'quantity'];
-  dataSource = ELEMENT_DATA;
 
-  months: month[] = [
-    { value: 'mar', viewValue: 'March 2023' },
-    { value: 'apr', viewValue: 'April 2023' },
-    { value: 'june', viewValue: 'June 2023' },
-  ];
 
-  // recent transaction
-  stats: stats[] = [
-    {
-      id: 1,
-      time: '09.30 am',
-      color: 'primary',
-      subtext: 'Payment received from John Doe of $385.90',
-    },
-    {
-      id: 2,
-      time: '10.30 am',
-      color: 'accent',
-      title: 'New sale recorded',
-      link: '#ML-3467',
-    },
-    {
-      id: 3,
-      time: '12.30 pm',
-      color: 'success',
-      subtext: 'Payment was made of $64.95 to Michael',
-    },
-    {
-      id: 4,
-      time: '12.30 pm',
-      color: 'warning',
-      title: 'New sale recorded',
-      link: '#ML-3467',
-    },
-    {
-      id: 5,
-      time: '12.30 pm',
-      color: 'error',
-      title: 'New arrival recorded',
-      link: '#ML-3467',
-    },
-    {
-      id: 6,
-      time: '12.30 pm',
-      color: 'success',
-      subtext: 'Payment Done',
-    },
-  ];
 
-  // ecommerce card
-  productcards: productcards[] = [
-    {
-      id: 1,
-      imgSrc: '/assets/images/products/s4.jpg',
-      title: 'Boat Headphone',
-      price: '285',
-      rprice: '375',
-    },
-    {
-      id: 2,
-      imgSrc: '/assets/images/products/s5.jpg',
-      title: 'MacBook Air Pro',
-      price: '285',
-      rprice: '375',
-    },
-    {
-      id: 3,
-      imgSrc: '/assets/images/products/s7.jpg',
-      title: 'Red Valvet Dress',
-      price: '285',
-      rprice: '375',
-    },
-    {
-      id: 4,
-      imgSrc: '/assets/images/products/s11.jpg',
-      title: 'Cute Soft Teddybear',
-      price: '285',
-      rprice: '375',
-    },
-  ];
 
-  constructor() {
-    // sales overview chart
-    this.salesOverviewChart = {
-      series: [
-        {
-          name: 'Eanings this month',
-          data: [355, 390, 300, 350, 390, 180, 355, 390],
-          color: '#5D87FF',
-        },
-        {
-          name: 'Expense this month',
-          data: [280, 250, 325, 215, 250, 310, 280, 250],
-          color: '#49BEFF',
-        },
-      ],
+  displayedColumns: string[] = ['sno','group_name','material_name','material_unit', 'avaqty'];
+  dataSource = new MatTableDataSource<any>([]);
 
-      grid: {
-        borderColor: 'rgba(0,0,0,0.1)',
-        strokeDashArray: 3,
-        xaxis: {
-          lines: {
-            show: false,
-          },
-        },
-      },
-      plotOptions: {
-        bar: { horizontal: false, columnWidth: '35%', borderRadius: [4] },
-      },
-      chart: {
-        type: 'bar',
-        height: 390,
-        offsetX: -15,
-        toolbar: { show: true },
-        foreColor: '#adb0bb',
-        fontFamily: 'inherit',
-        sparkline: { enabled: false },
-      },
-      dataLabels: { enabled: false },
-      markers: { size: 0 },
-      legend: { show: false },
-      xaxis: {
-        type: 'category',
-        categories: [
-          '16/08',
-          '17/08',
-          '18/08',
-          '19/08',
-          '20/08',
-          '21/08',
-          '22/08',
-          '23/08',
-        ],
-        labels: {
-          style: { cssClass: 'grey--text lighten-2--text fill-color' },
-        },
-      },
-      yaxis: {
-        show: true,
-        min: 0,
-        max: 400,
-        tickAmount: 4,
-        labels: {
-          style: {
-            cssClass: 'grey--text lighten-2--text fill-color',
-          },
-        },
-      },
-      stroke: {
-        show: true,
-        width: 3,
-        lineCap: 'butt',
-        colors: ['transparent'],
-      },
-      tooltip: { theme: 'light' },
 
-      responsive: [
-        {
-          breakpoint: 600,
-          options: {
-            plotOptions: {
-              bar: {
-                borderRadius: 3,
-              },
-            },
-          },
-        },
-      ],
-    };
 
-    // yearly breakup chart
-    this.yearlyChart = {
-      series: [38, 40, 25],
 
-      chart: {
-        type: 'donut',
-        fontFamily: "'Plus Jakarta Sans', sans-serif;",
-        foreColor: '#adb0bb',
-        toolbar: {
-          show: false,
-        },
-        height: 130,
-      },
-      colors: ['#5D87FF', '#ECF2FF', '#F9F9FD'],
-      plotOptions: {
-        pie: {
-          startAngle: 0,
-          endAngle: 360,
-          donut: {
-            size: '75%',
-            background: 'transparent',
-          },
-        },
-      },
-      stroke: {
-        show: false,
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      legend: {
-        show: false,
-      },
-      responsive: [
-        {
-          breakpoint: 991,
-          options: {
-            chart: {
-              width: 120,
-            },
-          },
-        },
-      ],
-      tooltip: {
-        enabled: false,
-      },
-    };
+  constructor(
+    private CurrentStockData: DashboardService,
+    private toastr: ToastrService,
+    private cookieService: CookieService,
+    private route: Router,
+    private materialnameService: MaterialnameService
 
-    // mohtly earnings chart
-    this.monthlyChart = {
-      series: [
-        {
-          name: '',
-          color: '#49BEFF',
-          data: [25, 66, 20, 40, 12, 58, 20],
-        },
-      ],
 
-      chart: {
-        type: 'area',
-        fontFamily: "'Plus Jakarta Sans', sans-serif;",
-        foreColor: '#adb0bb',
-        toolbar: {
-          show: false,
-        },
-        height: 60,
-        sparkline: {
-          enabled: true,
-        },
-        group: 'sparklines',
-      },
-      stroke: {
-        curve: 'smooth',
-        width: 2,
-      },
-      fill: {
-        colors: ['#E8F7FF'],
-        type: 'solid',
-        opacity: 0.05,
-      },
-      markers: {
-        size: 0,
-      },
-      tooltip: {
-        theme: 'dark',
-        x: {
-          show: false,
-        },
-      },
-    };
+
+
+  ) {
+
+
   }
+
+  updateYearList() {
+    this.yearsList = [];
+    for (let year = 2025; year <= this.currentYear; year++) {
+      this.yearsList.push(year);
+    }
+  }
+
+
+  incrementYear() {
+    this.currentYear += 1;
+    this.updateYearList();
+  }
+
+
+
+
+  ngOnInit(): void {
+    const token = this.cookieService.get('token');
+    this.materialName = new FormGroup({
+      key: new FormControl(token),
+      materialgroup: new FormControl(''),
+      materialname: new FormControl(''),
+      uom: new FormControl(''),
+      des:new FormControl(''),
+      type:new FormControl('select'),
+      id:new FormControl('')
+
+    });
+
+    this.currentStockForm = new FormGroup({
+      key: new FormControl(token),
+      type:new FormControl('select'),
+    })
+
+    this.updateYearArray();
+    this.getCurrentStock();
+    this.updateYearList();
+
+    this.showMaterialName().then(() => {
+      this.getGraph();
+    }).catch((error) => {
+      console.error('Error in showMaterialName:', error);
+    });
+
+
+  }
+
+
+  showMaterialName(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.materialName.patchValue({
+        type: 'select',
+        key: this.cookieService.get('token'),
+      });
+
+      let params = new HttpParams()
+        .set('key', this.materialName.get('key')?.value)
+        .set('type', this.materialName.get('type')?.value);
+
+      this.materialnameService.getMaterialName(params.toString()).subscribe(
+        (response: any) => {
+          if (response.status === 'success') {
+            this.materialTableData = response.data?.data1 || [];
+            this.selectProduct = this.materialTableData.length > 0 ? this.materialTableData[0]?.id : '';
+            resolve();
+          } else if (response.message[0].status === 101) {
+            this.cookieService.delete('userId');
+            this.cookieService.delete('userName');
+            this.cookieService.delete('userType');
+            this.cookieService.delete('token');
+            this.route.navigate(['/authentication/login']);
+            reject('Session expired, redirecting to login');
+          } else {
+            this.toastr.error('Failed to retrieve data');
+            reject('Failed to retrieve data');
+          }
+        },
+        (error: any) => {
+          console.log('Error:', error);
+          this.toastr.error(error.statusText);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  exportAsCSV(): void {
+    const csvData = this.createCSV(this.currentStock);
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'currentStock.csv';
+    link.click();
+  }
+
+  createCSV(data: any[]): string {
+    const header = ['SNo', 'Material Group', 'Material Name', 'UOM','Quantity'];
+
+    const rows = data.map((item,index) => [
+      index+1,
+      item.group_name,
+      item.material_name,
+      item.material_unit,
+      item.avaqty
+    ]);
+
+    const csvContent = [
+      header.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    return csvContent;
+  }
+
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const materialName = data.material_name ? data.material_name.toLowerCase() : '';
+      const materialGroup = data.group_name ? data.group_name.toLowerCase() : '';
+      const materialUnit = data.material_unit ? data.material_unit.toLowerCase() : '';
+      return materialName.includes(filter) || materialGroup.includes(filter) ||  materialUnit.includes(filter);;
+    };
+
+    this.dataSource.filter = filterValue;
+  }
+
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+  }
+   updateYearArray() {
+    let currentYear = new Date().getFullYear();
+
+    let firstYear = 2025;
+
+    this.yearArray = [];
+    for (let year = firstYear; year <= currentYear; year++) {
+      this.yearArray.push(year);
+    }
+
+    this.selectedYear = currentYear;
+
+  }
+
+
+
+
+ getCurrentStock() {
+  this.currentStockForm.patchValue({
+    type: 'select',
+    key: this.cookieService.get('token'),
+  });
+
+  let params = new HttpParams()
+    .set('key', this.currentStockForm.get('key')?.value)
+    .set('type', this.currentStockForm.get('type')?.value)
+
+  this.CurrentStockData.getCurrentStock(params.toString()).subscribe(
+    (response: any) => {
+      if (response.status === 'success') {
+        this.currentStock = response.data?.data1 || [];
+
+       this.lowStock = [];
+    this.mediumStock = [];
+     this.highStock = [];
+
+     this.currentStock.forEach(item => {
+       const availableQty = parseFloat(item.avaqty);
+       const alertQty = parseFloat(item.alert_qty);
+
+       if (availableQty <= alertQty) {
+           this.lowStock.push(item);
+       } else if (availableQty > alertQty && availableQty <= 2 * alertQty) {
+           this.mediumStock.push(item);
+       } else {
+           this.highStock.push(item);
+       }
+     });
+this.currentStock = [...this.lowStock, ...this.mediumStock, ...this.highStock];
+
+
+        this.currentStock = this.currentStock.map(item => {
+          const alertQty = item.alert_qty;
+
+          if (parseFloat(item.avaqty) <= parseFloat(alertQty)) {
+            item.quantityStatus = 'red';
+          } else if (parseFloat(item.avaqty) > alertQty && parseFloat(item.avaqty )<= parseFloat(alertQty) * 2) {
+            item.quantityStatus = 'orange';
+          } else {
+            item.quantityStatus = 'green';
+          }
+
+
+          return item;
+        });
+
+        this.dataSource.data = this.currentStock;
+
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      } else if(response.message[0].status == 101){
+        this.cookieService.delete('userId');
+    this.cookieService.delete('userName');
+    this.cookieService.delete('userType');
+    this.cookieService.delete('token');
+    this.route.navigate(['/authentication/login']);
+
+      }else{
+        this.toastr.error('Failed to retrieve data');
+      }
+    },
+    (error: any) => {
+      this.toastr.error(error.statusText);
+    }
+  );
+}
+
+graphfilter() {
+  this.getGraph();
+}
+
+getGraph() {
+
+
+  const formData = new FormData();
+
+  formData.append('key', this.cookieService.get('token'));
+
+
+
+  formData.append('item_id', this.selectProduct || '');
+  formData.append('year', this.UserselectedYear || '204');
+
+  this.CurrentStockData.getGraphData(formData).subscribe(
+    (response: any) => {
+      if (response.status === 'success') {
+        this.graphData=response.data.data1;
+
+        this.barChartData = {
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+          datasets: [
+            {
+              label: 'Purchases',
+              data: [],
+              backgroundColor: 'rgba(40, 167, 69, 0.6)',
+              borderColor: 'rgba(40, 167, 69, 1)',
+              borderWidth: 1
+            },
+            {
+              label: 'Sales',
+              data: [],
+              backgroundColor: 'rgba(0, 123, 255, 0.6)',
+              borderColor: 'rgba(0, 123, 255, 1)',
+              borderWidth: 1
+            }
+
+          ]
+        };
+
+        this.graphData.forEach(item => {
+          this.barChartData.datasets[0].data.push(Number(item.purchases));
+          this.barChartData.datasets[1].data.push(Number(item.sales));
+        });
+
+
+
+      } else if(response.message[0].status == 101){
+        this.cookieService.delete('userId');
+    this.cookieService.delete('userName');
+    this.cookieService.delete('userType');
+    this.cookieService.delete('token');
+    this.route.navigate(['/authentication/login']);
+
+      }else{
+        this.toastr.error('Failed to retrieve data');
+      }
+    },
+    (error: any) => {
+      this.toastr.error(error.statusText);
+    }
+  );
+}
+
 }

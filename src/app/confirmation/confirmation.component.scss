@@ -1,0 +1,10 @@
+.mat-dialog-container {
+  width: 70%;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #fafafa;
+}
+.cdk-overlay-pane.mat-mdc-dialog-panel{
+  width: 20vw !important;
+}
